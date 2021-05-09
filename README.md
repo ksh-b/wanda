@@ -11,4 +11,5 @@ Usage:
 5. `sh wallhaven-dl.sh`
 
 You can pair this with crontab to change wallpaper periodically :)
+
 crontab termux: https://github.com/termux/termux-app/issues/1091#issuecomment-809069738
