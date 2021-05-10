@@ -1,4 +1,4 @@
-# wallpaper-android
+# wanda
 Simple script to set random wallpaper using termux
 
 Wallpapers are downloaded from wallhaven.
