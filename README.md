@@ -10,7 +10,7 @@ Usage:
 2. Get requirements and the script:
 ```
 pkg update && pkg upgrade
-pkg install termux-api git jq curl
+pkg install termux-api git curl
 git clone https://github.com/ksyko/wanda.git
 ```
 5. Edit the config file to your liking and add your api key to it. Refer the [wallhaven api](https://wallhaven.cc/help/api) for available options
