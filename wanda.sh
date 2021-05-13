@@ -4,14 +4,14 @@
 if [ "$source" = "local" ]; then
   case $screen in
       both)
-          termux-wallpaper -f $filepath
-          termux-wallpaper -lf $filepath
+          termux-wallpaper -f "$filepath"
+          termux-wallpaper -lf "$filepath"
           ;;
       home)
-          termux-wallpaper -f $filepath
+          termux-wallpaper -f "$filepath"
           ;;
       lock)
-          termux-wallpaper -lf $filepath
+          termux-wallpaper -lf "$filepath"
           ;;
   esac
 else
