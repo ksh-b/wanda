@@ -1,5 +1,5 @@
 . ./picsum/config
-seed=$(xxd -l 8 -c 8 -p < /dev/random)
+seed=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 ; echo '')
 api="https://picsum.photos/seed/$seed/$width/$height"
 url=$(curl -Ls -o /dev/null -w %{url_effective} $api)
 echo $url
