@@ -8,7 +8,7 @@ Simple script to set wallpaper using [termux](https://github.com/termux/termux-a
 1. Get requirements and the script:
 ```
 pkg up
-pkg in termux-api git curl jq
+pkg in termux-api git curl jq file
 git clone https://github.com/ksyko/wanda.git
 ```
 2. Edit the config file to your liking and add your api key to it. Refer the [wallhaven api](https://wallhaven.cc/help/api#search) for available options
