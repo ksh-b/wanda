@@ -1,5 +1,5 @@
 # wanda
-Simple script to set wallpaper using [termux](https://github.com/termux/termux-app)
+Simple script to set random wallpaper using [termux](https://github.com/termux/termux-app)
 
 <details open>
 <summary>Installation</summary>
@@ -11,7 +11,7 @@ pkg up
 pkg in termux-api git curl jq file
 git clone https://github.com/ksyko/wanda.git
 ```
-2. Edit the config file to your liking and add your api key to it. Refer the [wallhaven api](https://wallhaven.cc/help/api#search) for available options
+2. Edit the wanda.config file to your liking. See below sections for more details.
 3. Run the script
 ```
 cd wanda
@@ -20,21 +20,13 @@ sh wanda.sh
 
 </details>
 
-<details>
-<summary>Supported sources</summary>
-<br>
-  
-  * [wallhaven](https://wallhaven.cc/)
-  * [4chan](https://4chan.org/) thread
-
-</details>
 
 <details>
-<summary>Editing config files</summary>
+<summary>Sources and editing config files</summary>
 <br>
   
   * wanda
-    * source - set source of your wallpaper. [**wallhaven**, chan]
+    * source - set source of your wallpaper. [**wallhaven**, chan, picsum, reddit, local]
     * screen - screens to set wallpaper. [home, lock, **both**]
   * [wallhaven](https://wallhaven.cc/)
     * all the options are specified [here](https://wallhaven.cc/help/api)
@@ -45,13 +37,23 @@ sh wanda.sh
     * example: https://boards.4chan.org/wg/thread/7738706
       * board=wg
       * thread=7738706
+  * [picsum](https://picsum.photos/)
+    * height - desired image height
+    * width - desired image width
+  * [reddit](https://old.reddit.com/)
+    * sub - subreddit name
+    * sort - sort by [hot, new, rising, controversial, top, gilded]
+  * local
+    * images_path - folder path to get images from 
+     
 
 </details>
 
 <details>
 <summary>Automate</summary>
 <br>
-To set wallpaper at regular intervals automatically:
+  
+* To set wallpaper at regular intervals automatically:
 
 0. You might have to 'Acquire Wakelock' from the termux notification for this to run properly.
 1. Install:
