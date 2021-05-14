@@ -1,6 +1,8 @@
 # wanda
 Simple script to set random wallpaper using [termux](https://github.com/termux/termux-app)
 
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ksyko/wanda) ![GitHub](https://img.shields.io/github/license/ksyko/wanda)
+
 <details open>
 <summary>Installation</summary>
 <br>
