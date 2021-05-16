@@ -38,7 +38,7 @@ sh wanda.sh
   * [wallhaven](https://wallhaven.cc/)/config
     * all the options are specified [here](https://wallhaven.cc/help/api)
     * api key is **not** mandatory
-  * [4chan](https://4chan.org/)/config
+  * [chan](https://4chan.org/)/config
     * board - board where the thread belongs
     * thread - thread number 
     * example: https://boards.4chan.org/wg/thread/7738706
