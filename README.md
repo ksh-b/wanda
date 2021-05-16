@@ -7,11 +7,13 @@ Simple script to set random wallpaper using [termux](https://github.com/termux/t
 <summary>Installation</summary>
 <br>
   
-1. Get requirements and the script:
+1. Install [termux](https://f-droid.org/en/packages/com.termux/) and [termux-api](https://f-droid.org/en/packages/com.termux.api/)
+2. Open termux and enter the following:
 ```
 pkg up
 pkg in termux-api git curl jq file
 git clone https://github.com/ksyko/wanda.git
+termux-setup-storage
 ```
 2. Edit the wanda.config file to your liking. See below sections for more details.
 3. Run the script
