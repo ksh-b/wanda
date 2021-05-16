@@ -12,8 +12,9 @@ Simple script to set random wallpaper using [termux](https://github.com/termux/t
 ```
 pkg up
 pkg in termux-api git curl jq file
-git clone https://github.com/ksyko/wanda.git
 termux-setup-storage
+cd storage/shared/
+git clone https://github.com/ksyko/wanda.git
 ```
 2. Edit the wanda.config file to your liking. See below sections for more details.
 3. Run the script
