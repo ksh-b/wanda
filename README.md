@@ -31,6 +31,7 @@ sh wanda.sh
 <br>
   config files for sources are present in their respective folders. 
   format is key=value
+  
   * wanda.config
     * source - set source of your wallpaper. [**wallhaven**, chan, picsum, reddit, local]
     * screen - screens to set wallpaper. [home, lock, **both**]
