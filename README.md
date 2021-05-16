@@ -29,26 +29,27 @@ sh wanda.sh
 <details>
 <summary>Sources and editing config files</summary>
 <br>
-  
-  * wanda
+  config files for sources are present in their respective folders. 
+  format is key=value
+  * wanda.config
     * source - set source of your wallpaper. [**wallhaven**, chan, picsum, reddit, local]
     * screen - screens to set wallpaper. [home, lock, **both**]
-  * [wallhaven](https://wallhaven.cc/)
+  * [wallhaven](https://wallhaven.cc/)/config
     * all the options are specified [here](https://wallhaven.cc/help/api)
     * api key is **not** mandatory
-  * [4chan](https://4chan.org/)
+  * [4chan](https://4chan.org/)/config
     * board - board where the thread belongs
     * thread - thread number 
     * example: https://boards.4chan.org/wg/thread/7738706
       * board=wg
       * thread=7738706
-  * [picsum](https://picsum.photos/)
+  * [picsum](https://picsum.photos/)/config
     * height - desired image height
     * width - desired image width
-  * [reddit](https://old.reddit.com/)
+  * [reddit](https://old.reddit.com/)/config
     * sub - subreddit name
     * sort - sort by [hot, new, rising, controversial, top, gilded]
-  * local
+  * local/config
     * images_path - folder path to get images from 
      
 
