@@ -76,7 +76,7 @@ crontab -e
 ```
 4. Set your desired interval [(guide)](https://crontab.guru/#20_4_*_*_*).<br>Example: For hourly:
 ```
-0 * * * *   cd path/to/wanda && $PREFIX/bin/sh wanda.sh
+0 * * * *   cd storage/shared/wanda && $PREFIX/bin/sh wanda.sh
 ```
 5. ctrl+o to save, ctrl+x to exit the editor
 
