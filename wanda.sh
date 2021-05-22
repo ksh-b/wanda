@@ -1,4 +1,4 @@
-. ./wanda.config
+. ./config
 . ./$source/pick.sh
 
 if [ "$source" = "local" ]; then
