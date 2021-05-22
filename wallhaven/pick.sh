@@ -1,5 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
 . ./wallhaven/config
-api="https://wallhaven.cc/api/v1/search?apikey=$api_key&q=$q&categories=$categories&purity=$purity&ratios=$ratios&page=$page&sorting=$sorting&order=$order&topRange=$topRange&atleast=$atleast&resolutions=$resolutions&colors=$colors&seed=$seed"
+keys=(apikey q categories purity sorting order topRange atleast resolutions ratios colors page seed)
+for i in "${keys[@]}";
+  do if [ -n "${!i}" ]; then
+    params="${params}$i=${!i}&"
+  fi
+done
+api="https://wallhaven.cc/api/v1/search?$params"
 url=$(curl -s $api | jq --raw-output '.data[0].path')
 echo $url
