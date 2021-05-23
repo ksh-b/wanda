@@ -20,7 +20,7 @@ git clone https://github.com/ksyko/wanda.git
 3. Run the script
 ```
 cd wanda
-sh wanda.sh
+bash wanda.sh
 ```
 
 </details>
