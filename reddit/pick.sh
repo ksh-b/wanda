@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-. ./reddit/config
+. $SCRIPT_DIR/reddit/config
 api="https://old.reddit.com/r/${sub}/${sort}.json"
 res=$(curl -s $api)
 posts=26

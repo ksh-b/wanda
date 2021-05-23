@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-. ./chan/config
+. $SCRIPT_DIR/chan/config
 image_host="https://i.4cdn.org/${board}/"
 api="https://a.4cdn.org/${board}/thread/${thread}.json"
 res=$(curl -s $api)
