@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . $SCRIPT_DIR/config
 . $SCRIPT_DIR/$source/pick.sh
@@ -19,14 +19,14 @@ if [ "$source" = "local" ]; then
 else
   case $screen in
       both)
-          termux-wallpaper -u $url
-          termux-wallpaper -lu $url
+          termux-wallpaper -u "$url"
+          termux-wallpaper -lu "$url"
           ;;
       home)
-          termux-wallpaper -u $url
+          termux-wallpaper -u "$url"
           ;;
       lock)
-          termux-wallpaper -lu $url
+          termux-wallpaper -lu "$url"
           ;;
   esac
 fi
