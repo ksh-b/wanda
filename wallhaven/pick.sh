@@ -1,4 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
+echo $SCRIPT_DIR
 . $SCRIPT_DIR/wallhaven/config
 keys=(apikey q categories purity sorting order topRange atleast resolutions ratios colors page seed)
 for i in "${keys[@]}";
@@ -7,5 +8,8 @@ for i in "${keys[@]}";
   fi
 done
 api="https://wallhaven.cc/api/v1/search?$params"
-url=$(curl -s $api | jq --raw-output '.data[0].path')
+res=$(curl -s $api)
+limit=$(echo $res | jq --raw-output '.meta.per_page')
+rand=$(( $RANDOM % limit + 1 ))
+url=$(echo $res | jq --raw-output ".data[$rand].path")
 echo $url
