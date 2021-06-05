@@ -1,2 +1,3 @@
 source=wallhaven
 screen=both
+offline_use_local=true
