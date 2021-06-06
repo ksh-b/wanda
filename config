@@ -1,3 +1,6 @@
 source=wallhaven
 screen=both
 offline_use_local=true
+autocrop=true
+height=1280
+width=720
