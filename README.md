@@ -89,9 +89,9 @@ crontab -e
 <summary>Autocrop</summary>
 <br>
   
-  Autocrop tries to find the subject in the image and crops the image accordingly.
-  Useful for when the image is horizontal and subject is at either end of the image. [Example](https://miro.medium.com/max/2048/0*sRE3XCJI0s00wFb-).
-  Imagemagick crops the images. Imagga API provides the co-ordinates for crop.
+  Autocrop tries to find the subject in the image and crops the image accordingly. <br>
+  Useful for when the image is horizontal and subject is at either end of the image. [Example](https://miro.medium.com/max/2048/0*sRE3XCJI0s00wFb-). <br>
+  Imagga API provides the co-ordinates for crop. Imagemagick crops the images. <br>
   
   * `pkg in imagemagick`
   * open wanda/config
