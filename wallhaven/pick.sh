@@ -1,5 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-echo $SCRIPT_DIR
 . $SCRIPT_DIR/wallhaven/config
 
 # get parameters with a value
@@ -13,7 +12,6 @@ done
 # make request with provided parameters
 api="https://wallhaven.cc/api/v1/search?"
 res=$(curl -s "${api}${params}")
-echo $res
 
 # use a random number if sorting is not random
 if [ "$sorting" != "random" ]; then
