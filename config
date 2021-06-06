@@ -1,2 +1,14 @@
+# general
 source=wallhaven
 screen=both
+keep=false
+
+# offline
+offline_use_local=false
+
+# autocrop
+autocrop=false
+imagga_key=
+keep_crop=false
+height=1280
+width=720

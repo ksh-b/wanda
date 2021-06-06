@@ -6,6 +6,7 @@ res=$(curl -s $api)
 posts=$(echo $res | jq '.[] | length')
 rand=$(shuf -i 1-$posts -n 1)
 post_image=$(echo $res | jq ".[][$rand].tim")
+# if post has no image, loop till post with image is found
 while [ $post_image = "null" ]
 do
   rand=$(shuf -i 1-$posts -n 1)
