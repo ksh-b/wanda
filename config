@@ -1,10 +1,10 @@
 # general
-source=reddit
+source=wallhaven
 screen=both
 keep=false
 
 # offline
-offline_use_local=true
+offline_use_local=false
 
 # autocrop
 autocrop=true
