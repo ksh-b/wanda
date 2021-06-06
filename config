@@ -7,7 +7,7 @@ keep=false
 offline_use_local=false
 
 # autocrop
-autocrop=true
+autocrop=false
 imagga_key=
 keep_crop=false
 height=1280
