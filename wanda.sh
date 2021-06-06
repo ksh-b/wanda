@@ -17,7 +17,7 @@ fi
 . $SCRIPT_DIR/$source/pick.sh
 
 if [ $autocrop = "true" ]; then
-  cropped=$(curl -s --user "acc_be5e55eaaa747a2:5000cc76857609b463bafd56bbbb4511" "https://api.imagga.com/v2/croppings?image_url=$url&resolution=${width}x$height")
+  cropped=$(curl -s --user "$imagga_key" "https://api.imagga.com/v2/croppings?image_url=$url&resolution=${width}x$height")
   x1=$(echo $cropped |  jq --raw-output ".result.croppings[0].x1")
   x2=$(echo $cropped |  jq --raw-output ".result.croppings[0].x2")
   y1=$(echo $cropped |  jq --raw-output ".result.croppings[0].y1")
