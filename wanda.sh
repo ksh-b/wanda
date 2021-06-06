@@ -63,5 +63,8 @@ else
   esac
 fi
 
-if [ $keep = "false" ]; then rm -f $o_file fi
-if [ $keep_crop = "false" ]; then rm -f $c_file fi
+# keep or remove file as per config
+if [ $keep = "false" ]; then rm -f $ofile
+fi
+if [ $keep_crop = "false" ]; then rm -f $cfile
+fi

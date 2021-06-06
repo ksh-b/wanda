@@ -1,7 +1,7 @@
 # general
 source=reddit
 screen=both
-keep=true
+keep=false
 
 # offline
 offline_use_local=true
