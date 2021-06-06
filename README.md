@@ -94,11 +94,11 @@ crontab -e
   Imagga API provides the co-ordinates for crop. Imagemagick crops the images. <br>
   
   * `pkg in imagemagick`
-  * open wanda/config
-  * Enable autocrop: set `autocrop` to `true`.
   * Create [imagga](https://imagga.com/auth/signup) account. Its free to sign up, [one time emails](https://privacytoolslist.com/#one-time-emails) can work too 😉 
   * Once the account is created, go to [dashboard](https://imagga.com/profile/dashboard). Copy key and secret.
-  * In wanda/config set `imagga_key` value as `key`:`secret`.
-  * Set your device screen height and width in the config.
+  * open wanda/config
+  * Enable autocrop: set `autocrop` to `true`.
+  * Set `imagga_key` value as `key`:`secret`.
+  * Set your device screen `height` and `width`.
   
 </details>
