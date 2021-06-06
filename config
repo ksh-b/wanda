@@ -1,7 +1,14 @@
-source=wallhaven
+# general
+source=reddit
 screen=both
+save=true
+
+# offline
 offline_use_local=true
+
+# autocrop
 autocrop=true
 imagga_key=acc_be5e55eaaa747a2:5000cc76857609b463bafd56bbbb4511
+save_crop=false
 height=1280
 width=720
