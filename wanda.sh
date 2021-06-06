@@ -17,18 +17,20 @@ fi
 . $SCRIPT_DIR/$source/pick.sh
 
 if [ $autocrop = "true" ]; then
+  ofile=$SCRIPT_DIR/downloads/$(basename $url)
+  cfile=$SCRIPT_DIR/downloads/cropped/$(basename $url)
   cropped=$(curl -s --user "$imagga_key" "https://api.imagga.com/v2/croppings?image_url=$url&resolution=${width}x$height")
   x1=$(echo $cropped |  jq --raw-output ".result.croppings[0].x1")
   x2=$(echo $cropped |  jq --raw-output ".result.croppings[0].x2")
   y1=$(echo $cropped |  jq --raw-output ".result.croppings[0].y1")
   y2=$(echo $cropped |  jq --raw-output ".result.croppings[0].y2")
-  curl -s $url --output original.jpg
-  w=$(identify -format "%w" "original.jpg")> /dev/null
-  h=$(identify -format "%h" "original.jpg")> /dev/null
+  curl -s $url --output $ofile
+  w=$(identify -format "%w" $ofile)> /dev/null
+  h=$(identify -format "%h" $ofile)> /dev/null
   if [ $w -gt $h ]; then
-    convert original.jpg -crop ${x2}x${y2}+${x1}+${y1} "cropped.jpg"
+    convert $ofile -crop ${x2}x${y2}+${x1}+${y1} $cfile
     source="local"
-    filepath="cropped.jpg"
+    filepath=$cfile
   fi
 fi
 
@@ -60,5 +62,3 @@ else
           ;;
   esac
 fi
-
-rm "cropped.jpg" "original.jpg"
