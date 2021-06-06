@@ -27,6 +27,7 @@ if [ $autocrop = "true" ]; then
   h=$(identify -format "%h" "original.jpg")> /dev/null
   if [ $w -gt $h ]; then
     convert original.jpg -crop ${x2}x${y2}+${x1}+${y1} "cropped.jpg"
+    source="local"
     filepath="cropped.jpg"
   fi
 fi
@@ -60,4 +61,4 @@ else
   esac
 fi
 
-rm cropped.jpg original.jpg
+rm "cropped.jpg" "original.jpg"
