@@ -2,6 +2,8 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . $SCRIPT_DIR/config
 
+mkdir -p $SCRIPT_DIR/download/cropped
+
 # try to connect to internet
 curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
 
