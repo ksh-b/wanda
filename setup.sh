@@ -7,5 +7,5 @@ termux-setup-storage
 cd $HOME
 wanda_dir="$HOME/storage/shared/scripts/wanda/"
 mkdir -p $wanda_dir && cd $wanda_dir
-curl -L -O -s "https://github.com/ksyko/wanda/releases/download/v0.01/wanda.tar.gz" && tar -xzf wanda.tar.gz && echo "Downloaded wanda to $(pwd)" || echo "Failed to download wanda"
+curl -L -O -s "https://github.com/ksyko/wanda/releases/download/v0.03/wanda.tar.gz" && tar -xzf wanda.tar.gz && echo "Downloaded wanda to $(pwd)" || echo "Failed to download wanda"
 rm wanda.tar.gz
