@@ -32,14 +32,14 @@ if [ "$autocrop" = "true" ]; then
       y2=$(echo "$cropped" |  jq --raw-output ".result.croppings[0].y2")
       convert "$ofile" -crop "${x2}x${y2}+${x1}+${y1}" "$cfile"
       source="local"
-      filepath=$cfile
+      filepath="$cfile"
     fi
   fi
 fi
 
 # set wallpaper according to source
 if [ $source = "local" ]; then
-  case $screen in
+  case "$screen" in
       both)
           termux-wallpaper -f "$filepath"
           termux-wallpaper -lf "$filepath"
@@ -52,7 +52,7 @@ if [ $source = "local" ]; then
           ;;
   esac
 else
-  case $screen in
+  case "$screen" in
       both)
           termux-wallpaper -u "$url"
           termux-wallpaper -lu "$url"
