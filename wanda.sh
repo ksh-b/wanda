@@ -6,7 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
 
 # if offline, use local or skip
-if [ "$mycmd" != 0 ]; then
+if [ "$?" != 0 ]; then
   if [ "$offline_use_local" = "true" ]; then
     source="local"
   else
