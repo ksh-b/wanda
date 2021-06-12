@@ -84,3 +84,21 @@ crontab -e
 
 
 </details>
+
+<details>
+<summary>Autocrop</summary>
+<br>
+  
+  Autocrop tries to find the subject in the image and crops the image accordingly. <br>
+  Useful for when the image is horizontal and subject is at either end of the image. [Example](https://miro.medium.com/max/2048/0*sRE3XCJI0s00wFb-). <br>
+  Imagga API provides the co-ordinates for crop. Imagemagick crops the images. <br>
+  
+  * `pkg in imagemagick`
+  * Create [imagga](https://imagga.com/auth/signup) account. Its free to sign up, [one time emails](https://privacytoolslist.com/#one-time-emails) can work too 😉 
+  * Once the account is created, go to [dashboard](https://imagga.com/profile/dashboard). Copy key and secret.
+  * open wanda/config
+  * Enable autocrop: set `autocrop` to `true`.
+  * Set `imagga_key` value as `key`:`secret`.
+  * Set your device screen `height` and `width`.
+  
+</details>
