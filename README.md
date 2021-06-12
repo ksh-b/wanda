@@ -1,4 +1,7 @@
 # wanda
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6d0c308cef4e44909a2b139294aa368f)](https://app.codacy.com/gh/ksyko/wanda?utm_source=github.com&utm_medium=referral&utm_content=ksyko/wanda&utm_campaign=Badge_Grade_Settings)
+
 Simple script to set random wallpaper using [termux](https://github.com/termux/termux-app)
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ksyko/wanda) ![GitHub](https://img.shields.io/github/license/ksyko/wanda)
