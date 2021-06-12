@@ -15,15 +15,15 @@ res=$(curl -s "${api}${params}")
 
 # use a random number if sorting is not random
 if [ "$sorting" != "random" ]; then
-  last=$(echo $res | jq --raw-output '.meta.last_page')
-  page=$(shuf -i 1-$last -n 1)
+  last=$(echo "$res" | jq --raw-output '.meta.last_page')
+  page=$(shuf -i 1-"$last" -n 1)
   res=$(curl -s "${api}${params}&page=$page")
-  limit=$(echo $res | jq --raw-output '.meta.per_page')
-  rand=$(shuf -i 1-$limit -n 1)
+  limit=$(echo "$res" | jq --raw-output '.meta.per_page')
+  rand=$(shuf -i 1-"$limit" -n 1)
 else
   rand=0
 fi
 
 # get wallpaper link
-url=$(echo $res | jq --raw-output ".data[$rand].path")
-echo $url
+url=$(echo "$res" | jq --raw-output ".data[$rand].path")
+echo "$url"
