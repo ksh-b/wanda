@@ -7,7 +7,7 @@ curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
 
 # if offline, use local or skip
 if [ $? != 0 ]; then
-  if [ $offline_use_local = "true" ]; then
+  if [ "$offline_use_local" = "true" ]; then
     source="local"
   else
     exit 0
@@ -67,9 +67,9 @@ else
 fi
 
 # keep or remove file as per config
-if [ $keep = "false" ]; then
+if [ "$keep" = "false" ]; then
   rm -f $ofile
 fi
-if [ $keep_crop = "false" ]; then
+if [ "$keep_crop" = "false" ]; then
   rm -f $cfile
 fi
