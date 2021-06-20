@@ -6,7 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
 
 # if offline, use local or skip
-if [ "$mycmd" != 0 ]; then
+if [ "$?" != 0 ]; then
   if [ "$offline_use_local" = "true" ]; then
     source="local"
   else
@@ -34,6 +34,13 @@ if [ "$autocrop" = "true" ]; then
       source="local"
       filepath="$cfile"
     fi
+  fi
+  # keep or remove file as per config
+  if [ "$keep" = "false" ]; then
+    rm -f "$ofile"
+  fi
+  if [ "$keep_crop" = "false" ]; then
+    rm -f "$cfile"
   fi
 fi
 
@@ -66,10 +73,6 @@ else
   esac
 fi
 
-# keep or remove file as per config
-if [ "$keep" = "false" ]; then
-  rm -f "$ofile"
-fi
-if [ "$keep_crop" = "false" ]; then
-  rm -f "$cfile"
+if [ "$keep" = "true" ]; then
+  curl -s "$url" -o "$SCRIPT_DIR/downloads/$(basename "$url")" 
 fi
