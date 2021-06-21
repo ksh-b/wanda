@@ -7,11 +7,18 @@ curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
 
 # if offline, use local or skip
 if [ "$?" != 0 ]; then
-  if [ "$offline_use_local" = "true" ]; then
-    source="local"
-  else
-    exit 0
-  fi
+  case "$offline_mode" in
+    off)
+      exit 0
+      ;;
+    local|imagemagick)
+      source="$offline_mode"
+      ;;
+    *)
+      echo "This source doesn't support offline mode"
+      exit 1
+      ;;
+  esac
 fi
 
 . "$SCRIPT_DIR/$source/pick.sh"
@@ -35,10 +42,17 @@ if [ "$autocrop" = "true" ]; then
       filepath="$cfile"
     fi
   fi
+  # keep or remove file as per config
+  if [ "$keep" = "false" ]; then
+    rm -f "$ofile"
+  fi
+  if [ "$keep_crop" = "false" ]; then
+    rm -f "$cfile"
+  fi
 fi
 
 # set wallpaper according to source
-if [ $source = "local" ]; then
+if [ $source = "local" ] || [ $source = "imagemagick" ]; then
   case "$screen" in
       both)
           termux-wallpaper -f "$filepath"
@@ -66,10 +80,8 @@ else
   esac
 fi
 
-# keep or remove file as per config
-if [ "$keep" = "false" ]; then
-  rm -f "$ofile"
-fi
-if [ "$keep_crop" = "false" ]; then
-  rm -f "$cfile"
+if [ "$keep" = "true" ]; then
+  curl -s "$url" -o "$SCRIPT_DIR/downloads/$(basename "$url")"
+else
+  rm -f "$filepath"
 fi
