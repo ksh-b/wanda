@@ -35,22 +35,27 @@ bash wanda.sh
     * source - set source of your wallpaper. [wallhaven, chan, picsum, reddit, local]
     * screen - screens to set wallpaper. [home, lock, both]
     * keep - save used wallpaper to local [true, false]
-    * offline_use_local - use local wallpapers when offline (set local directory in /local/config) [true, false]
+    * height - screen height
+    * width - screen width
+    * offline_mode - use local wallpapers (set local directory in /local/config), random patterns when offline [off, local, imagemagick]
     * autocrop - for autocrop and related config, see [autocrop](#autocrop) section.
   * /[wallhaven](https://wallhaven.cc/)/config
-    * all the options are specified [here](https://wallhaven.cc/help/api)
+    * refer api [here](https://wallhaven.cc/help/api)
   * /[chan](https://4chan.org/)/config
     * board - board where the thread belongs
     * thread - thread number
+  * /[earthview](earthview.withgoogle.com/)/config
+    * no config options
+  * imagemagick(https://legacy.imagemagick.org/Usage/canvas/)/config
+    * pattern - [random, solid, linear, radial, twisted, bilinear, plasma, blurred, gradient1, gradient2, layered, edged]
   * /[picsum](https://picsum.photos/)/config
-    * height - desired image height
-    * width - desired image width
+    * no config options, uses width and height from /local/config
   * /[reddit](https://old.reddit.com/)/config
     * sub - subreddit name
     * sort - sort by [hot, new, rising, controversial, top, gilded]
   * /local/config
     * images_path - folder path to get images from
-
+ 
 
 </details>
 
