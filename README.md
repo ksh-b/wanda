@@ -49,7 +49,7 @@ bash wanda.sh
   * /[imagemagick](https://legacy.imagemagick.org/Usage/canvas/)/config
     * pattern - [random, solid, linear, radial, twisted, bilinear, plasma, blurred, gradient1, gradient2, layered, edged]
   * /[picsum](https://picsum.photos/)/config
-    * no config options, uses width and height from /local/config
+    * no config options, uses width and height from /config
   * /[reddit](https://old.reddit.com/)/config
     * sub - subreddit name
     * sort - sort by [hot, new, rising, controversial, top, gilded]
