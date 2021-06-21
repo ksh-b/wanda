@@ -1,14 +1,14 @@
 # general
 source=wallhaven
 screen=both
-keep=false
+keep=true
+height=1280
+width=720
 
 # offline
-offline_use_local=false
+offline_mode=imagemagick
 
 # autocrop
 autocrop=false
 imagga_key=
 keep_crop=false
-height=1280
-width=720
