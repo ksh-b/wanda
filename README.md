@@ -11,9 +11,10 @@ Simple script to set random wallpaper using [termux](https://github.com/termux/t
 2. Open termux and paste the following:
 
 ```
+termux-setup-storage
 curl -L https://git.io/JZXCp | bash
 ```
-  
+
 2. Edit the config files to your liking. See below sections for more details.
 3. Run the script
 ```
@@ -85,17 +86,15 @@ crontab -e
 <details>
 <summary>Autocrop [Optional]</summary>
 <br>
-  
+
   Autocrop tries to find the subject in the image and crops the image accordingly. <br>
   Useful for when the image is horizontal and subject is at either end of the image. [Example](https://miro.medium.com/max/2048/0*sRE3XCJI0s00wFb-). <br>
-  Imagga API provides the co-ordinates for crop. Imagemagick crops the images. <br>
-  
-  * `pkg in imagemagick`
-  * Create [imagga](https://imagga.com/auth/signup) account. Its free to sign up, [one time emails](https://privacytoolslist.com/#one-time-emails) can work too 😉 
+
+  * Create [imagga](https://imagga.com/auth/signup) account. Its free to sign up, [one time emails](https://privacytoolslist.com/#one-time-emails) can work too 😉
   * Once the account is created, go to [dashboard](https://imagga.com/profile/dashboard). Copy key and secret.
   * open /config and edit the following
     * Enable autocrop: set `autocrop` to `true`.
     * Set `imagga_key` value as `key`:`secret`.
     * Set your device screen `height` and `width`.
-  
+
 </details>
