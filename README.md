@@ -37,7 +37,7 @@ bash wanda.sh
     * keep - save used wallpaper to local [true, false]
     * height - screen height
     * width - screen width
-    * offline_mode - use local wallpapers (set local directory in /local/config), random patterns when offline [off, local, imagemagick]
+    * offline_mode - use local wallpapers (set local directory in /local/config) or random patterns using imagemagick when offline. 'off' option will not change wallpaper. [off, local, imagemagick]
     * autocrop - for autocrop and related config, see [autocrop](#autocrop) section.
   * /[wallhaven](https://wallhaven.cc/)/config
     * refer api [here](https://wallhaven.cc/help/api)
@@ -46,7 +46,7 @@ bash wanda.sh
     * thread - thread number
   * /[earthview](earthview.withgoogle.com/)/config
     * no config options
-  * imagemagick(https://legacy.imagemagick.org/Usage/canvas/)/config
+  * /[imagemagick](https://legacy.imagemagick.org/Usage/canvas/)/config
     * pattern - [random, solid, linear, radial, twisted, bilinear, plasma, blurred, gradient1, gradient2, layered, edged]
   * /[picsum](https://picsum.photos/)/config
     * no config options, uses width and height from /local/config
