@@ -1,2 +1,4 @@
 size=${width}x$height
-pattern=random
+pattern=12
+blur=60
+paint=30

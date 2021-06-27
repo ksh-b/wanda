@@ -11,7 +11,7 @@ if [ "$?" != 0 ]; then
     off)
       exit 0
       ;;
-    local|imagemagick)
+    local|imagemagick|dynamic)
       source="$offline_mode"
       ;;
     *)
@@ -52,7 +52,7 @@ if [ "$autocrop" = "true" ]; then
 fi
 
 # set wallpaper according to source
-if [ $source = "local" ] || [ $source = "imagemagick" ]; then
+if [ $source = "local" ] || [ $source = "imagemagick" ] || [ $source = "dynamic" ]; then
   case "$screen" in
       both)
           termux-wallpaper -f "$filepath"
@@ -83,5 +83,7 @@ fi
 if [ "$keep" = "true" ]; then
   curl -s "$url" -o "$SCRIPT_DIR/downloads/$(basename "$url")"
 else
-  rm -f "$filepath"
+  if [ "$source" = "imagemagick" ]; then
+    rm -f "$filepath"
+  fi
 fi
