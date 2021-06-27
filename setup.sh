@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-version="v0.04"
+version="v0.05"
 clear
 
 # get dependencies
