@@ -1,5 +1,5 @@
 # general
-source=wallhaven
+source=dynamic
 screen=both
 keep=true
 height=1280
