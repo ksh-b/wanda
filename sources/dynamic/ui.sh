@@ -1,7 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-CONFIG_FILE=$SCRIPT_DIR/sources/dynamic/config
-. "$CONFIG_FILE"
-. "$SCRIPT_DIR/util.sh"
 
 # TODO: ask for setup if no imagesets present
 

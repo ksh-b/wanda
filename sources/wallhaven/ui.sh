@@ -1,7 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-CONFIG_FILE=$SCRIPT_DIR/sources/wallhaven/config
-. "$CONFIG_FILE"
-. "$SCRIPT_DIR/util.sh"
 
 select_wallhaven_options() {
   o1=1

@@ -1,7 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-CONFIG_FILE=$SCRIPT_DIR/sources/imagemagick/config
-. "$CONFIG_FILE"
-. "$SCRIPT_DIR/util.sh"
 
 # sort
 u_input=$(get_input radio "pattern"
