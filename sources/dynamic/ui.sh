@@ -4,7 +4,7 @@ CONFIG_FILE=$SCRIPT_DIR/sources/dynamic/config
 . "$SCRIPT_DIR/util.sh"
 
 imagesets=""
-# sort
+# imageset
 for f in "$SCRIPT_DIR"sources/dynamic/images/*; do
     imagesets="$imagesets""$(basename "$f,")"
 done
