@@ -1,7 +1,17 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 get_input() {
-  termux-dialog "$1" -t "$2" -v "$3" | jq --raw-output ".text"
+  if [[ $1 = "text" ]]; then
+    input=$(termux-dialog "$1" -t "$2" -i "$3")
+  else
+    input=$(termux-dialog "$1" -t "$2" -v "$3")
+  fi
+  code=$(echo "$input" | jq --raw-output ".code")
+  if [ "$code" = "-2" ]; then
+    echo "<CANCEL>"
+  else
+    echo "$input" | jq --raw-output ".text"
+  fi
 }
 
 get_random_number() {
@@ -15,6 +25,9 @@ get_random_number() {
 # thanks to ixz in #bash on irc.freenode.net
 
 function config_set() {
+  if [[ $2 == *"<CANCEL>"* ]]; then
+    exit 0
+  fi
   local file=$CONFIG_FILE
   local key=$1
   local val=${@:2}
