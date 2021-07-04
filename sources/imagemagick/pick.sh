@@ -110,7 +110,7 @@ plasma_fractal() {
 	get_random_number "360"
 	swirl="$RNUM"
 	convert -size "$size"  plasma:fractal \
-	-blur 0x"$blur"  -swirl $swirl  "$filepath"
+	-blur 0x"$blur"  -swirl "$swirl"  "$filepath"
 }
 
 plasma_range() {
@@ -148,20 +148,26 @@ gradient_angles() {
 	color5="$RCOLOR"
 	get_random_number "360"
 	rotate="$RNUM"
-echo $rotate
-	convert -size "$size" gradient:$color1-$color2 \( gradient:$color4-$color5 -rotate $rotate \) \
+	convert -size "$size" gradient:$color1-$color2 \( gradient:$color4-$color5 -rotate "$rotate" \) \
 	-background $color3 -compose ModulusAdd -flatten  \
 	"$filepath"
 }
 
 gradient_c() {
-
-  convert \( xc:red xc:blue +append \) \
-          \( xc:yellow xc:cyan +append \) -append \
+	get_random_color
+	color1="$RCOLOR"
+	get_random_color
+	color2="$RCOLOR"
+	get_random_color
+	color3="$RCOLOR"
+	get_random_color
+	color4="$RCOLOR"
+  convert \( xc:$color1 xc:$color2 +append \) \
+          \( xc:$color3 xc:$color4 +append \) -append \
           -filter point -interpolate catrom \
           -define distort:viewport="100x100" \
           -distort Affine '.5,.5 .5,.5   1.5,1.5 99.5,99.5' \
-          -resize $size "$filepath"
+          -resize "$size" "$filepath"
 
 }
 
@@ -204,6 +210,6 @@ case "$pattern" in
 	11|plasma2)
 	plasma_range
 	;;
-	12|test)
+	12|gradient3)
 	gradient_c
 esac
