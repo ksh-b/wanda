@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-CONFIG_FILE=$SCRIPT_DIR/local/config
+CONFIG_FILE=$SCRIPT_DIR/sources/local/config
 . "$CONFIG_FILE"
 . "$SCRIPT_DIR/util.sh"
 
