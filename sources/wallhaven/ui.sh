@@ -86,4 +86,4 @@ Independence-424153,
 )
 IFS="-"
 read -ra strarr <<< "$u_input"
-config_set "colors" "${strarr[2]}"
+config_set "colors" "${strarr[1]}"

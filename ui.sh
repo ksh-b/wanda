@@ -20,8 +20,8 @@ config_set "keep" "$u_input"
 resolution=$(get_input radio "Wanda: Choose screeen resolution" "480x800,540x960,720x1280,768x1280,1080x1920,1280x720,1440x2560,1920x1080,2960x1440")
 IFS="x"
 read -ra strarr <<< "$resolution"
-config_set "width" "${strarr[1]}"
-config_set "height" "${strarr[2]}"
+config_set "width" "${strarr[0]}"
+config_set "height" "${strarr[1]}"
 
 # offline mode
 u_input=$(get_input radio "Wanda: Offline mode" "off,local,imagemagick")
