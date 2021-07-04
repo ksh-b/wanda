@@ -1,9 +1,9 @@
 # general
-source=dynamic
+source=wallhaven
 screen=both
 keep=true
-height=1280
 width=720
+height=1280
 
 # offline
 offline_mode=imagemagick
