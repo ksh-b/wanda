@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 get_input() {
-  if [[ $1 = "text" ]]; then
+  if [ "$1" = "text" ]; then
     input=$(termux-dialog "$1" -t "$2" -i "$3")
   else
     input=$(termux-dialog "$1" -t "$2" -v "$3")
