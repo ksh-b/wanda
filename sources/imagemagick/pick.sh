@@ -2,7 +2,7 @@
 ## Generate a solid color wallpaper
 ## Based on https://github.com/adi1090x/canvas
 
-. "$SCRIPT_DIR/imagemagick/config"
+. "$SCRIPT_DIR/sources/imagemagick/config"
 . "$SCRIPT_DIR/util.sh"
 
 filepath=$SCRIPT_DIR/downloads/"$(date +"%s").png"

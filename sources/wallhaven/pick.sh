@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-. "$SCRIPT_DIR/wallhaven/config"
+. "$SCRIPT_DIR/sources/wallhaven/config"
 
 # get parameters with a value
 keys=(apikey q categories purity sorting order topRange atleast resolutions ratios colors page seed)

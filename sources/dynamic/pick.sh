@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-. "$SCRIPT_DIR/dynamic/config"
+. "$SCRIPT_DIR/sources/dynamic/config"
 h=$(date +"%-H")
 if [ ! -f "$filepath" ]; then
   h=$((h-1))
