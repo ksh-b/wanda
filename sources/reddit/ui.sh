@@ -4,7 +4,7 @@ CONFIG_FILE=$SCRIPT_DIR/reddit/config
 . "$SCRIPT_DIR/util.sh"
 
 # sub
-u_input=$(get_input radio "sub"
+u_input=$(get_input radio "Reddit: Choose a subreddit"
 "
 iWallpaper,
 MobileWallpaper,
