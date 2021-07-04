@@ -1,7 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-CONFIG_FILE="$SCRIPT_DIR/sources/earthview/config"
-. "$CONFIG_FILE"
-. "$SCRIPT_DIR/util.sh"
 
 # get saved slug
 link=$(config_get "next")

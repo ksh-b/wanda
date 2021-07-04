@@ -3,6 +3,8 @@ CONFIG_FILE=$SCRIPT_DIR/sources/dynamic/config
 . "$CONFIG_FILE"
 . "$SCRIPT_DIR/util.sh"
 
+# TODO: ask for setup if no imagesets present
+
 imagesets=""
 # imageset
 for f in "$SCRIPT_DIR"sources/dynamic/images/*; do

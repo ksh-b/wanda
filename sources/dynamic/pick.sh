@@ -1,5 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-. "$SCRIPT_DIR/sources/dynamic/config"
 
 # get hour
 h=$(date +"%-H")
