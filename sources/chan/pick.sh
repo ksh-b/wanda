@@ -9,7 +9,7 @@ post_image=$(echo "$res" | jq ".[][$rand].tim")
 # if post has no image, loop till post with image is found
 while [ "$post_image" = "null" ]
 do
-  rand=$(shuf -i 1-"$posts" -n 1)
+  rand=$(get_random_number "$posts")
   post_image=$(echo "$res" | jq ".[][$rand].tim")
 done
 post_exten=$(echo "$res" | jq  --raw-output ".[][$rand].ext")

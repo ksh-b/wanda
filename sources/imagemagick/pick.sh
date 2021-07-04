@@ -3,11 +3,9 @@
 ## Based on https://github.com/adi1090x/canvas
 
 . "$SCRIPT_DIR/imagemagick/config"
+. "$SCRIPT_DIR/util.sh"
 
 filepath=$SCRIPT_DIR/downloads/"$(date +"%s").png"
-get_random_number() {
-	RNUM=$(( ("$RANDOM" % $1) + 1 ))
-}
 
 getRandomShape() {
 	get_random_number "4"
