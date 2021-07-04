@@ -1,5 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+CONFIG_FILE="$SCRIPT_DIR/sources/$source/config"
+. "$SCRIPT_DIR/tools/util.sh"
 . "$SCRIPT_DIR/config"
 
 # try to connect to internet
