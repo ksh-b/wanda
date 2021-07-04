@@ -5,4 +5,4 @@ CONFIG_FILE=$SCRIPT_DIR/local/config
 
 # images_path
 u_input=$(get_input "text" "Local: Enter path for wallpapers (from Internal memory)" "Pictures")
-config_set "$CONFIG_FILE" "images_path" "$HOME/storage/shared/$u_input"
+config_set "images_path" "$HOME/storage/shared/$u_input"

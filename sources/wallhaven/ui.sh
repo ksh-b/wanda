@@ -24,31 +24,31 @@ select_wallhaven_options() {
 # categories
 u_input=$(get_input checkbox "Wallhaven: Choose categories" "general,anime,people")
 select_wallhaven_options "$u_input" "general" "anime" "people"
-config_set "$CONFIG_FILE" "categories" "$selection"
+config_set "categories" "$selection"
 
 # purity
 u_input=$(get_input checkbox "Wallhaven: Choose purity" "sfw,sketchy,nsfw")
 select_wallhaven_options "$u_input" "sfw" "sketchy" "nsfw"
-config_set "$CONFIG_FILE" "purity" "$selection"
+config_set "purity" "$selection"
 
 # sorting
 u_input=$(get_input radio "Wallhaven: Choose sorting" "date_added,relevance,random,views,favorites,toplist")
-config_set "$CONFIG_FILE" "sorting" "$u_input"
+config_set "sorting" "$u_input"
 
 # order
 u_input=$(get_input radio "Wallhaven: Choose order" "desc,asc")
-config_set "$CONFIG_FILE" "order" "$u_input"
+config_set "order" "$u_input"
 
 # topRange
 u_sorting=config_get "sorting"
 if [ "$u_sorting" = "toplist" ]; then
   u_input=$(get_input radio "Wallhaven: Choose top range" "1d,3d,1w,1M,3M,6M,1y")
-  config_set "$CONFIG_FILE" "topRange" "$u_input"
+  config_set "topRange" "$u_input"
 fi
 
 # ratios
 u_input=$(get_input radio "Wallhaven: Choose ratio" "9x16,10x16,9x18")
-config_set "$CONFIG_FILE" "ratios" "$u_input"
+config_set "ratios" "$u_input"
 
 # colors
 u_input=$(get_input radio "Wallhaven: Choose color"
@@ -86,4 +86,4 @@ Independence-424153,
 )
 IFS="-"
 read -ra strarr <<< "$u_input"
-config_set "$CONFIG_FILE" "colors" "${strarr[2]}"
+config_set "colors" "${strarr[2]}"

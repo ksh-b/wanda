@@ -14,8 +14,8 @@ AnimePhoneWallpapers,
 ComicWalls,
 wallpaper+wallpapers
 ")
-config_set "$CONFIG_FILE" "sub" "$u_input"
+config_set "sub" "$u_input"
 
 # sort
 u_input=$(get_input radio "sort" "hot,new,rising,top,gilded")
-config_set "$CONFIG_FILE" "sort" "$u_input"
+config_set "sort" "$u_input"

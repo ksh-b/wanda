@@ -12,4 +12,4 @@ for f in "$SCRIPT_DIR"sources/dynamic/images/*; do
 done
 
 u_input=$(get_input radio "Dynamic: Choose a set" "$imagesets")
-config_set "$CONFIG_FILE" "imageset" "$u_input"
+config_set "imageset" "$u_input"
