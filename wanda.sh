@@ -21,7 +21,7 @@ if [ "$?" != 0 ]; then
   esac
 fi
 
-. "$SCRIPT_DIR/$source/pick.sh"
+. "$SCRIPT_DIR/sources/$source/pick.sh"
 
 if [ "$autocrop" = "true" ]; then
   ofile=$SCRIPT_DIR/downloads/$(basename "$url")
