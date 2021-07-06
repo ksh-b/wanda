@@ -1,9 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+. "$SCRIPT_DIR/config"
 CONFIG_FILE="$SCRIPT_DIR/sources/$source/config"
 . "$SCRIPT_DIR/tools/util.sh"
-. "$SCRIPT_DIR/config"
-
+. $CONFIG_FILE
 # try to connect to internet
 curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
 
