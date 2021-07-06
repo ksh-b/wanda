@@ -2,22 +2,6 @@
 export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "$SCRIPT_DIR/tools/util.sh"
 
-# entry
-u_input=$(get_input radio "~𝚠𝚊𝚗𝚍𝚊~" "Configure wanda,Configure source,Setup dynamic walls")
-case "$u_input" in
-  "Configure wanda")
-  setup_wanda
-  ;;
-  "Configure source")
-  u_input=$(get_input radio "Select source to config" "dynamic,imagemagick,local,reddit,wallhaven")
-  export CONFIG_FILE="$SCRIPT_DIR/sources/$u_input/config"
-  bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
-  ;;
-  "Setup dynamic walls")
-  bash "$SCRIPT_DIR/tools/setup-dynamic-walls.sh"
-  ;;
-esac
-
 setup_wanda() {
   export CONFIG_FILE="$SCRIPT_DIR/config"
   . "$SCRIPT_DIR/tools/util.sh"
@@ -44,3 +28,19 @@ setup_wanda() {
   u_input=$(get_input radio "Wanda: Offline mode" "off,local,imagemagick")
   config_set "offline_mode" "$u_input"
 }
+
+# entry
+u_input=$(get_input radio "~𝚠𝚊𝚗𝚍𝚊~" "Configure wanda,Configure source,Setup dynamic walls")
+case "$u_input" in
+  "Configure wanda")
+  setup_wanda
+  ;;
+  "Configure source")
+  u_input=$(get_input radio "Select source to config" "dynamic,imagemagick,local,reddit,wallhaven")
+  export CONFIG_FILE="$SCRIPT_DIR/sources/$u_input/config"
+  bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
+  ;;
+  "Setup dynamic walls")
+  bash "$SCRIPT_DIR/tools/setup-dynamic-walls.sh"
+  ;;
+esac
