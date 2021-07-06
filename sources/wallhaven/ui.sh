@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-
+. "$SCRIPT_DIR/tools/util.sh"
 select_wallhaven_options() {
   o1=1
   o2=0

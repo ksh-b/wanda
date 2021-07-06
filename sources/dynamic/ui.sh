@@ -1,4 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
+. "$SCRIPT_DIR/tools/util.sh"
 
 # TODO: ask for setup if no imagesets present
 

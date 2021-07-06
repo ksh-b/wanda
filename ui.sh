@@ -1,7 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-CONFIG_FILE="$SCRIPT_DIR/config"
-. "$CONFIG_FILE"
+export SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "$SCRIPT_DIR/tools/util.sh"
 
 # entry
@@ -12,6 +10,7 @@ case "$u_input" in
   ;;
   "Configure source")
   u_input=$(get_input radio "Select source to config" "dynamic,imagemagick,local,reddit,wallhaven")
+  export CONFIG_FILE="$SCRIPT_DIR/sources/$u_input/config"
   bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
   ;;
   "Setup dynamic walls")
@@ -20,6 +19,8 @@ case "$u_input" in
 esac
 
 setup_wanda() {
+  export CONFIG_FILE="$SCRIPT_DIR/config"
+  . "$SCRIPT_DIR/tools/util.sh"
   # source
   u_input=$(get_input radio "Wanda: Choose a source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,wallhaven")
   config_set "source" "$u_input"
