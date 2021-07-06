@@ -36,7 +36,7 @@ case "$u_input" in
   setup_wanda
   ;;
   "Configure source")
-  u_input=$(get_input radio "Select source to config" "dynamic,imagemagick,local,reddit,wallhaven")
+  u_input=$(get_input radio "Select source to config" "4chan,dynamic,imagemagick,local,picsum,reddit,wallhaven")
   export CONFIG_FILE="$SCRIPT_DIR/sources/$u_input/config"
   bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
   ;;
