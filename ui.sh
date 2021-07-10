@@ -6,30 +6,30 @@ setup_wanda() {
   export CONFIG_FILE="$SCRIPT_DIR/config"
   . "$SCRIPT_DIR/tools/util.sh"
 
-  u_input=$(get_input radio "Wanda: Config" "source,screen,download,screen resolution,offline mode")
+  u_input=$(get_input radio "Wanda - Config" "source,screen,download,screen resolution,offline mode")
 
   case "$u_input" in
     "source")
-    u_input=$(get_input radio "Wanda: Choose a source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,wallhaven")
+    u_input=$(get_input radio "Select your wallpaper source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,wallhaven")
     config_set "source" "$u_input"
     ;;
     "screen")
-    u_input=$(get_input radio "Wanda: Choose which screen(s) you want to set wallpaper" "home,lock,both")
+    u_input=$(get_input radio "Choose which screen(s) you want to set wallpaper" "home,lock,both")
     config_set "screen" "$u_input"
     ;;
     "download")
-    u_input=$(get_input radio "Wanda: Save downloaded wallpapers?" "true,false")
+    u_input=$(get_input radio "Save wallpapers?" "true,false")
     config_set "keep" "$u_input"
     ;;
     "screen resolution")
-    resolution=$(get_input radio "Wanda: Choose screeen resolution" "480x800,540x960,720x1280,768x1280,1080x1920,1280x720,1440x2560,1920x1080,2960x1440")
+    resolution=$(get_input radio "Choose screeen resolution" "480x800,540x960,720x1280,768x1280,1080x1920,1280x720,1440x2560,1920x1080,2960x1440")
     IFS="x"
     read -ra strarr <<< "$resolution"
     config_set "width" "${strarr[0]}"
     config_set "height" "${strarr[1]}"
     ;;
     "offline mode")
-    u_input=$(get_input radio "Wanda: Offline mode" "off,local,imagemagick")
+    u_input=$(get_input radio "Select wallpaper source when offline ('off' for no change)" "off,local,imagemagick")
     config_set "offline_mode" "$u_input"
     ;;
   esac
