@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "../$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 DYN_DIR="$SCRIPT_DIR"/sources/dynamic
 mkdir -p "$DYN_DIR"
 cd "$DYN_DIR" || (echo "Failed to setup" && exit 1)
