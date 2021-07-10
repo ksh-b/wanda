@@ -5,8 +5,8 @@
 
 imagesets=""
 # imageset
-for f in "$SCRIPT_DIR"sources/dynamic/images/*; do
-    imagesets="$imagesets""$(basename "$f,")"
+for f in "$SCRIPT_DIR"/sources/dynamic/images/*; do
+    imagesets="$imagesets$(basename "$f,")"
 done
 
 u_input=$(get_input radio "Dynamic: Choose a set" "${imagesets::-1}")

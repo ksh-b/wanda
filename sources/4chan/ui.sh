@@ -26,4 +26,4 @@ done
 u_input=$(get_input "radio" "4chan: Choose thread" "${posts::-1}")
 IFS=" "
 read -ra strarr <<< "$u_input"
-config_set "board" "${strarr[1]}"
+config_set "thread" "${strarr[1]}"

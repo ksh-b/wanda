@@ -18,6 +18,7 @@ get_input() {
 
 get_random_number() {
 	RNUM=$(( ("$RANDOM" % $1) + 1 ))
+  echo $RNUM
 }
 
 ### config editor ###

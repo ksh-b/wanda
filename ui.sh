@@ -32,16 +32,56 @@ setup_wanda() {
     u_input=$(get_input radio "Select wallpaper source when offline ('off' for no change)" "off,local,imagemagick")
     config_set "offline_mode" "$u_input"
     ;;
+    "<CANCEL>" | *)
+    exit 0
+    ;;
   esac
+}
 
 
+setup_autocrop() {
+  export CONFIG_FILE="$SCRIPT_DIR/config"
+  . "$SCRIPT_DIR/tools/util.sh"
 
+  u_input=$(get_input radio "Wanda - Autocrop" "Create Imagga Account,Get API keys,Enter API keys")
+  case "$u_input" in
+    "Create Imagga Account")
+      u_input=$(get_input confirm "Redirection" "Please go through the 'Autocrop' section in README if not done already. You will be redirected to imagga to create your account. Proceed?")
+      if [ "$u_input" = "yes" ]; then
+        termux-open "https://imagga.com/auth/signup"
+      fi
+    ;;
+    "Get API keys")
+      u_input=$(get_input confirm "Redirection" "You will be redirected to imagga to get your API keys. Proceed?")
+      if [ "$u_input" = "yes" ]; then
+        termux-open "https://imagga.com/profile/dashboard"
+      fi
+    ;;
+    "Enter API key")
+      u_input=$(get_input confirm "API key and secret" "These will be stored on your device in plain text. Proceed?")
+      if [ "$u_input" = "yes" ]; then
+        api_key=$(get_input text "API key" "Enter API key")
+        api_sec=$(get_input text "API secret" "Enter API Secret")
+        config_set "imagga_key" "$api_key:$api_sec"
+      fi
+    ;;
 
-
+    "Enable autocrop")
+    u_input=$(get_input radio "Enable autocrop" "true,false")
+    config_set "autocrop" "$u_input"
+    ;;
+    "Cleanup")
+    u_input=$(get_input radio "Save cropped images to device?" "true,false")
+    config_set "keep_crop" "$u_input"
+    ;;
+    "<CANCEL>" | *)
+    exit 0
+    ;;
+  esac
 }
 
 # entry
-u_input=$(get_input radio "🪄 Wanda 🪄" "✨Apply wallpaper,⚙️ Configure wanda,⚙️ Configure source,🌌 Setup dynamic walls,📝 View Readme / Report Issue")
+u_input=$(get_input radio "🪄 Wanda 🪄" "✨Apply wallpaper,⚙️ Configure wanda,⚙️ Configure source,🌌 Setup dynamic walls,🤖✂️ Setup autocrop,📝 View Readme / Report Issue,⏏️ Quit")
 case "$u_input" in
   "✨Apply wallpaper")
   . "$SCRIPT_DIR/wanda.sh"
@@ -54,10 +94,18 @@ case "$u_input" in
   export CONFIG_FILE="$SCRIPT_DIR/sources/$u_input/config"
   bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
   ;;
-  "🌌 Setup dynamic walls")
+  "🌇🌆🌃 Setup dynamic walls")
   bash "$SCRIPT_DIR/tools/setup-dynamic-walls.sh"
+  ;;
+  "🤖✂️ Setup autocrop")
+  setup_autocrop
   ;;
   "📝 View Readme / Report Issue")
   termux-open "https://git.io/wanda"
   ;;
+  "⏏️ Quit" | "<CANCEL>" | *)
+  exit 0
+  ;;
 esac
+
+. "$SCRIPT_DIR/ui.sh"
