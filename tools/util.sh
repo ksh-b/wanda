@@ -3,6 +3,8 @@
 get_input() {
   if [ "$1" = "text" ]; then
     input=$(termux-dialog "$1" -t "$2" -i "$3")
+  elif [ "$1" = "counter" ]; then
+    input=$(termux-dialog "$1" -t "$2" -r "$3")
   else
     input=$(termux-dialog "$1" -t "$2" -v "$3")
   fi
