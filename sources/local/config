@@ -1,1 +1,4 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# path for local images
+# $HOME/storage/shared/ <=> Internal memory
 images_path="$HOME/storage/shared/Pictures"

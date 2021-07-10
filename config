@@ -1,14 +1,43 @@
-# general
+#!/data/data/com.termux/files/usr/bin/bash
+
+################
+### general  ###
+################
+
+# source for wallpaper
+# 4chan, dynamic, earthview, imagemagick, local, picsum, reddit, wallhaven
 source=wallhaven
+
+# which screen(s) to apply wallpaper on
+# home, lock, both
 screen=both
+
+# save applied wallpapers to device
+# true, false
 keep=true
+
+# screen width and height in pixels
 width=720
 height=1280
 
-# offline
+################
+### offline  ###
+################
+
+# dynamic, imagemagick, local sources work offline
 offline_mode=imagemagick
 
-# autocrop
+################
+### autocrop ###
+################
+
+# see readme https://github.com/ksyko/wanda
+
+# enable autocrop [true, false]
 autocrop=false
+
+# api_key:api_secret
 imagga_key=
+
+# save cropped wallpapers to device
 keep_crop=false
