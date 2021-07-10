@@ -169,7 +169,7 @@ gradient_c() {
 }
 
 if [ "$pattern" = "random" ]; then
-	get_random_number "10"
+	get_random_number "12"
 	pattern="$RNUM"
 fi
 
