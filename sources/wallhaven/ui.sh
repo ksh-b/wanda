@@ -37,7 +37,7 @@ u_input=$(get_input radio "Wallhaven: Choose order" "desc,asc")
 config_set "order" "$u_input"
 
 # topRange
-u_sorting=config_get "sorting"
+u_sorting=$(config_get "sorting")
 if [ "$u_sorting" = "toplist" ]; then
   u_input=$(get_input radio "Wallhaven: Choose top range" "1d,3d,1w,1M,3M,6M,1y")
   config_set "topRange" "$u_input"
@@ -48,39 +48,7 @@ u_input=$(get_input radio "Wallhaven: Choose ratio" "9x16,10x16,9x18")
 config_set "ratios" "$u_input"
 
 # colors
-u_input=$(get_input radio "Wallhaven: Choose color"
-"
-Blood Red-660000,
-Dark Red-990000,
-Rosso Corsa-CC0000,
-Persian Red-CC3333,
-French Rose-EA4C88,
-Plum-993399,
-Rebecca Purple-663399,
-Blue Pigment-333399,
-True Blue-0066CC,
-Blue Green-0099CC,
-Medium Turquoise-66CCCC,
-Sheen Green-77CC33,
-Olive Drab-669900,
-Dark Green-336600,
-Antique Bronze-666600,
-Citron-999900,
-Acid Green-CCCC33,
-Lemon Glacier-FFFF00,
-Sunglow-FFCC33,
-Yellow Orange Color Wheel-FF9900,
-Safety Orange Blaze Orange-FF6600,
-Chocolate Web-CC6633,
-Golden Brown-996633,
-Chocolate Traditional-663300,
-Black-000000,
-Spanish Gray-999999,
-Light Gray-CCCCCC,
-White-FFFFFF,
-Independence-424153,
-"
-)
+u_input=$(get_input radio "Wallhaven: Choose color" "maroon-660000,dark_red-990000,orange_red-CC0000,fire_brick-CC3333,hot_pink-EA4C88,purple-993399,rebecca_purple-663399,midnight_blue-333399,royal_blue-0066CC,steel_blue-0099CC,medium_turquoise-66CCCC,yellow_green-77CC33,olive_drab-669900,dark_green-336600,dark_olive-666600,olive-999900,yellow_green-CCCC33,yellow-FFFF00,gold-FFCC33,orange-FF9900,orange_red-FF6600,chocolate-CC6633,sienna-996633,saddle_brown-663300,black-000000,dark_gray-999999,light_gray-CCCCCC,white-FFFFFF,dark_slate_gray-424153," )
 IFS="-"
 read -ra strarr <<< "$u_input"
 config_set "colors" "${strarr[1]}"
