@@ -4,7 +4,7 @@ image_host="https://i.4cdn.org/${board}/"
 api="https://a.4cdn.org/${board}/thread/${thread}.json"
 res=$(curl -s "$api")
 posts=$(echo "$res" | jq '.[] | length')
-rand=$(shuf -i 1-"$posts" -n 1)
+rand=$(get_random_number "$posts")
 post_image=$(echo "$res" | jq ".[][$rand].tim")
 # if post has no image, loop till post with image is found
 while [ "$post_image" = "null" ]
