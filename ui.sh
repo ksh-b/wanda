@@ -43,7 +43,7 @@ setup_autocrop() {
   export CONFIG_FILE="$SCRIPT_DIR/config"
   . "$SCRIPT_DIR/tools/util.sh"
 
-  u_input=$(get_input radio "Wanda - Autocrop" "Create Imagga Account,Get API keys,Enter API keys")
+  u_input=$(get_input radio "Wanda - Autocrop" "Create Imagga Account,Get API keys,Enter API key")
   case "$u_input" in
     "Create Imagga Account")
       u_input=$(get_input confirm "Redirection" "Please go through the 'Autocrop' section in README if not done already. You will be redirected to imagga to create your account. Proceed?")
