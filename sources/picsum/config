@@ -1,0 +1,8 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# apply grayscale filter
+grayscale=false
+
+# apply blur filter
+# Levels: 1-10
+# 0 to disable
+blur=0

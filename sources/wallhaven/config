@@ -1,3 +1,5 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# please refer https://wallhaven.cc/help/api#search
 apikey=
 q=
 categories=

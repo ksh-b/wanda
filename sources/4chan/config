@@ -1,0 +1,6 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# code for the board. Examples: wg, w, hr
+board=wg
+
+# thread number from selected board. Example: 7772541
+thread=7772541

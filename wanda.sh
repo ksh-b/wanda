@@ -1,6 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "$SCRIPT_DIR/config"
+CONFIG_FILE="$SCRIPT_DIR/sources/$source/config"
+. "$SCRIPT_DIR/tools/util.sh"
+. "$CONFIG_FILE"
 
 # try to connect to internet
 curl -s "https://detectportal.firefox.com/success.txt" 1> /dev/null
@@ -21,12 +24,14 @@ if [ "$?" != 0 ]; then
   esac
 fi
 
-. "$SCRIPT_DIR/$source/pick.sh"
+. "$SCRIPT_DIR/sources/$source/pick.sh"
 
-if [ "$autocrop" = "true" ]; then
+# autocrop for online sources
+if [ "$autocrop" = "true" ] && [ "$source" != "imagemagick" ] && [ "$source" != "local" ]; then
   ofile=$SCRIPT_DIR/downloads/$(basename "$url")
   cfile=$SCRIPT_DIR/downloads/cropped/$(basename "$url")
   curl -s "$url" --output "$ofile"
+  # skip autocrop if height of image is greater than width of image
   w=$(identify -format "%w" "$ofile")> /dev/null
   h=$(identify -format "%h" "$ofile")> /dev/null
   if [ "$w" -gt "$h" ]; then

@@ -1,6 +1,4 @@
 #!/data/data/com.termux/files/usr/bin/bash
-. "$SCRIPT_DIR/wallhaven/config"
-
 # get parameters with a value
 keys=(apikey q categories purity sorting order topRange atleast resolutions ratios colors page seed)
 for i in "${keys[@]}";
@@ -16,7 +14,7 @@ res=$(curl -s "${api}${params}")
 # use a random number if sorting is not random
 if [ "$sorting" != "random" ]; then
   last=$(echo "$res" | jq --raw-output '.meta.last_page')
-  page=$(shuf -i 1-"$last" -n 1)
+  page=$(get_random_number "$last")
   res=$(curl -s "${api}${params}&page=$page")
   limit=$(echo "$res" | jq --raw-output '.meta.per_page')
   rand=$(shuf -i 1-"$limit" -n 1)
