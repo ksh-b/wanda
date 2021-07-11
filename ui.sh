@@ -49,12 +49,14 @@ setup_autocrop() {
       u_input=$(get_input confirm "Redirection" "Please go through the 'Autocrop' section in README if not done already. You will be redirected to imagga to create your account. Proceed?")
       if [ "$u_input" = "yes" ]; then
         termux-open "https://imagga.com/auth/signup"
+        exit 0
       fi
     ;;
     "Get API keys")
       u_input=$(get_input confirm "Redirection" "You will be redirected to imagga to get your API keys. Proceed?")
       if [ "$u_input" = "yes" ]; then
         termux-open "https://imagga.com/profile/dashboard"
+        exit 0
       fi
     ;;
     "Enter API key")
