@@ -97,7 +97,7 @@ case "$u_input" in
   bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
   ;;
   "🌇🌆🌃 Setup dynamic walls")
-  bash "$SCRIPT_DIR/tools/setup-dynamic-walls.sh"
+  bash "$SCRIPT_DIR/sources/dynamic/setup.sh"
   ;;
   "🤖✂️ Setup autocrop")
   setup_autocrop
