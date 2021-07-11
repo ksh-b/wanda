@@ -81,7 +81,7 @@ setup_autocrop() {
 }
 
 # entry
-u_input=$(get_input radio "🪄 Wanda 🪄" "✨Apply wallpaper,⚙️ Configure wanda,⚙️ Configure source,🌌 Setup dynamic walls,🤖✂️ Setup autocrop,📝 View Readme / Report Issue,⏏️ Quit")
+u_input=$(get_input radio "🪄 Wanda 🪄" "✨Apply wallpaper,⚙️ Configure wanda,⚙️ Configure source,🌇🌆🌃  Setup dynamic walls,🤖✂️ Setup autocrop,📝 View Readme / Report Issue,⏏️ Quit")
 case "$u_input" in
   "✨Apply wallpaper")
   . "$SCRIPT_DIR/wanda.sh"
