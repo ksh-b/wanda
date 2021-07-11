@@ -6,11 +6,11 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 ## Installation
 
 1. Install [termux](https://f-droid.org/en/packages/com.termux/) and [termux-api](https://f-droid.org/en/packages/com.termux.api/)
-2. Read the [installation script](https://git.io/JZXCp) and then run the same in termux:
+2. Read the [installation script](https://git.io/wanda-install) and then run the same in termux:
 
 ```
 termux-setup-storage
-curl -L https://git.io/JZXCp | bash
+curl -L https://git.io/wanda-install | bash
 ```
 
 ## Usage
