@@ -3,3 +3,4 @@
 downloads/*
 sources/dynamic/images/*
 *.tar.gz
+.gitgnore
