@@ -37,21 +37,14 @@ bash wanda.sh
 ```
 
 ## Supported sources
-[4chan](https://4chan.org/)
-
-[dynamic](https://github.com/GitGangGuy/dynamic-wallpaper-improved)
-
-[earthview](https://earthview.withgoogle.com/)
-
-[imagemagick](https://legacy.imagemagick.org/Usage/canvas/)
-
-[local](https://wiki.termux.com/wiki/Termux-setup-storage)
-
-[picsum](https://picsum.photos/)
-
-[reddit](https://old.reddit.com/)
-
-[wallhaven](https://wallhaven.cc/)
+- [4chan](https://4chan.org/)
+- [dynamic](https://github.com/GitGangGuy/dynamic-wallpaper-improved)
+- [earthview](https://earthview.withgoogle.com/)
+- [imagemagick](https://legacy.imagemagick.org/Usage/canvas/)
+- [local](https://wiki.termux.com/wiki/Termux-setup-storage)
+- [picsum](https://picsum.photos/)
+- [reddit](https://old.reddit.com/)
+- [wallhaven](https://wallhaven.cc/)
 
 ## Automate
 
