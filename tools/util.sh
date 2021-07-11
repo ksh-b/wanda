@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 get_input() {
-  if [ "$1" = "text" ]; then
+  if [ "$1" = "text" ] || [ "$1" = "confirm" ]; then
     input=$(termux-dialog "$1" -t "$2" -i "$3")
   elif [ "$1" = "counter" ]; then
     input=$(termux-dialog "$1" -t "$2" -r "$3")
@@ -40,7 +40,7 @@ function config_set() {
   # create key if not exists
   if ! grep -q "^${key}=" "$file"; then
     # insert a newline just in case the file does not end with one
-    printf "\n${key}=" >> "$file"
+    printf "\n%s=" "${key}" >> "$file"
   fi
 
   chc "$file" "$key" "$val"
