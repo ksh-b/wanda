@@ -67,10 +67,12 @@ sv-enable crond
 ```
 crontab -e
 ```
-3. Set your desired interval [(guide)](https://crontab.guru/#20_4_*_*_*).<br>Example: For hourly:
+3. Set your desired interval. For hourly:
 ```
 0 * * * *   cd storage/shared/wanda && $PREFIX/bin/bash wanda.sh
 ```
+[(more examples)](https://crontab.guru/examples.html)
+
 4. ctrl+o to save, ctrl+x to exit the editor
 
 
