@@ -10,7 +10,7 @@ setup_wanda() {
 
   case "$u_input" in
     "source")
-    u_input=$(get_input radio "Select your wallpaper source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,wallhaven")
+    u_input=$(get_input radio "Select your wallpaper source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,unsplash,wallhaven")
     config_set "source" "$u_input"
     ;;
     "screen")
