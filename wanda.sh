@@ -27,7 +27,7 @@ fi
 . "$SCRIPT_DIR/sources/$source/pick.sh"
 
 # autocrop for online sources
-if [ "$autocrop" = "true" ] && [ "$source" != "imagemagick" ] && [ "$source" != "local" ]; then
+if [ "$autocrop" = "true" ] && [ "$source" != "imagemagick" ] && [ "$source" != "local" ] && [ "$source" != "dynamic" ]; then
   ofile=$SCRIPT_DIR/downloads/$(basename "$url")
   cfile=$SCRIPT_DIR/downloads/cropped/$(basename "$url")
   curl -s "$url" --output "$ofile"
