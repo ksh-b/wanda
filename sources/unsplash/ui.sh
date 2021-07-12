@@ -2,7 +2,7 @@
 . "$SCRIPT_DIR/tools/util.sh"
 
 # mode
-u_input=$(get_input radio "Unsplash: Select mode" "$(config_get "collection,search,user,likes,regular")")
+u_input=$(get_input radio "Unsplash: Select mode" "collection,search,user,likes,regular")
 config_set "mode" "$u_input"
 
 case $u_input in
