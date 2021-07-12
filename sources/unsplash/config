@@ -6,18 +6,22 @@ size=${width}x$height
 # [collection,search,user,likes,regular]
 mode=collection
 
-# collection id
+# mode:collection
+# [collection id]
 collection=2022043
 
-# search terms
+# mode:search
+# [search terms separated by comma]
 terms=nature,mountains
 
-# username
+# mode:user
+# [username]
 user=erondu
 
-# likes by username
+# mode:likes
+# [username]
 likes=erondu
 
-# regular
+# mode:regular
 # [daily, weekly]
 regular=daily
