@@ -12,7 +12,13 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 termux-setup-storage
 curl -L https://git.io/wanda-install | bash
 ```
-
+or clone it
+```
+termux-setup-storage
+git clone https://github.com/ksyko/wanda.git
+cd wanda
+mkdir -p downloads/cropped
+```
 ## Usage
 
 1. Navigate to where you installed the script
@@ -23,7 +29,7 @@ curl -L https://git.io/wanda-install | bash
 ```
 bash ui.sh
 ```
-3. For Shell:
+3.To continue in shell:
 ```
 nano config
 ```
@@ -35,8 +41,12 @@ nano sources/wallhaven/config
 ```
 bash wanda.sh
 ```
+## Widget
+
+If you have [Termux:Widget](https://f-droid.org/packages/com.termux.widget/) installed, you can create a widget to change the wallpaper. The [shortcut](https://wiki.termux.com/wiki/Termux:Widget) for this is already added if you installed with [installation script](https://git.io/wanda-install). If you installed via clone you can edit and run '# create widget task' section in the [installation script](https://git.io/wanda-install).
 
 ## Supported sources
+
 - [4chan](https://4chan.org/)
 - [dynamic](https://github.com/GitGangGuy/dynamic-wallpaper-improved)
 - [earthview](https://earthview.withgoogle.com/)
