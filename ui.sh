@@ -10,7 +10,7 @@ setup_wanda() {
 
   case "$u_input" in
     "source")
-    u_input=$(get_input radio "Select your wallpaper source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,wallhaven")
+    u_input=$(get_input radio "Select your wallpaper source" "4chan,dynamic,earthview,imagemagick,local,picsum,reddit,unsplash,wallhaven")
     config_set "source" "$u_input"
     ;;
     "screen")
@@ -92,7 +92,7 @@ case "$u_input" in
   setup_wanda
   ;;
   "⚙️ Configure source")
-  u_input=$(get_input radio "Select source to config" "4chan,dynamic,imagemagick,local,picsum,reddit,wallhaven")
+  u_input=$(get_input radio "Select source to config" "4chan,dynamic,imagemagick,local,picsum,reddit,unsplash,wallhaven")
   export CONFIG_FILE="$SCRIPT_DIR/sources/$u_input/config"
   bash "$SCRIPT_DIR/sources/$u_input/ui.sh"
   ;;
