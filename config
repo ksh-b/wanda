@@ -5,8 +5,8 @@
 ################
 
 # source for wallpaper
-# 4chan, dynamic, earthview, imagemagick, local, picsum, reddit, wallhaven
-source=wallhaven
+# 4chan, dynamic, earthview, imagemagick, local, picsum, reddit, unsplash, wallhaven
+source=unsplash
 
 # which screen(s) to apply wallpaper on
 # home, lock, both
