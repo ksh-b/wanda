@@ -1,0 +1,23 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# size for images (autopopulated, no need to change)
+size=${width}x$height
+
+# mode
+# [collection,search,user,likes,regular]
+mode=collection
+
+# collection id
+collection=2022043
+
+# search terms
+terms=nature,mountains
+
+# username
+user=erondu
+
+# likes by username
+likes=erondu
+
+# regular
+# [daily, weekly]
+regular=daily
