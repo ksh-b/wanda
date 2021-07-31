@@ -1,5 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
-seed=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 10 ; echo '')
+seed=$(
+  head /dev/urandom | tr -dc A-Za-z0-9 | head -c 10
+  echo ''
+)
 params=""
 if [ "$grayscale" = "true" ]; then
   params="grayscale"

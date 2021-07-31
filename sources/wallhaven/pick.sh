@@ -1,8 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # get parameters with a value
 keys=(apikey q categories purity sorting order topRange atleast resolutions ratios colors page seed)
-for i in "${keys[@]}";
-  do if [ -n "${!i}" ]; then
+for i in "${keys[@]}"; do
+  if [ -n "${!i}" ]; then
     params="${params}$i=${!i}&"
   fi
 done
