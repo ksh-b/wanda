@@ -6,7 +6,7 @@ h=$(date +"%-H")
 # symlinks dont get extracted from the zip
 # workaround - get the file from latest recent hour
 if [ ! -f "$filepath" ]; then
-  h=$((h-1))
+  h=$((h - 1))
 fi
 
 # apply wallpaper
