@@ -10,5 +10,6 @@ if [ ! -f "$filepath" ]; then
 fi
 
 # apply wallpaper
-filepath="$SCRIPT_DIR/sources/dynamic/images/$imageset/$h.jpg"
+image="$(basename $(ls wanda/sources/dynamic/images/$imageset/$h*))"
+filepath="$SCRIPT_DIR/sources/dynamic/images/$imageset/$image"
 echo "$filepath"
