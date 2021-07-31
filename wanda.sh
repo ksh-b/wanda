@@ -86,7 +86,7 @@ else
 fi
 
 if [ "$keep" = "true" ]; then
-  curl -s "$url" -o "$SCRIPT_DIR/downloads/$(basename "$url")"
+  curl -s "$url" -o "$SCRIPT_DIR/downloads/$(basename ${url%\?*})"
 else
   if [ "$source" = "imagemagick" ]; then
     rm -f "$filepath"
