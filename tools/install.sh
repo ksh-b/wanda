@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/usr/bin/bash
-version="v0.07"
+version="v0.08"
 
 # get dependencies
 apt update
