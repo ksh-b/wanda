@@ -16,7 +16,7 @@ pkg in ./wanda-lite_0.1_all.deb
 
 
 ## Usage
-
+```
   wanda [-s source] [-t search term] [-o] [-l] [-h]
   -s  source      unsplash,wallhaven,reddit,local
   -t  t           search term.
@@ -31,6 +31,7 @@ Examples:
 Tips:
 * None of the parameters are mandatory. Default source is unsplash.
 * Multiple search terms are possible on unsplash and wallhaven using ','
+```
 
 ## Supported sources
 
