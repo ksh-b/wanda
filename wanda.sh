@@ -38,7 +38,7 @@ setwp() {
 update () {
   res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw?ref=lite")
   latest_version=$(echo "$res" | jq --raw-output ".version")
-  if (( $(echo "$latest_version > $version" | bc -l) )); then
+  if (( $(echo "$latest_version $version" | awk '{print ($1 > $2)}') )); then
     echo "New version found: $latest_version"
     res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
     link=$(echo "$res" | jq --raw-output ".url")
