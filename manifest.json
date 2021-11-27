@@ -1,11 +1,12 @@
 {
-  "name": "wanda",
-  "version": "lite-0.1",
+  "name": "wanda-lite",
+  "version": "0.1",
   "homepage": "https://gitlab.com/kshib",
   "maintainer": "@kshib",
   "description": "Set wallpapers with keywords or randomly",
   "arch": "all",
   "depends": ["termux-api","curl","jq","file"],
   "files" :{
+    "wanda": "bin/wanda"
   }
 }
