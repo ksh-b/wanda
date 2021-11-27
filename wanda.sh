@@ -4,10 +4,10 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version="lite-0.1"
+version=0.2
 
 usage() {
-  echo "wanda ($version)"
+  echo "wanda (lite-$version)"
   echo "Usage:"
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
   echo "  -s  source      unsplash,wallhaven,reddit,local"
@@ -15,14 +15,12 @@ usage() {
   echo "  -o  homescreen  set wallpaper on homescreen"
   echo "  -l  lockscreen  set wallpaper on lockscreen"
   echo "  -h  help        this help message"
+  echo "  -u  update      update wanda"
+  echo "  -v  version     current version"
   echo ""
-  echo "Example:"
+  echo "Examples:"
   echo "  wanda -s wallhaven -t mountain -ol"
   echo "  wanda -s local -t folder/path -o"
-  echo ""
-  echo "Tips:"
-  echo "* None of the parameters are mandatory. Default source is unsplash."
-  echo "* Multiple search terms are possible on unsplash and wallhaven using ','"
 }
 
 setwp() {
@@ -37,7 +35,27 @@ setwp() {
   fi
 }
 
-while getopts ':s:t:olh' flag; do
+update () {
+  res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw?ref=lite")
+  latest_version=$(echo "$res" | jq --raw-output ".version")
+  if [ $((latest_version>version)) -eq 1 ]; then
+    echo "New version found: $latest_version"
+    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
+    link=$(echo "$res" | jq --raw-output ".url")
+    binary=$(basename $link)
+    echo "Downloading..."
+    curl $link -o $binary
+    echo "Installing..."
+    pkg in "./$binary"
+    echo "Cleaning up..."
+    rm "$binary"
+    wanda -h
+  else
+    echo "Already latest version ($version)"
+  fi
+}
+
+while getopts ':s:t:olhuv' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG}" ;;
@@ -46,6 +64,12 @@ while getopts ':s:t:olh' flag; do
   h)
     usage
     exit 0
+    ;;
+  u)
+    update
+    ;;
+  v)
+    echo "wanda (lite-$version)"
     ;;
   :)
     echo "The $OPTARG option requires an argument."
