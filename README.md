@@ -6,53 +6,35 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 ## Installation
 
 1. Install [termux](https://f-droid.org/en/packages/com.termux/) and [termux-api](https://f-droid.org/en/packages/com.termux.api/)
-2. Read the [installation script](https://git.io/wanda-install) and then run the same in termux:
 
+2. Install wanda
 ```
 termux-setup-storage
-curl -L https://git.io/wanda-install | bash
+curl https://gitlab.com/kshib/wanda/uploads/53a3777494b909f07e0ca37f3e6c2017/wanda-lite_0.1_all.deb
+pkg in ./wanda-lite_0.1_all.deb
 ```
-or clone it
-```
-termux-setup-storage
-git clone https://github.com/ksyko/wanda.git
-cd wanda
-mkdir -p downloads/cropped
-```
+
+
 ## Usage
 
-1. Navigate to where you installed the script
-  ```
-  cd $HOME/storage/shared/scripts/wanda
-  ```
-2. From here you can use the GUI for setup or continue in shell. For GUI:
-```
-bash ui.sh
-```
-3.To continue in shell:
-```
-nano config
-```
-4. Navigate to your preferred source and edit its config if present. Example for wallhaven
-```
-nano sources/wallhaven/config
-```
-5. Apply the wallpaper
-```
-bash wanda.sh
-```
-## Widget
+  wanda [-s source] [-t search term] [-o] [-l] [-h]
+  -s  source      unsplash,wallhaven,reddit,local
+  -t  t           search term.
+  -o  homescreen  set wallpaper on homescreen
+  -l  lockscreen  set wallpaper on lockscreen
+  -h  help        this help message
 
-If you have [Termux:Widget](https://f-droid.org/packages/com.termux.widget/) installed, you can create a widget to change the wallpaper. The [shortcut](https://wiki.termux.com/wiki/Termux:Widget) for this is already added if you installed with [installation script](https://git.io/wanda-install). If you installed via clone you can edit and run '# create widget task' section in the [installation script](https://git.io/wanda-install).
+Examples:
+  wanda -s wallhaven -t mountain -hl
+  wanda -s local -t folder/path -h
+
+Tips:
+* None of the parameters are mandatory. Default source is unsplash.
+* Multiple search terms are possible on unsplash and wallhaven using ','
 
 ## Supported sources
 
-- [4chan](https://4chan.org/)
-- [dynamic](https://github.com/GitGangGuy/dynamic-wallpaper-improved)
-- [earthview](https://earthview.withgoogle.com/)
-- [imagemagick](https://legacy.imagemagick.org/Usage/canvas/)
 - [local](https://wiki.termux.com/wiki/Termux-setup-storage)
-- [picsum](https://picsum.photos/)
 - [reddit](https://old.reddit.com/)
 - [unsplash](https://unsplash.com/)
 - [wallhaven](https://wallhaven.cc/)
@@ -73,21 +55,19 @@ crontab -e
 ```
 3. Set your desired interval. For hourly:
 ```
-0 * * * *   cd storage/shared/wanda && $PREFIX/bin/bash wanda.sh
+@hourly wanda -t mountains
 ```
 [(more examples)](https://crontab.guru/examples.html)
 
 4. ctrl+o to save, ctrl+x to exit the editor
 
 
-## Autocrop [Optional]
+## Build
 
-  Autocrop tries to find the subject in the image and crops the image accordingly. <br>
-  Useful for when the image is horizontal and subject is at either end of the image. [Example](https://miro.medium.com/max/2048/0*sRE3XCJI0s00wFb-). <br>
-
-  * Create [imagga](https://imagga.com/auth/signup) account. Its free to sign up, [one time emails](https://privacytoolslist.com/#one-time-emails) can work too and would recommend using one 😉.
-  * Once the account is created, go to [dashboard](https://imagga.com/profile/dashboard). Copy key and secret.
-  * open /config and edit the following
-    * Enable autocrop: set `autocrop` to `true`.
-    * Set `imagga_key` value as `key`:`secret`.
-    * Set your device screen `height` and `width`.
+```
+apt install termux-create-package
+git clone https://gitlab.com/kshib/wanda.git -b lite
+chmod +x wanda
+termux-create-package manifest.json
+```
+[More info](https://github.com/termux/termux-create-package)
