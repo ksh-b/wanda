@@ -7,6 +7,6 @@
   "arch": "all",
   "depends": ["termux-api","curl","jq","file"],
   "files" :{
-    "wanda": "bin/wanda"
+    "wanda.sh": "bin/wanda"
   }
 }
