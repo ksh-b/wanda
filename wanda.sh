@@ -17,8 +17,8 @@ usage() {
   echo "  -h  help        this help message"
   echo ""
   echo "Example:"
-  echo "  wanda -s wallhaven -t mountain -hl"
-  echo "  wanda -s local -t folder/path -h"
+  echo "  wanda -s wallhaven -t mountain -ol"
+  echo "  wanda -s local -t folder/path -o"
   echo ""
   echo "Tips:"
   echo "* None of the parameters are mandatory. Default source is unsplash."
@@ -31,15 +31,13 @@ setwp() {
   fi
   if [ "$home" = "true" ]; then
     termux-wallpaper -u "$1"
-    exit 0
   fi
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lu "$1"
-    exit 0
   fi
 }
 
-while getopts ':s:t:ol' flag; do
+while getopts ':s:t:olh' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG}" ;;
@@ -92,11 +90,9 @@ local | lc)
   fi
   if [ "$home" = "true" ]; then
     termux-wallpaper -f "$filepath"
-    exit 0
   fi
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lf "$filepath"
-    exit 0
   fi
   ;;
 esac
