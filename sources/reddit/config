@@ -1,7 +1,0 @@
-#!/data/data/com.termux/files/usr/bin/bash
-# subreddit name
-sub=verticalwallpapers
-
-# sort by
-# [hot, new, rising, controversial, top, gilded]
-sort=hot
