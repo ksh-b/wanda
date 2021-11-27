@@ -18,7 +18,7 @@ usage() {
   echo ""
   echo "Example:"
   echo "  wanda -s wallhaven -t mountain -hl"
-  echo "  wanda -s local -t folder/path/ -h"
+  echo "  wanda -s local -t folder/path -h"
   echo ""
   echo "Tips:"
   echo "* None of the parameters are mandatory. Default source is unsplash."
@@ -80,7 +80,7 @@ reddit | ri)
   rand=$(shuf -i 0-$posts -n 1)
   url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   while [[ $url == *"/gallery/"* ]]; do
-    rand=$(get_random_number "$posts")
+    rand=$(shuf -i 0-$posts -n 1)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   done
   setwp $url
