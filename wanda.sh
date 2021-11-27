@@ -38,7 +38,7 @@ setwp() {
 update () {
   res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw?ref=lite")
   latest_version=$(echo "$res" | jq --raw-output ".version")
-  if [ $((latest_version>version)) -eq 1 ]; then
+  if (( $(echo "$latest_version > $version" | bc -l) )); then
     echo "New version found: $latest_version"
     res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
     link=$(echo "$res" | jq --raw-output ".url")
@@ -67,9 +67,11 @@ while getopts ':s:t:olhuv' flag; do
     ;;
   u)
     update
+    exit 0
     ;;
   v)
     echo "wanda (lite-$version)"
+    exit 0
     ;;
   :)
     echo "The $OPTARG option requires an argument."
@@ -86,7 +88,7 @@ done
 
 case $source in
 wallhaven | wh)
-  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=$ratio&sorting=random")
+  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=portrait&sorting=random")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
   setwp $url
   ;;
