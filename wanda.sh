@@ -61,16 +61,17 @@ validate_url() {
   fi
 }
 
-imagemagick_installed() {
+
+install_package() {
   convert -version 1>/dev/null
   if [ "$?" != 0 ]; then
-    echo "Imagemagick is required. Install now [y/n]?"
+    echo "$1 is required. Install required package now [y/n]?"
     read agree
     if [ "$agree" = "y" ] || [ "$agree" = "Y" ]; then
-      pkg in imagemagick
+      pkg in $2
     fi
-    exit 0
   fi
+  exit 0
 }
 
 check_connectivity() {
@@ -171,8 +172,8 @@ local | lo)
   set_wp_file "$filepath"
   ;;
 canvas | ca)
-  imagemagick_installed
-  filepath="$PREFIX/canvas.png"
+  install_package "Imagemagick" "imagemagick"
+  filepath="$PREFIX/tmp/canvas.png"
   . canvas.sh
   case $query in
   1 | solid) solid ;;
@@ -205,6 +206,8 @@ canvas | ca)
   set_wp_url "$url"
   ;;
 earthview | ea)
+  install_package "xmllint" "libxml2-utils"
+  check_connectivity
   if [[ -z $link ]]; then
     link=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
   fi
@@ -213,12 +216,10 @@ earthview | ea)
   api="https://earthview.withgoogle.com/_api$link.json"
   res=$(curl -s "${api}")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
-  slug=$(echo "$res" | jq --raw-output ".slug")
-  next_slug=$(echo "$res" | jq --raw-output ".nextSlug")
-  config_set "next" "/$next_slug"
+  validate_url
 
   # download and rotate the image
-  filepath="$SCRIPT_DIR/downloads/${slug}.jpg"
+  filepath="$PREFIX/tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
   ;;
