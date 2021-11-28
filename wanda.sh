@@ -66,7 +66,6 @@ validate_url() {
   fi
 }
 
-
 install_package() {
   convert -version 1>/dev/null
   if [ "$?" != 0 ]; then
@@ -232,5 +231,9 @@ earthview | ea)
   mogrify -rotate 90 "$filepath"
   set_wp_file $filepath
   clean
+  ;;
+*)
+  echo "Unknown source $source"
+  usage
   ;;
 esac
