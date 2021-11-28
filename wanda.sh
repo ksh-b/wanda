@@ -24,7 +24,7 @@ usage() {
   echo "  wanda -s local -t folder/path -o"
 }
 
-setwp() {
+set_wp_url() {
   if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
     termux-wallpaper -u "$1"
   fi
@@ -33,6 +33,18 @@ setwp() {
   fi
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lu "$1"
+  fi
+}
+
+set_wp_file() {
+  if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
+    termux-wallpaper -f "$1"
+  fi
+  if [ "$home" = "true" ]; then
+    termux-wallpaper -f "$1"
+  fi
+  if [ "$lock" = "true" ]; then
+    termux-wallpaper -lf "$1"
   fi
 }
 
@@ -110,7 +122,7 @@ wallhaven | wa)
   if [ -z "$url" ]; then
     not_found
   fi
-  setwp $url
+  set_wp_url $url
   ;;
 unsplash | un)
   check_connectivity
@@ -119,7 +131,7 @@ unsplash | un)
   if [[ $url == *"source-404"* ]]; then
     not_found
   fi
-  setwp $url
+  set_wp_url $url
   ;;
 reddit | re)
   check_connectivity
@@ -135,18 +147,25 @@ reddit | re)
   if [ -z "$url" ]; then
     not_found
   fi
-  setwp $url
+  set_wp_url $url
   ;;
 local | lo)
   filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
-  if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
-    termux-wallpaper -f "$filepath"
-  fi
-  if [ "$home" = "true" ]; then
-    termux-wallpaper -f "$filepath"
-  fi
-  if [ "$lock" = "true" ]; then
-    termux-wallpaper -lf "$filepath"
-  fi
+  set_wp_file $filepath
   ;;
+canvas | ca)
+  filepath="$PREFIX/canvas.png"
+  . canvas.sh
+  case $query in
+    1 | solid) solid;;
+    2 | linear) linear_gradient;;
+    3 | radial) radial_gradient;;
+    4 | twisted) twisted_gradient;;
+    5 | bilinear) bilinear_gradient;;
+    6 | plasma) plasma;;
+    7 | blurred) blurred_noise;;
+    * ) randomize
+    set_wp_file $filepath
+    ;;
+  esac
 esac

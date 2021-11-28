@@ -8,5 +8,7 @@
   "depends": ["termux-api","curl","jq","file"],
   "files" :{
     "wanda.sh": "bin/wanda"
+    "canvas.sh": "bin/canvas"
+    "imtemp": "tmp/imtemp"
   }
 }
