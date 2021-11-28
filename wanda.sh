@@ -191,7 +191,7 @@ canvas | ca)
   *) randomize ;;
   esac
   set_wp_file "$filepath"
-  clean "$filepath"
+  #clean "$filepath"
   ;;
 4chan | 4c)
   check_connectivity
@@ -227,7 +227,7 @@ earthview | ea)
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
   set_wp_file $filepath
-  clean "$filepath"
+  #clean "$filepath"
   ;;
 *)
   echo "Unknown source $source"
