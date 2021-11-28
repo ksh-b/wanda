@@ -87,8 +87,8 @@ check_connectivity() {
 }
 
 clean() {
-  rm "$PREFIX/tmp/canvas.png"
-  rm "$PREFIX/tmp/earthview.jpg"
+  rm "$PREFIX/tmp/canvas.png" &>/dev/null
+  rm "$PREFIX/tmp/earthview.jpg" &>/dev/null
 }
 
 update() {
@@ -219,13 +219,11 @@ earthview | ea)
     link=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
   fi
 
-  # get image and next slug
   api="https://earthview.withgoogle.com/_api$link.json"
   res=$(curl -s "${api}")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
   validate_url
 
-  # download and rotate the image
   filepath="$PREFIX/tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
