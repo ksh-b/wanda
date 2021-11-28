@@ -48,9 +48,21 @@ set_wp_file() {
   fi
 }
 
-not_found() {
+no_wp() {
   echo "No wallpaper found. Try another keyword/source."
   exit 1
+}
+
+imagemagick_installed() {
+  convert -version 1>/dev/null
+  if [ "$?" != 0 ]; then
+    echo "Imagemagick is required. Install now [y/n]?"
+    read agree
+    if [ "$agree" = "y" ] || [ "$agree" = "Y" ]; then
+      pkg in imagemagick
+    fi
+    exit 0
+  fi
 }
 
 check_connectivity() {
@@ -120,7 +132,7 @@ wallhaven | wa)
   res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=portrait&sorting=random")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
   if [ -z "$url" ]; then
-    not_found
+    no_wp
   fi
   set_wp_url $url
   ;;
@@ -129,7 +141,7 @@ unsplash | un)
   res="https://source.unsplash.com/random/1440x2560/?$query"
   url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
   if [[ $url == *"source-404"* ]]; then
-    not_found
+    no_wp
   fi
   set_wp_url $url
   ;;
@@ -145,7 +157,7 @@ reddit | re)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   done
   if [ -z "$url" ]; then
-    not_found
+    no_wp
   fi
   set_wp_url $url
   ;;
@@ -154,6 +166,7 @@ local | lo)
   set_wp_file $filepath
   ;;
 canvas | ca)
+  imagemagick_installed
   filepath="$PREFIX/canvas.png"
   . canvas.sh
   case $query in
@@ -164,8 +177,10 @@ canvas | ca)
     5 | bilinear) bilinear_gradient;;
     6 | plasma) plasma;;
     7 | blurred) blurred_noise;;
-    * ) randomize
-    set_wp_file $filepath
-    ;;
+    * ) randomize ;;
   esac
+  set_wp_file $filepath
+  ;;
+  earthview | ea)
+    check_connectivity
 esac
