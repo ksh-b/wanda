@@ -7,8 +7,7 @@
   "arch": "all",
   "depends": ["termux-api","curl","jq","file"],
   "files" :{
-    "wanda.sh": "bin/wanda"
+    "wanda.sh": "bin/wanda",
     "canvas.sh": "bin/canvas"
-    "tmp/canvas.png": "tmp/canvas.png"
   }
 }
