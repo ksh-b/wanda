@@ -6,7 +6,7 @@
 ## Generate a solid color wallpaper
 
 size="1440x2560"
-DIR="tmp"
+DIR="$PREFIX/tmp"
 name="canvas.png"
 
 solid() {
