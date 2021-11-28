@@ -5,7 +5,7 @@ query=""
 home="false"
 lock="false"
 version=0.21
-
+no_results="No results for $query. Try another source/keyword"
 usage() {
   echo "wanda (lite-$version)"
   echo "Usage:"
@@ -20,11 +20,12 @@ usage() {
   echo ""
   echo "Examples:"
   echo "  wanda -s wallhaven -t mountain -ol"
-  echo "  wanda -s un -t \"eiffel tower\""
+  echo '  wanda -s un -t "eiffel tower"'
   echo "  wanda -s local -t folder/path -o"
 }
 
 set_wp_url() {
+  validate_url
   if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
     termux-wallpaper -u "$1"
   fi
@@ -48,9 +49,16 @@ set_wp_file() {
   fi
 }
 
-no_wp() {
-  echo "No wallpaper found. Try another keyword/source."
-  exit 1
+validate_url() {
+  if [ -z "$url" ]; then
+    echo "$no_results"
+    exit 1
+  fi
+  urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url" )
+  if [ $urlstatus != 200 ]; then
+    echo "[$urlstatus] Failed to load url: $url."
+    exit 1
+  fi
 }
 
 imagemagick_installed() {
@@ -73,11 +81,11 @@ check_connectivity() {
   fi
 }
 
-update () {
+update() {
   check_connectivity
   res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw?ref=lite")
   latest_version=$(echo "$res" | jq --raw-output ".version")
-  if (( $(echo "$latest_version $version" | awk '{print ($1 > $2)}') )); then
+  if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
     echo "New version found: $latest_version"
     res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
     link=$(echo "$res" | jq --raw-output ".url")
@@ -131,19 +139,16 @@ wallhaven | wa)
   check_connectivity
   res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=portrait&sorting=random")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
-  if [ -z "$url" ]; then
-    no_wp
-  fi
-  set_wp_url $url
+  set_wp_url "$url"
   ;;
 unsplash | un)
   check_connectivity
   res="https://source.unsplash.com/random/1440x2560/?$query"
   url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
   if [[ $url == *"source-404"* ]]; then
-    no_wp
+    echo "$no_results"
   fi
-  set_wp_url $url
+  set_wp_url "$url"
   ;;
 reddit | re)
   check_connectivity
@@ -157,30 +162,48 @@ reddit | re)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   done
   if [ -z "$url" ]; then
-    no_wp
+    validate_url
   fi
   set_wp_url $url
   ;;
 local | lo)
   filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
-  set_wp_file $filepath
+  set_wp_file "$filepath"
   ;;
 canvas | ca)
   imagemagick_installed
   filepath="$PREFIX/canvas.png"
   . canvas.sh
   case $query in
-    1 | solid) solid;;
-    2 | linear) linear_gradient;;
-    3 | radial) radial_gradient;;
-    4 | twisted) twisted_gradient;;
-    5 | bilinear) bilinear_gradient;;
-    6 | plasma) plasma;;
-    7 | blurred) blurred_noise;;
-    * ) randomize ;;
+    1 | solid) solid ;;
+    2 | linear) linear_gradient ;;
+    3 | radial) radial_gradient ;;
+    4 | twisted) twisted_gradient ;;
+    5 | bilinear) bilinear_gradient ;;
+    6 | plasma) plasma ;;
+    7 | blurred) blurred_noise ;;
+    *) randomize ;;
   esac
-  set_wp_file $filepath
+  set_wp_file "$filepath"
+  ;;
+4chan | 4c)
+  check_connectivity
+  board=$(echo $query | cut -d'/' -f4)
+  image_host="https://i.4cdn.org/${board}/"
+  api="${query/"boards.4chan.org"/"a.4cdn.org"}.json"
+  res=$(curl -s "$api")
+  posts=$(echo "$res" | jq '.[] | length')
+  rand=$(shuf -i 0-$posts -n 1)
+  post_image=$(echo "$res" | jq ".[][$rand].tim")
+  # if post has no image, loop till post with image is found
+  while [ "$post_image" = "null" ]; do
+  rand=$(shuf -i 0-$posts -n 1)
+    post_image=$(echo "$res" | jq ".[][$rand].tim")
+  done
+  post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
+  url="${image_host}${post_image}${post_exten}"
+  set_wp_url "$url"
   ;;
   earthview | ea)
-    check_connectivity
+  ;;
 esac
