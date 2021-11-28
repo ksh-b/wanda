@@ -87,7 +87,7 @@ check_connectivity() {
 }
 
 clean() {
-  rm "$PREFIX/tmp/$1" &>/dev/null
+  rm "$1" &>/dev/null
 }
 
 update() {
