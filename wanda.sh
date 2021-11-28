@@ -35,6 +35,12 @@ setwp() {
   fi
 }
 
+not_found() {
+  echo "No wallpaper found. Try another keyword/source"
+  exit 1
+}
+
+
 update () {
   res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw?ref=lite")
   latest_version=$(echo "$res" | jq --raw-output ".version")
@@ -90,11 +96,17 @@ case $source in
 wallhaven | wh)
   res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=portrait&sorting=random")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
+  if [ -z "$url" ]; then
+    not_found
+  fi
   setwp $url
   ;;
 unsplash | us)
   res="https://source.unsplash.com/random/1440x2560/?$query"
   url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
+  if [[ $url == *"source-404"* ]]; then
+    not_found
+  fi
   setwp $url
   ;;
 reddit | ri)
@@ -107,6 +119,9 @@ reddit | ri)
     rand=$(shuf -i 0-$posts -n 1)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   done
+  if [ -z "$url" ]; then
+    not_found
+  fi
   setwp $url
   ;;
 local | lc)
