@@ -4,13 +4,13 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.2
+version=0.21
 
 usage() {
   echo "wanda (lite-$version)"
   echo "Usage:"
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
-  echo "  -s  source      unsplash,wallhaven,reddit,local"
+  echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
   echo "  -t  t           search term."
   echo "  -o  homescreen  set wallpaper on homescreen"
   echo "  -l  lockscreen  set wallpaper on lockscreen"
@@ -20,6 +20,7 @@ usage() {
   echo ""
   echo "Examples:"
   echo "  wanda -s wallhaven -t mountain -ol"
+  echo "  wanda -s un -t \"eiffel tower\""
   echo "  wanda -s local -t folder/path -o"
 }
 
@@ -36,12 +37,20 @@ setwp() {
 }
 
 not_found() {
-  echo "No wallpaper found. Try another keyword/source"
+  echo "No wallpaper found. Try another keyword/source."
   exit 1
 }
 
+check_connectivity() {
+  curl -s "https://detectportal.firefox.com/success.txt" 1>/dev/null
+  if [ "$?" != 0 ]; then
+    echo "Please check your internet connection and try again."
+    exit 1
+  fi
+}
 
 update () {
+  check_connectivity
   res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw?ref=lite")
   latest_version=$(echo "$res" | jq --raw-output ".version")
   if (( $(echo "$latest_version $version" | awk '{print ($1 > $2)}') )); then
@@ -61,6 +70,7 @@ update () {
   fi
 }
 
+# main
 while getopts ':s:t:olhuv' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
@@ -93,7 +103,8 @@ while getopts ':s:t:olhuv' flag; do
 done
 
 case $source in
-wallhaven | wh)
+wallhaven | wa)
+  check_connectivity
   res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=portrait&sorting=random")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
   if [ -z "$url" ]; then
@@ -101,7 +112,8 @@ wallhaven | wh)
   fi
   setwp $url
   ;;
-unsplash | us)
+unsplash | un)
+  check_connectivity
   res="https://source.unsplash.com/random/1440x2560/?$query"
   url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
   if [[ $url == *"source-404"* ]]; then
@@ -109,12 +121,13 @@ unsplash | us)
   fi
   setwp $url
   ;;
-reddit | ri)
-  posts=100
+reddit | re)
+  check_connectivity
   api="https://old.reddit.com/r/MobileWallpaper/search.json?q=$query&restrict_sr=on&limit=$posts"
   res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
-  rand=$(shuf -i 0-$posts -n 1)
   url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
+  posts=$(echo "$res" | jq --raw-output ".data.dist")
+  rand=$(shuf -i 0-$posts -n 1)
   while [[ $url == *"/gallery/"* ]]; do
     rand=$(shuf -i 0-$posts -n 1)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
@@ -124,7 +137,7 @@ reddit | ri)
   fi
   setwp $url
   ;;
-local | lc)
+local | lo)
   filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
   if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
     termux-wallpaper -f "$filepath"
