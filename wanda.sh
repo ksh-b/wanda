@@ -54,7 +54,7 @@ validate_url() {
     echo "$no_results"
     exit 1
   fi
-  urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url" )
+  urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url")
   if [ $urlstatus != 200 ]; then
     echo "[$urlstatus] Failed to load url: $url."
     exit 1
@@ -175,14 +175,14 @@ canvas | ca)
   filepath="$PREFIX/canvas.png"
   . canvas.sh
   case $query in
-    1 | solid) solid ;;
-    2 | linear) linear_gradient ;;
-    3 | radial) radial_gradient ;;
-    4 | twisted) twisted_gradient ;;
-    5 | bilinear) bilinear_gradient ;;
-    6 | plasma) plasma ;;
-    7 | blurred) blurred_noise ;;
-    *) randomize ;;
+  1 | solid) solid ;;
+  2 | linear) linear_gradient ;;
+  3 | radial) radial_gradient ;;
+  4 | twisted) twisted_gradient ;;
+  5 | bilinear) bilinear_gradient ;;
+  6 | plasma) plasma ;;
+  7 | blurred) blurred_noise ;;
+  *) randomize ;;
   esac
   set_wp_file "$filepath"
   ;;
@@ -197,13 +197,29 @@ canvas | ca)
   post_image=$(echo "$res" | jq ".[][$rand].tim")
   # if post has no image, loop till post with image is found
   while [ "$post_image" = "null" ]; do
-  rand=$(shuf -i 0-$posts -n 1)
+    rand=$(shuf -i 0-$posts -n 1)
     post_image=$(echo "$res" | jq ".[][$rand].tim")
   done
   post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
   url="${image_host}${post_image}${post_exten}"
   set_wp_url "$url"
   ;;
-  earthview | ea)
+earthview | ea)
+  if [[ -z $link ]]; then
+    link=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
+  fi
+
+  # get image and next slug
+  api="https://earthview.withgoogle.com/_api$link.json"
+  res=$(curl -s "${api}")
+  url=$(echo "$res" | jq --raw-output ".photoUrl")
+  slug=$(echo "$res" | jq --raw-output ".slug")
+  next_slug=$(echo "$res" | jq --raw-output ".nextSlug")
+  config_set "next" "/$next_slug"
+
+  # download and rotate the image
+  filepath="$SCRIPT_DIR/downloads/${slug}.jpg"
+  curl -s "$url" -o "$filepath"
+  mogrify -rotate 90 "$filepath"
   ;;
 esac
