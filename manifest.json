@@ -9,6 +9,6 @@
   "files" :{
     "wanda.sh": "bin/wanda"
     "canvas.sh": "bin/canvas"
-    "imtemp": "tmp/imtemp"
+    "tmp/canvas.png": "tmp/canvas.png"
   }
 }
