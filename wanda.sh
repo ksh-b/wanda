@@ -87,8 +87,7 @@ check_connectivity() {
 }
 
 clean() {
-  rm "$PREFIX/tmp/canvas.png" &>/dev/null
-  rm "$PREFIX/tmp/earthview.jpg" &>/dev/null
+  rm "$PREFIX/tmp/$1.png" &>/dev/null
 }
 
 update() {
@@ -192,7 +191,7 @@ canvas | ca)
   *) randomize ;;
   esac
   set_wp_file "$filepath"
-  clean
+  clean "$filepath"
   ;;
 4chan | 4c)
   check_connectivity
@@ -228,7 +227,7 @@ earthview | ea)
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
   set_wp_file $filepath
-  clean
+  clean "$filepath"
   ;;
 *)
   echo "Unknown source $source"
