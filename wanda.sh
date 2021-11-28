@@ -4,13 +4,15 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.21
+version=0.3
 no_results="No results for $query. Try another source/keyword"
+
 usage() {
-  echo "wanda (lite-$version)"
+  echo "wanda ($version)"
   echo "Usage:"
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
   echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
+  echo "                  [4c]han,[ca]nvas,[ea]rthview"
   echo "  -t  t           search term."
   echo "  -o  homescreen  set wallpaper on homescreen"
   echo "  -l  lockscreen  set wallpaper on lockscreen"
@@ -19,9 +21,12 @@ usage() {
   echo "  -v  version     current version"
   echo ""
   echo "Examples:"
-  echo "  wanda -s wallhaven -t mountain -ol"
-  echo '  wanda -s un -t "eiffel tower"'
-  echo "  wanda -s local -t folder/path -o"
+  echo "  wanda"
+  echo "  wanda -s ea"
+  echo '  wanda -s un -t "eiffel tower" -ol'
+  echo "  wanda -s lo -t folder/path -ol"
+  echo "  wanda -s wa -t stars,clouds -ol"
+  echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
 }
 
 set_wp_url() {
@@ -70,8 +75,8 @@ install_package() {
     if [ "$agree" = "y" ] || [ "$agree" = "Y" ]; then
       pkg in $2
     fi
+    exit 0
   fi
-  exit 0
 }
 
 check_connectivity() {
@@ -80,6 +85,11 @@ check_connectivity() {
     echo "Please check your internet connection and try again."
     exit 1
   fi
+}
+
+clean() {
+  rm "$PREFIX/tmp/canvas.png"
+  rm "$PREFIX/tmp/earthview.jpg"
 }
 
 update() {
@@ -119,7 +129,7 @@ while getopts ':s:t:olhuv' flag; do
     exit 0
     ;;
   v)
-    echo "wanda (lite-$version)"
+    echo "wanda ($version)"
     exit 0
     ;;
   :)
@@ -162,9 +172,6 @@ reddit | re)
     rand=$(shuf -i 0-$posts -n 1)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   done
-  if [ -z "$url" ]; then
-    validate_url
-  fi
   set_wp_url $url
   ;;
 local | lo)
@@ -186,6 +193,7 @@ canvas | ca)
   *) randomize ;;
   esac
   set_wp_file "$filepath"
+  clean
   ;;
 4chan | 4c)
   check_connectivity
@@ -222,5 +230,7 @@ earthview | ea)
   filepath="$PREFIX/tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
+  set_wp_file $filepath
+  clean
   ;;
 esac
