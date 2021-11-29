@@ -71,7 +71,7 @@ bilinear_gradient() {
 		answer="r"
 	fi
 	if [[ $answer == "s" ]] || [[ $answer == "S" ]]; then
-		{ echo; echo -n ${CYAN}"Please wait... "; }
+		{ echo; echo -n "Please wait... "; }
 		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -size "$size" xc: +swap  -fx 'v.p{i/(w-1),j/(h-1)}' "$DIR/$name"
 	else
 		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! "$DIR/$name"
@@ -118,8 +118,7 @@ get_random_number() {
 ## Generate random color
 get_random_color() {
 	RCOLOR="#"
-	for i in 1 2 3 4 5 6
-	do
+	for ((i = 0 ; i < 6 ; i++)); do
 		get_random_number "16"
 		case $RNUM in
 			"1") NEXTDIGIT="1";;

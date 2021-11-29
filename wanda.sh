@@ -60,7 +60,7 @@ validate_url() {
     exit 1
   fi
   urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url")
-  if [ $urlstatus != 200 ]; then
+  if [ "$urlstatus" != 200 ]; then
     echo "[$urlstatus] Failed to load url: $url."
     exit 1
   fi
@@ -72,7 +72,7 @@ install_package() {
     echo "$1 is required. Install required package now [y/n]?"
     read agree
     if [ "$agree" = "y" ] || [ "$agree" = "Y" ]; then
-      pkg in $2
+      pkg in "$2"
     fi
     exit 0
   fi
@@ -98,9 +98,9 @@ update() {
     echo "New version found: $latest_version"
     res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
     link=$(echo "$res" | jq --raw-output ".url")
-    binary=$(basename $link)
+    binary=$(basename "$link")
     echo "Downloading..."
-    curl $link -o $binary
+    curl "$link" -o "$binary"
     echo "Installing..."
     pkg in "./$binary"
     echo "Cleaning up..."
@@ -165,12 +165,12 @@ reddit | re)
   res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
   url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   posts=$(echo "$res" | jq --raw-output ".data.dist")
-  rand=$(shuf -i 0-$posts -n 1)
+  rand=$(shuf -i 0-"$posts" -n 1)
   while [[ $url == *"/gallery/"* ]]; do
     rand=$(shuf -i 0-$posts -n 1)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   done
-  set_wp_url $url
+  set_wp_url "$url"
   ;;
 local | lo)
   filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
@@ -195,7 +195,7 @@ canvas | ca)
   ;;
 4chan | 4c)
   check_connectivity
-  board=$(echo $query | cut -d'/' -f4)
+  board=$(echo "$query" | cut -d'/' -f4)
   image_host="https://i.4cdn.org/${board}/"
   api="${query/"boards.4chan.org"/"a.4cdn.org"}.json"
   res=$(curl -s "$api")
@@ -226,7 +226,7 @@ earthview | ea)
   filepath="$PREFIX/tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
-  set_wp_file $filepath
+  set_wp_file "$filepath"
   #clean "$filepath"
   ;;
 *)
