@@ -96,7 +96,7 @@ update() {
   latest_version=$(echo "$res" | jq --raw-output ".version")
   if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
     echo "New version found: $latest_version"
-    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
+    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
     link=$(echo "$res" | jq --raw-output ".url")
     binary=$(basename $link)
     echo "Downloading..."
