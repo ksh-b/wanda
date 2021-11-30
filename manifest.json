@@ -6,6 +6,7 @@
   "description": "Set wallpapers with keywords or randomly",
   "arch": "all",
   "depends": ["termux-api","curl","jq","file"],
+  "suggests": ["imagemagick", "libxml2-utils"],
   "files" :{
     "wanda.sh": "bin/wanda",
     "canvas.sh": "bin/canvas"
