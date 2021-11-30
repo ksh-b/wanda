@@ -87,7 +87,7 @@ check_connectivity() {
 }
 
 clean() {
-  rm "$1" &>/dev/null
+  rm -rf "$1"
 }
 
 update() {
@@ -96,7 +96,7 @@ update() {
   latest_version=$(echo "$res" | jq --raw-output ".version")
   if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
     echo "New version found: $latest_version"
-    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version-lite/assets/links")
+    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
     link=$(echo "$res" | jq --raw-output ".url")
     binary=$(basename "$link")
     echo "Downloading..."
@@ -179,7 +179,7 @@ local | lo)
 canvas | ca)
   install_package "Imagemagick" "imagemagick"
   filepath="$PREFIX/tmp/canvas.png"
-  . canvas.sh
+  . canvas
   case $query in
   1 | solid) solid ;;
   2 | linear) linear_gradient ;;
@@ -191,7 +191,7 @@ canvas | ca)
   *) randomize ;;
   esac
   set_wp_file "$filepath"
-  #clean "$filepath"
+  clean "$filepath"
   ;;
 4chan | 4c)
   check_connectivity
@@ -227,7 +227,7 @@ earthview | ea)
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
   set_wp_file "$filepath"
-  #clean "$filepath"
+  clean "$filepath"
   ;;
 *)
   echo "Unknown source $source"
