@@ -10,37 +10,45 @@ Check out the [lite version](https://gitlab.com/kshib/wanda/-/tree/lite) if you 
 1. Install [termux](https://f-droid.org/en/packages/com.termux/) and [termux-api](https://f-droid.org/en/packages/com.termux.api/)
 
 2. Install wanda
+
+- Download latest release from [here](https://gitlab.com/kshib/wanda/-/releases)
+- Install it
 ```
 termux-setup-storage
-curl https://gitlab.com/kshib/wanda/uploads/53a3777494b909f07e0ca37f3e6c2017/wanda-lite_0.1_all.deb
-pkg in ./wanda-lite_0.1_all.deb
+pkg in ./wanda_version_all.deb
 ```
-
 
 ## Usage
 ```
-  wanda [-s source] [-t search term] [-o] [-l] [-h]
-  -s  source      unsplash,wallhaven,reddit,local
-  -t  t           search term.
+wanda [-s source] [-t search term] [-o] [-l] [-h]
+  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal
+                  [4c]han,[ca]nvas,[ea]rthview
+  -t  term        search term.
   -o  homescreen  set wallpaper on homescreen
   -l  lockscreen  set wallpaper on lockscreen
   -h  help        this help message
+  -u  update      update wanda
+  -v  version     current version
 
 Examples:
-  wanda -s wallhaven -t mountain -hl
-  wanda -s local -t folder/path -h
+  wanda
+  wanda -s ea
+  wanda -s un -t eiffel tower -ol
+  wanda -s lo -t folder/path -ol
+  wanda -s wa -t stars,clouds -ol
+  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495
 
-Tips:
-* None of the parameters are mandatory. Default source is unsplash.
-* Multiple search terms are possible on unsplash and wallhaven using ','
 ```
 
 ## Supported sources
 
 - [local](https://wiki.termux.com/wiki/Termux-setup-storage)
-- [reddit](https://old.reddit.com/)
-- [unsplash](https://unsplash.com/)
-- [wallhaven](https://wallhaven.cc/)
+- [reddit](https://reddit.com)
+- [unsplash](https://unsplash.com)
+- [wallhaven](https://wallhaven.cc)
+- [4chan](https://boards.4chan.org)
+- [canvas](https://github.com/adi1090x/canvas)
+- [earthview](https://earthview.withgoogle.com)
 
 ## Automate
 
@@ -58,7 +66,7 @@ crontab -e
 ```
 3. Set your desired interval. For hourly:
 ```
-@hourly wanda -t mountains
+0 * * * * wanda -t mountains
 ```
 [(more examples)](https://crontab.guru/examples.html)
 
@@ -66,11 +74,11 @@ crontab -e
 
 
 ## Build
-
+python and [termux-create-package](https://github.com/termux/termux-create-package) are needed
 ```
-apt install termux-create-package
-git clone https://gitlab.com/kshib/wanda.git -b lite
+git clone https://github.com/termux/termux-create-package.git
+git clone https://gitlab.com/kshib/wanda.git
+cd wanda
 chmod +x wanda
-termux-create-package manifest.json
+../termux-create-package/termux-create-package manifest.json
 ```
-[More info](https://github.com/termux/termux-create-package)
