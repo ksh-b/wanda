@@ -23,7 +23,7 @@ usage() {
   echo "Examples:"
   echo "  wanda"
   echo "  wanda -s ea"
-  echo '  wanda -s un -t "eiffel tower" -ol'
+  echo '  wanda -s un -t eiffel tower -ol'
   echo "  wanda -s lo -t folder/path -ol"
   echo "  wanda -s wa -t stars,clouds -ol"
   echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
