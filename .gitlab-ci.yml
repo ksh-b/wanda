@@ -12,6 +12,7 @@ build1:
   stage: build
   script:
     - termux-create-package manifest.json
+    - apt install /*.deb
 
 test1:
   stage: test
