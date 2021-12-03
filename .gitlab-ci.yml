@@ -11,4 +11,4 @@ build:
     - termux-create-package manifest.json
   artifacts:
     paths:
-      - *.deb
+      - wanda*.deb
