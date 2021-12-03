@@ -1,8 +1,5 @@
-image: python:latest
-
 before_script:
-  - pip install termux-create-package
-
+  - apt install jq curl file libxml2-utils imagemagick
 
 after_script:
   - echo "done"
@@ -10,13 +7,14 @@ after_script:
 build1:
   stage: build
   script:
-    - termux-create-package manifest.json
-    - apt install ./*.deb
+    - echo "nothing to build"
 
 test1:
   stage: test
   script:
-    - wanda -h
+    - sh wanda.sh -s wa -t mountains
+    - sh wanda.sh -s ea
+    - sh wanda.sh -s un -t eiffel tower
 
 
 deploy1:
