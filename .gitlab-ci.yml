@@ -10,7 +10,6 @@ build:
     - chmod +x wanda.sh
     - chmod +x canvas.sh
     - termux-create-package manifest.json
-    - apt install ./*.deb
   artifacts:
     paths:
       - /*.deb
