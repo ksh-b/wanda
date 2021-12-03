@@ -2,7 +2,6 @@ image: python:latest
 
 before_script:
   - pip install termux-create-package
-  - v=0.31
 
 build:
   stage: build
@@ -12,4 +11,4 @@ build:
     - termux-create-package manifest.json
   artifacts:
     paths:
-      - /*.deb
+      - wanda_0.31_all.deb
