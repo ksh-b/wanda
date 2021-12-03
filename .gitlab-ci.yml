@@ -21,4 +21,4 @@ test1:
 deploy1:
   stage: deploy
   script:
-    - echo $ls
+    - echo $ls | grep .deb
