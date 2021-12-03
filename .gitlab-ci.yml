@@ -5,14 +5,13 @@ before_script:
 
 
 after_script:
-  - echo "After script section"
-  - echo "For example you might do some cleanup here"
+  - echo "done"
 
 build1:
   stage: build
   script:
     - termux-create-package manifest.json
-    - apt install /*.deb
+    - apt install ./*.deb
 
 test1:
   stage: test
