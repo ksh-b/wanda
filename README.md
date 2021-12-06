@@ -1,8 +1,6 @@
 # wanda
 Bash script to set randomly picked wallpaper using [termux](https://github.com/termux/termux-app)
 
-Check out the [lite version](https://gitlab.com/kshib/wanda/-/tree/lite) if you do not wish to edit config files or want to have minimal setup.
-
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7c33b1c42b8d4a3fb80c74c9c8ececb9)](https://www.codacy.com/gl/kshib/wanda/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=kshib/wanda&amp;utm_campaign=Badge_Grade)
 
 ## Installation
@@ -66,7 +64,7 @@ crontab -e
 ```
 3. Set your desired interval. For hourly:
 ```
-0 * * * * wanda -t mountains
+@hourly wanda -t mountains
 ```
 [(more examples)](https://crontab.guru/examples.html)
 
