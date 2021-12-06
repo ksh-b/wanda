@@ -63,19 +63,8 @@ bilinear_gradient() {
 	color3="$RCOLOR"
 	get_random_color
 	color4="$RCOLOR"
+	convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! "$DIR/$name"
 
-	get_random_number "2"
-	if [[ "$RNUM" == "1" ]]; then
-		answer="s"
-	else
-		answer="r"
-	fi
-	if [[ $answer == "s" ]] || [[ $answer == "S" ]]; then
-		{ echo; echo -n "Please wait... "; }
-		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -size "$size" xc: +swap  -fx 'v.p{i/(w-1),j/(h-1)}' "$DIR/$name"
-	else
-		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! "$DIR/$name"
-	fi
 }
 
 ## Generate a plasma wallpaper

@@ -1,0 +1,14 @@
+image: python:latest
+
+before_script:
+  - pip install termux-create-package
+
+build:
+  stage: build
+  script:
+    - chmod +x wanda.sh
+    - chmod +x canvas.sh
+    - termux-create-package manifest.json
+  artifacts:
+    paths:
+      - wanda*.deb

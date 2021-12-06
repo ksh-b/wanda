@@ -4,7 +4,7 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.31
+version=0.32
 no_results="No results for $query. Try another source/keyword"
 
 usage() {
@@ -115,7 +115,7 @@ update() {
 while getopts ':s:t:olhuv' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
-  t) query="${OPTARG}" ;;
+  t) query="${OPTARG// /%20}" ;;
   o) home="true" ;;
   l) lock="true" ;;
   h)
@@ -161,7 +161,7 @@ unsplash | un)
   ;;
 reddit | re)
   check_connectivity
-  api="https://old.reddit.com/r/MobileWallpaper/search.json?q=$query&restrict_sr=on&limit=$posts"
+  api="https://old.reddit.com/r/MobileWallpaper/search.json?q=$query&restrict_sr=on&limit=100"
   res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
   url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   posts=$(echo "$res" | jq --raw-output ".data.dist")
@@ -195,6 +195,10 @@ canvas | ca)
   ;;
 4chan | 4c)
   check_connectivity
+  if [ -z "$query" ]; then
+    echo "4chan requires a thread link."
+    echo "$(wanda -h | grep 4chan)";
+  fi
   board=$(echo "$query" | cut -d'/' -f4)
   image_host="https://i.4cdn.org/${board}/"
   api="${query/"boards.4chan.org"/"a.4cdn.org"}.json"
