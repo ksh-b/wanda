@@ -1,6 +1,7 @@
 image: debian:latest
 
 before_script:
+  - apt install python
   - pip install termux-create-package
 
 build:
