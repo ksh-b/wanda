@@ -2,8 +2,6 @@
 
 source="unsplash"
 query=""
-home="false"
-lock="false"
 version=0.32
 no_results="No results for $query. Try another source/keyword"
 
@@ -140,7 +138,7 @@ done
 case $source in
 wallhaven | wa)
   check_connectivity
-  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=landscape&sorting=random")
+  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=landscape&sorting=random&categories=111")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
   set_wp_url "$url"
   ;;
@@ -220,11 +218,7 @@ earthview | ea)
   res=$(curl -s "${api}")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
   validate_url
-
-  filepath="$PREFIX/tmp/earthview.jpg"
-  curl -s "$url" -o "$filepath"
-  set_wp_file "$filepath"
-  clean "$filepath"
+  set_wp_url $url
   ;;
 *)
   echo "Unknown source $source"
