@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/bash
 
 source="unsplash"
 query=""
@@ -31,27 +31,25 @@ usage() {
 
 set_wp_url() {
   validate_url
-  if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
-    termux-wallpaper -u "$1"
-  fi
-  if [ "$home" = "true" ]; then
-    termux-wallpaper -u "$1"
-  fi
-  if [ "$lock" = "true" ]; then
-    termux-wallpaper -lu "$1"
-  fi
+  filename=$(echo "$(basename "$1")"  | cut -d '?' -f 1)
+  filepath="/tmp/$filename"
+  curl -s "$1" -o $filepath
+  set_wp_file $filepath
+  clean $filepath
 }
 
 set_wp_file() {
-  if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
-    termux-wallpaper -f "$1"
-  fi
-  if [ "$home" = "true" ]; then
-    termux-wallpaper -f "$1"
-  fi
-  if [ "$lock" = "true" ]; then
-    termux-wallpaper -lf "$1"
-  fi
+  qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+  		var allDesktops = desktops();
+  		print (allDesktops);
+  		for (i=0;i<allDesktops.length;i++) {
+  			d = allDesktops[i];
+  			d.wallpaperPlugin = 'org.kde.image';
+  			d.currentConfigGroup = Array('Wallpaper',
+  										'org.kde.image',
+  										'General');
+  			d.writeConfig('Image', 'file://"/$1"')
+  		}"
 }
 
 validate_url() {
@@ -110,12 +108,10 @@ update() {
 }
 
 # main
-while getopts ':s:t:olhuv' flag; do
+while getopts ':s:t:huv' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG// /%20}" ;;
-  o) home="true" ;;
-  l) lock="true" ;;
   h)
     usage
     exit 0
@@ -144,13 +140,13 @@ done
 case $source in
 wallhaven | wa)
   check_connectivity
-  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=portrait&sorting=random")
+  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=landscape&sorting=random")
   url=$(echo "$res" | jq --raw-output ".data[0].path")
   set_wp_url "$url"
   ;;
 unsplash | un)
   check_connectivity
-  res="https://source.unsplash.com/random/1440x2560/?$query"
+  res="https://source.unsplash.com/random/1366x768/?$query"
   url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
   if [[ $url == *"source-404"* ]]; then
     echo "$no_results"
@@ -159,7 +155,7 @@ unsplash | un)
   ;;
 reddit | re)
   check_connectivity
-  api="https://old.reddit.com/r/MobileWallpaper/search.json?q=$query&restrict_sr=on&limit=100"
+  api="https://old.reddit.com/r/Wallpaper+Wallpapers/search.json?q=$query&restrict_sr=on&limit=100"
   res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
   url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   posts=$(echo "$res" | jq --raw-output ".data.dist")
@@ -227,7 +223,6 @@ earthview | ea)
 
   filepath="$PREFIX/tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
-  mogrify -rotate 90 "$filepath"
   set_wp_file "$filepath"
   clean "$filepath"
   ;;
