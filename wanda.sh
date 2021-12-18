@@ -170,7 +170,7 @@ local | lo)
   ;;
 canvas | ca)
   install_package "Imagemagick" "imagemagick"
-  filepath="$PREFIX/tmp/canvas.png"
+  filepath="/tmp/canvas.png"
   . canvas
   case $query in
   1 | solid) solid ;;
