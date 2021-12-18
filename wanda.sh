@@ -33,7 +33,9 @@ set_wp_url() {
   filepath="/tmp/$filename"
   curl -s "$1" -o $filepath
   set_wp_file $filepath
-  clean $filepath
+  rm -rf $filepath
+  config_set "last_wallpaper_path" "$1"
+  config_set "last_wallpaper_time" "$(date)"
 }
 
 set_wp_file() {
@@ -48,6 +50,8 @@ set_wp_file() {
   										'General');
   			d.writeConfig('Image', 'file://"/$1"')
   		}"
+      config_set "last_wallpaper_path" "$1"
+      config_set "last_wallpaper_time" "$(date)"
 }
 
 validate_url() {
@@ -82,9 +86,6 @@ check_connectivity() {
   fi
 }
 
-clean() {
-  rm -rf "$1"
-}
 
 update() {
   check_connectivity
@@ -104,6 +105,62 @@ update() {
     echo "Already latest version ($version)"
   fi
 }
+
+
+### config editor ###
+# https://stackoverflow.com/a/60116613
+# https://stackoverflow.com/a/2464883
+# https://unix.stackexchange.com/a/331965/312709
+# thanks to ixz in #bash on irc.freenode.net
+CONFIG_FILE="data.cfg"
+function config_set() {
+  if [[ $2 == *"<CANCEL>"* ]]; then
+    exit 0
+  fi
+  local file=$CONFIG_FILE
+  local key=$1
+  local val=${@:2}
+
+  ensureConfigFileExists "${file}"
+
+  # create key if not exists
+  if ! grep -q "^${key}=" "$file"; then
+    # insert a newline just in case the file does not end with one
+    printf "\n%s=" "${key}" >> "$file"
+  fi
+
+  chc "$file" "$key" "$val"
+}
+
+function ensureConfigFileExists() {
+  if [ ! -e "$1" ] ; then
+    if [ -e "$1.example" ]; then
+      cp "$1.example" "$1";
+    else
+      touch "$1"
+    fi
+  fi
+}
+
+function chc() {
+    gawk -v OFS== -v FS== -e \
+    'BEGIN { ARGC = 1 } $1 == ARGV[2] { print ARGV[4] ? ARGV[4] : $1, ARGV[3]; next } 1' \
+    "$@" <"$1" >"$1.1"; mv "$1"{.1,};
+}
+
+function config_get() {
+    val="$(config_read_file "$CONFIG_FILE" "${1}")";
+    if [ "${val}" = "__UNDEFINED__" ]; then
+        val="$(config_read_file "$CONFIG_FILE".example "${1}")";
+    fi
+    printf -- "%s" "${val}";
+}
+
+function config_read_file() {
+    (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
+}
+### ### ###
+
 
 # main
 while getopts ':s:t:huv' flag; do
@@ -145,7 +202,7 @@ wallhaven | wa)
 unsplash | un)
   check_connectivity
   res="https://source.unsplash.com/random/1366x768/?$query"
-  url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
+  url=$(curl -Ls -o /dev/null -w "%{url_effective}" "$res")
   if [[ $url == *"source-404"* ]]; then
     echo "$no_results"
   fi
@@ -183,7 +240,9 @@ canvas | ca)
   *) randomize ;;
   esac
   set_wp_file "$filepath"
-  clean "$filepath"
+  rm -rf "$filepath"
+  config_set "last_wallpaper_path" "canvas:$query"
+  config_set "last_wallpaper_time" "$(date)"
   ;;
 4chan | 4c)
   check_connectivity
