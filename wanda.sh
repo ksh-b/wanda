@@ -2,7 +2,7 @@
 
 source="unsplash"
 query=""
-version=0.32
+version=0.33
 no_results="No results for $query. Try another source/keyword"
 
 usage() {
@@ -12,18 +12,17 @@ usage() {
   echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
   echo "                  [4c]han,[ca]nvas,[ea]rthview"
   echo "  -t  t           search term."
-  echo "  -o  homescreen  set wallpaper on homescreen"
-  echo "  -l  lockscreen  set wallpaper on lockscreen"
   echo "  -h  help        this help message"
   echo "  -u  update      update wanda"
   echo "  -v  version     current version"
+  echo "  -d  download    download current wallpaper"
   echo ""
   echo "Examples:"
   echo "  wanda"
   echo "  wanda -s ea"
-  echo '  wanda -s un -t eiffel tower -ol'
-  echo "  wanda -s lo -t folder/path -ol"
-  echo "  wanda -s wa -t stars,clouds -ol"
+  echo '  wanda -s un -t eiffel tower'
+  echo "  wanda -s lo -t folder/path"
+  echo "  wanda -s wa -t stars,clouds"
   echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
 }
 
@@ -163,7 +162,7 @@ function config_read_file() {
 
 
 # main
-while getopts ':s:t:huv' flag; do
+while getopts ':s:t:huvd' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG// /%20}" ;;
@@ -178,6 +177,10 @@ while getopts ':s:t:huv' flag; do
   v)
     echo "wanda ($version)"
     exit 0
+    ;;
+  d)
+    url=$(config_get "last_wallpaper_path")
+    curl -s $url -o "$HOME/Downloads/$(basename $url)"
     ;;
   :)
     echo "The $OPTARG option requires an argument."
