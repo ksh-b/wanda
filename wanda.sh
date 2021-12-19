@@ -4,7 +4,7 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.34
+version=0.35
 no_results="No results for '$query'. Try another source/keyword"
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$PREFIX/tmp"
@@ -15,6 +15,7 @@ usage() {
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
   echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
   echo "                  [4c]han,[ca]nvas,[ea]rthview,[im]gur"
+  echo "                  [ar]tstation"
   echo "  -t  t           search term."
   echo "  -o  homescreen  set wallpaper on homescreen"
   echo "  -l  lockscreen  set wallpaper on lockscreen"
@@ -63,12 +64,13 @@ set_wp_file() {
 
 validate_url() {
   if [ -z "$url" ]; then
-    echo "$no_results \nurl:$url"
+    echo "$no_results"
+    echo "url:$url"
     exit 1
   fi
   urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url")
   if [ "$urlstatus" != 200 ]; then
-    echo "[$urlstatus] Failed to load url: $url."
+    echo "Failed to load url: $url. Status $urlstatus"
     exit 1
   fi
 }
@@ -124,16 +126,11 @@ function config_set() {
   fi
   local file=$CONFIG_FILE
   local key=$1
-  local val=${@:2}
-
+  local val=${*:2}
   ensureConfigFileExists "${file}"
-
-  # create key if not exists
   if ! grep -q "^${key}=" "$file"; then
-    # insert a newline just in case the file does not end with one
     printf "\n%s=" "${key}" >>"$file"
   fi
-
   chc "$file" "$key" "$val"
 }
 
@@ -171,7 +168,7 @@ function config_read_file() {
 while getopts ':s:t:huvdlo' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
-  t) query="${OPTARG// /%20}" ;;
+  t) query="${OPTARG//\//%20}" ;;
   o) home="true" ;;
   l) lock="true" ;;
   h)
@@ -215,27 +212,10 @@ wallhaven | wa)
 unsplash | un)
   check_connectivity
   res="https://source.unsplash.com/random/1440x2560/?$query"
-  url=$(curl -Ls -o /dev/null -w %{url_effective} "$res")
+  url=$(curl -Ls -o /dev/null -w "%{url_effective}" "$res")
   if [[ $url == *"source-404"* ]]; then
     echo "$no_results"
   fi
-  set_wp_url "$url"
-  ;;
-reddit | re)
-  check_connectivity
-  if [[ -z $query ]]; then
-    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers.json?limit=100"
-  else
-    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$query&restrict_sr=on&limit=100"
-  fi
-  curl -s "$api" -A $user_agent -o "$tmp/temp.json"
-  posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
-  rand=$(shuf -i 0-"$posts" -n 1)
-  url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
-  while [[ $url == *"/gallery/"* ]]; do
-    rand=$(shuf -i 0-$posts -n 1)
-    url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
-  done
   set_wp_url "$url"
   ;;
 local | lo)
@@ -286,22 +266,41 @@ canvas | ca)
 earthview | ea)
   install_package "xmllint" "libxml2-utils"
   check_connectivity
-  if [[ -z $link ]]; then
-    link=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
+  slug=config_get "earthview_slug"
+  if [[ -z $slug ]]; then
+    slug=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
   fi
-
-  api="https://earthview.withgoogle.com/_api$link.json"
+  api="https://earthview.withgoogle.com/_api$slug.json"
   res=$(curl -s "${api}")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
+  slug=$(echo "$res" | jq --raw-output ".nextSlug")
+  config_set "earthview_slug" "$slug"
   validate_url
-
   filepath="$tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
   set_wp_file "$filepath"
   clean "$filepath"
   ;;
+reddit | re)
+  check_connectivity
+  if [[ -z $query ]]; then
+    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers.json?limit=100"
+  else
+    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$query&restrict_sr=on&limit=100"
+  fi
+  curl -s "$api" -A $user_agent -o "$tmp/temp.json"
+  posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
+  rand=$(shuf -i 0-"$posts" -n 1)
+  url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
+  while [[ $url == *"/gallery/"* ]]; do
+    rand=$(shuf -i 0-$posts -n 1)
+    url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
+  done
+  set_wp_url "$url"
+  ;;
 imgur | im)
+  check_connectivity
   if [[ -z $query ]]; then
     rand=$(($((RANDOM % 10)) % 2))
     if [ $rand -eq 1 ]; then
@@ -309,35 +308,42 @@ imgur | im)
     else
       api="https://old.reddit.com/r/wallpaperdump/search.json?q=phone&restrict_sr=on&limit=100"
     fi
-
     curl -s "$api" -A $user_agent -o "$tmp/temp.json"
-    res=$(cat "$tmp/temp.json")
-    clean=${res//\\\"/\"}
-    clean=${clean/window.postDataJSON=/}
-    clean=${clean/\\\'/\'}
-    clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
-    posts=$(echo "$clean" | jq --raw-output ".data.dist")
+    posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
     rand=$(shuf -i 0-"$posts" -n 1)
-    url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
+    url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
     while [[ $url != *"/gallery/"* ]]; do
-      echo $url
       rand=$(shuf -i 0-$posts -n 1)
-      url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
+      url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
     done
   else
     url="https://imgur.com/gallery/$query"
   fi
-  res=$(curl -s "$url" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
+  res=$(curl -A $user_agent -s "${url/http:/https:}" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
   clean=${res//\\\"/\"}
   clean=${clean/window.postDataJSON=/}
   clean=${clean/\\\'/\'}
   clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
-  posts=$(echo $clean | jq ".image_count")
+  posts=$(echo $clean | jq --raw-output ".image_count")
   rand=$(shuf -i 0-$posts -n 1)
   url=$(echo "$clean" | jq --raw-output ".media[$rand].url")
-  echo $url
   set_wp_url $url
   ;;
+artstation | ar)
+  check_connectivity
+  if [[ -z $query ]]; then
+    api="https://www.artstation.com/api/v2/search/projects.json?page=1&per_page=50&pro_first=0&tags=wallpaper,background"
+  else
+    api="https://www.artstation.com/users/$query/projects.json?page=1"
+  fi
+  res=$(curl -A $user_agent -s "${api}")
+  posts=$(echo $res | jq --raw-output ".total_count")
+  rand=$(shuf -i 0-$posts -n 1)
+  id=$(echo "$res" | jq --raw-output ".data[$rand].id")
+  res=$(curl -A $user_agent -s "https://www.artstation.com/projects/$id.json")
+  url=$(echo "$res" | jq --raw-output ".assets[0].image_url")
+  set_wp_url $url
+;;
 *)
   echo "Unknown source $source"
   usage
