@@ -167,7 +167,7 @@ function config_read_file() {
 
 
 # main
-while getopts ':s:t:huvd' flag; do
+while getopts ':s:t:huvdlo' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG// /%20}" ;;
@@ -222,7 +222,11 @@ unsplash | un)
   ;;
 reddit | re)
   check_connectivity
-  api="https://old.reddit.com/r/MobileWallpaper/search.json?q=$query&restrict_sr=on&limit=100"
+  if [[ -z $query ]]; then
+    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers.json?limit=100"
+  else
+    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$query&restrict_sr=on&limit=100"
+  fi
   res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
   url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   posts=$(echo "$res" | jq --raw-output ".data.dist")
@@ -295,6 +299,34 @@ earthview | ea)
   mogrify -rotate 90 "$filepath"
   set_wp_file "$filepath"
   clean "$filepath"
+  ;;
+imgur|im)
+  if [[ -z $query ]]; then
+    rand=$(($(($RANDOM%10))%2))
+    if [ $rand -eq 1 ];then
+      api="https://old.reddit.com/r/wallpaperdump/search.json?q=mobile&restrict_sr=on&limit=100"
+    else
+      api="https://old.reddit.com/r/wallpaperdump/search.json?q=phone&restrict_sr=on&limit=100"
+    fi
+    res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
+    url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
+    posts=$(echo "$res" | jq --raw-output ".data.dist")
+    rand=$(shuf -i 0-"$posts" -n 1)
+    while [[ $url != *"/gallery/"* ]]; do
+      rand=$(shuf -i 0-$posts -n 1)
+      url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
+    done
+  else
+    url="https://imgur.com/gallery/$query"
+  fi
+  res=$(curl -s $url | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
+  clean=${${link//\\\"/\"}/window.postDataJSON=/}
+  clean=${clean/\\\'/\'}
+  clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
+  posts=$(echo $clean | jq ".image_count")
+  rand=$(shuf -i 0-$posts -n 1)
+  url=$(echo "$clean" | jq --raw-output ".media[$rand].url")
+  set_wp_url $url
   ;;
 *)
   echo "Unknown source $source"
