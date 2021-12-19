@@ -40,6 +40,8 @@ set_wp_url() {
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lu "$1"
   fi
+  config_set "last_wallpaper_path" "$1"
+  config_set "last_wallpaper_time" "$(date)"
 }
 
 set_wp_file() {
@@ -52,6 +54,8 @@ set_wp_file() {
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lf "$1"
   fi
+  config_set "last_wallpaper_path" "$1"
+ config_set "last_wallpaper_time" "$(date)"
 }
 
 validate_url() {
@@ -86,9 +90,6 @@ check_connectivity() {
   fi
 }
 
-clean() {
-  rm -rf "$1"
-}
 
 update() {
   check_connectivity
@@ -109,8 +110,64 @@ update() {
   fi
 }
 
+
+### config editor ###
+# https://stackoverflow.com/a/60116613
+# https://stackoverflow.com/a/2464883
+# https://unix.stackexchange.com/a/331965/312709
+# thanks to ixz in #bash on irc.freenode.net
+CONFIG_FILE="data.cfg"
+function config_set() {
+  if [[ $2 == *"<CANCEL>"* ]]; then
+    exit 0
+  fi
+  local file=$CONFIG_FILE
+  local key=$1
+  local val=${@:2}
+
+  ensureConfigFileExists "${file}"
+
+  # create key if not exists
+  if ! grep -q "^${key}=" "$file"; then
+    # insert a newline just in case the file does not end with one
+    printf "\n%s=" "${key}" >> "$file"
+  fi
+
+  chc "$file" "$key" "$val"
+}
+
+function ensureConfigFileExists() {
+  if [ ! -e "$1" ] ; then
+    if [ -e "$1.example" ]; then
+      cp "$1.example" "$1";
+    else
+      touch "$1"
+    fi
+  fi
+}
+
+function chc() {
+    gawk -v OFS== -v FS== -e \
+    'BEGIN { ARGC = 1 } $1 == ARGV[2] { print ARGV[4] ? ARGV[4] : $1, ARGV[3]; next } 1' \
+    "$@" <"$1" >"$1.1"; mv "$1"{.1,};
+}
+
+function config_get() {
+    val="$(config_read_file "$CONFIG_FILE" "${1}")";
+    if [ "${val}" = "__UNDEFINED__" ]; then
+        val="$(config_read_file "$CONFIG_FILE".example "${1}")";
+    fi
+    printf -- "%s" "${val}";
+}
+
+function config_read_file() {
+    (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
+}
+### ### ###
+
+
 # main
-while getopts ':s:t:olhuv' flag; do
+while getopts ':s:t:huvd' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG// /%20}" ;;
@@ -127,6 +184,12 @@ while getopts ':s:t:olhuv' flag; do
   v)
     echo "wanda ($version)"
     exit 0
+    ;;
+  d)
+    url=$(config_get "last_wallpaper_path")
+    path="$HOME/Downloads/$(basename $url)"
+    curl -s $url -o $path
+    echo "Saved to $path"
     ;;
   :)
     echo "The $OPTARG option requires an argument."
@@ -189,7 +252,9 @@ canvas | ca)
   *) randomize ;;
   esac
   set_wp_file "$filepath"
-  clean "$filepath"
+  rm -rf "$filepath"
+  config_set "last_wallpaper_path" "canvas:$query"
+  config_set "last_wallpaper_time" "$(date)"
   ;;
 4chan | 4c)
   check_connectivity
