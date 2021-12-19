@@ -180,7 +180,9 @@ while getopts ':s:t:huvd' flag; do
     ;;
   d)
     url=$(config_get "last_wallpaper_path")
-    curl -s $url -o "$HOME/Downloads/$(basename $url)"
+    path="$HOME/Downloads/$(basename $url)"
+    curl -s $url -o $path
+    echo "Saved to $path"
     ;;
   :)
     echo "The $OPTARG option requires an argument."
