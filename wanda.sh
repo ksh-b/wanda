@@ -4,15 +4,17 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.33
-no_results="No results for $query. Try another source/keyword"
+version=0.34
+no_results="No results for '$query'. Try another source/keyword"
+user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
+tmp="$PREFIX/tmp"
 
 usage() {
   echo "wanda ($version)"
   echo "Usage:"
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
   echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
-  echo "                  [4c]han,[ca]nvas,[ea]rthview"
+  echo "                  [4c]han,[ca]nvas,[ea]rthview,[im]gur"
   echo "  -t  t           search term."
   echo "  -o  homescreen  set wallpaper on homescreen"
   echo "  -l  lockscreen  set wallpaper on lockscreen"
@@ -27,6 +29,7 @@ usage() {
   echo "  wanda -s lo -t folder/path -ol"
   echo "  wanda -s wa -t stars,clouds -ol"
   echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
+  echo "  wanda -s 4c -t "
 }
 
 set_wp_url() {
@@ -55,12 +58,12 @@ set_wp_file() {
     termux-wallpaper -lf "$1"
   fi
   config_set "last_wallpaper_path" "$1"
- config_set "last_wallpaper_time" "$(date)"
+  config_set "last_wallpaper_time" "$(date)"
 }
 
 validate_url() {
   if [ -z "$url" ]; then
-    echo "$no_results"
+    echo "$no_results \nurl:$url"
     exit 1
   fi
   urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url")
@@ -90,15 +93,14 @@ check_connectivity() {
   fi
 }
 
-
 update() {
   check_connectivity
-  res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
+  res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
   latest_version=$(echo "$res" | jq --raw-output ".version")
   if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
-    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
+    res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
     latest_version=$(echo "$res" | jq --raw-output ".version")
-    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
+    res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
     link=$(echo "$res" | jq --raw-output ".[].url")
     binary=$(basename "$link")
     curl -L "$link" -o "$binary"
@@ -109,7 +111,6 @@ update() {
     echo "Already latest version ($version)"
   fi
 }
-
 
 ### config editor ###
 # https://stackoverflow.com/a/60116613
@@ -130,16 +131,16 @@ function config_set() {
   # create key if not exists
   if ! grep -q "^${key}=" "$file"; then
     # insert a newline just in case the file does not end with one
-    printf "\n%s=" "${key}" >> "$file"
+    printf "\n%s=" "${key}" >>"$file"
   fi
 
   chc "$file" "$key" "$val"
 }
 
 function ensureConfigFileExists() {
-  if [ ! -e "$1" ] ; then
+  if [ ! -e "$1" ]; then
     if [ -e "$1.example" ]; then
-      cp "$1.example" "$1";
+      cp "$1.example" "$1"
     else
       touch "$1"
     fi
@@ -147,24 +148,24 @@ function ensureConfigFileExists() {
 }
 
 function chc() {
-    gawk -v OFS== -v FS== -e \
+  gawk -v OFS== -v FS== -e \
     'BEGIN { ARGC = 1 } $1 == ARGV[2] { print ARGV[4] ? ARGV[4] : $1, ARGV[3]; next } 1' \
-    "$@" <"$1" >"$1.1"; mv "$1"{.1,};
+    "$@" <"$1" >"$1.1"
+  mv "$1"{.1,}
 }
 
 function config_get() {
-    val="$(config_read_file "$CONFIG_FILE" "${1}")";
-    if [ "${val}" = "__UNDEFINED__" ]; then
-        val="$(config_read_file "$CONFIG_FILE".example "${1}")";
-    fi
-    printf -- "%s" "${val}";
+  val="$(config_read_file "$CONFIG_FILE" "${1}")"
+  if [ "${val}" = "__UNDEFINED__" ]; then
+    val="$(config_read_file "$CONFIG_FILE".example "${1}")"
+  fi
+  printf -- "%s" "${val}"
 }
 
 function config_read_file() {
-    (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
+  (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-
 }
 ### ### ###
-
 
 # main
 while getopts ':s:t:huvdlo' flag; do
@@ -227,10 +228,10 @@ reddit | re)
   else
     api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$query&restrict_sr=on&limit=100"
   fi
-  res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
-  url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
-  posts=$(echo "$res" | jq --raw-output ".data.dist")
+  curl -s "$api" -A $user_agent -o "$tmp/temp.json"
+  posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
   rand=$(shuf -i 0-"$posts" -n 1)
+  url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
   while [[ $url == *"/gallery/"* ]]; do
     rand=$(shuf -i 0-$posts -n 1)
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
@@ -243,7 +244,7 @@ local | lo)
   ;;
 canvas | ca)
   install_package "Imagemagick" "imagemagick"
-  filepath="$PREFIX/tmp/canvas.png"
+  filepath="$tmp/canvas.png"
   . canvas
   case $query in
   1 | solid) solid ;;
@@ -264,7 +265,7 @@ canvas | ca)
   check_connectivity
   if [ -z "$query" ]; then
     echo "4chan requires a thread link."
-    echo "$(wanda -h | grep 4chan)";
+    echo "$(wanda -h | grep 4chan)"
   fi
   board=$(echo "$query" | cut -d'/' -f4)
   image_host="https://i.4cdn.org/${board}/"
@@ -294,25 +295,32 @@ earthview | ea)
   url=$(echo "$res" | jq --raw-output ".photoUrl")
   validate_url
 
-  filepath="$PREFIX/tmp/earthview.jpg"
+  filepath="$tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
   set_wp_file "$filepath"
   clean "$filepath"
   ;;
-imgur|im)
+imgur | im)
   if [[ -z $query ]]; then
-    rand=$(($(($RANDOM%10))%2))
-    if [ $rand -eq 1 ];then
+    rand=$(($((RANDOM % 10)) % 2))
+    if [ $rand -eq 1 ]; then
       api="https://old.reddit.com/r/wallpaperdump/search.json?q=mobile&restrict_sr=on&limit=100"
     else
       api="https://old.reddit.com/r/wallpaperdump/search.json?q=phone&restrict_sr=on&limit=100"
     fi
-    res=$(curl -s  "$api")
-    url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
-    posts=$(echo "$res" | jq --raw-output ".data.dist")
+
+    curl -s "$api" -A $user_agent -o "$tmp/temp.json"
+    res=$(cat "$tmp/temp.json")
+    clean=${res//\\\"/\"}
+    clean=${clean/window.postDataJSON=/}
+    clean=${clean/\\\'/\'}
+    clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
+    posts=$(echo "$clean" | jq --raw-output ".data.dist")
     rand=$(shuf -i 0-"$posts" -n 1)
+    url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
     while [[ $url != *"/gallery/"* ]]; do
+      echo $url
       rand=$(shuf -i 0-$posts -n 1)
       url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
     done
@@ -327,6 +335,7 @@ imgur|im)
   posts=$(echo $clean | jq ".image_count")
   rand=$(shuf -i 0-$posts -n 1)
   url=$(echo "$clean" | jq --raw-output ".media[$rand].url")
+  echo $url
   set_wp_url $url
   ;;
 *)
