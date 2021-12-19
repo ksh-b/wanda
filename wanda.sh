@@ -308,7 +308,7 @@ imgur|im)
     else
       api="https://old.reddit.com/r/wallpaperdump/search.json?q=phone&restrict_sr=on&limit=100"
     fi
-    res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
+    res=$(curl -s  "$api")
     url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
     posts=$(echo "$res" | jq --raw-output ".data.dist")
     rand=$(shuf -i 0-"$posts" -n 1)
@@ -319,8 +319,9 @@ imgur|im)
   else
     url="https://imgur.com/gallery/$query"
   fi
-  res=$(curl -s $url | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
-  clean=${${link//\\\"/\"}/window.postDataJSON=/}
+  res=$(curl -s "$url" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
+  clean=${res//\\\"/\"}
+  clean=${clean/window.postDataJSON=/}
   clean=${clean/\\\'/\'}
   clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
   posts=$(echo $clean | jq ".image_count")
