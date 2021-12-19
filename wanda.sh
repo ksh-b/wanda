@@ -4,7 +4,7 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.32
+version=0.33
 no_results="No results for $query. Try another source/keyword"
 
 usage() {
