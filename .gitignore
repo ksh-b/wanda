@@ -3,3 +3,6 @@
 downloads/*
 sources/dynamic/images/*
 *.tar.gz
+*.deb
+temp.json
+data.cfg
