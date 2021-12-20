@@ -119,7 +119,7 @@ update() {
 # https://stackoverflow.com/a/2464883
 # https://unix.stackexchange.com/a/331965/312709
 # thanks to ixz in #bash on irc.freenode.net
-CONFIG_FILE="data.cfg"
+CONFIG_FILE="$PREFIX/etc/wanda.conf"
 function config_set() {
   if [[ $2 == *"<CANCEL>"* ]]; then
     exit 0
