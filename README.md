@@ -21,30 +21,31 @@ pkg in ./wanda_version_all.deb
 wanda [-s source] [-t search term] [-o] [-l] [-h]
   -s  source      unsplash,wallhaven,reddit
                   4chan,canvas,earthview,local
-  -t  term        search term(s)
+  -t  term        search term
   -o  homescreen  set wallpaper on homescreen
   -l  lockscreen  set wallpaper on lockscreen
+  -d  download    save current wallpaper to storage
   -h  help        this help message
   -u  update      update wanda
   -v  version     current version
-
-Examples:
-  - No need for parameters. Random image from unsplash.
-    wanda
-  - First two letters of source is fine (earthview in this case)
-    wanda -s ea
-  - Search terms/tags can be specified using t
-    wanda -sun -t eiffel tower
-  - However some sources have different meaning for t
-    imgur takes gallery id. eg: https://imgur.com/gallery/[L8ystCU]
-    local takes path wrt $HOME. eg: [storage/shared/Downloads]
-    4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
-    artstation takes author id. eg: https://www.artstation.com/[huniartist]
 ```
 
-## Note
-Please be aware of the source you set. Some sources may have inapt content.
-If not sure use earthview.
+## Examples:
+- No need for parameters. Random image from unsplash.
+  wanda
+- First two letters of source is fine (earthview in this case)
+  wanda -s ea
+- Search terms/tags can be specified using t
+  wanda -sun -t eiffel tower
+- However some sources have different meaning for t
+  imgur takes gallery id. eg: https://imgur.com/gallery/[L8ystCU]
+  local takes path wrt $HOME. eg: [storage/shared/Downloads]
+  4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
+  artstation takes author id. eg: https://www.artstation.com/[huniartist]
+
+## Notes
+- By default the source is [unsplash](https://unsplash.com).
+- Please be aware that sources like 4chan, artstation or wallhaven may have inapt images sometimes.
 
 ## Supported sources
 
