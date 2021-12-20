@@ -219,7 +219,7 @@ unsplash | un)
   set_wp_url "$url"
   ;;
 local | lo)
-  filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
+  filepath=$(find "$HOME/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
   set_wp_file "$filepath"
   ;;
 canvas | ca)
