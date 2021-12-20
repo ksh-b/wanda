@@ -5,11 +5,11 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 
 ## Installation
 
-1. Install [termux](https://f-droid.org/en/packages/com.termux/) and [termux-api](https://f-droid.org/en/packages/com.termux.api/)
+1. Install [termux](https://f-droid.org/en/packages/com.termux) and [termux-api](https://f-droid.org/en/packages/com.termux.api)
 
 2. Install wanda
 
-- Download latest release from [here](https://gitlab.com/kshib/wanda/-/releases)
+- Download latest release from [gitlab](https://gitlab.com/kshib/wanda/-/releases) or [package-cloud](https://packagecloud.io/kshib/wanda-main)
 - Install it
 ```
 termux-setup-storage
@@ -19,34 +19,45 @@ pkg in ./wanda_version_all.deb
 ## Usage
 ```
 wanda [-s source] [-t search term] [-o] [-l] [-h]
-  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal
-                  [4c]han,[ca]nvas,[ea]rthview
-  -t  term        search term.
+  -s  source      unsplash,wallhaven,reddit
+                  4chan,canvas,earthview,local
+  -t  term        search term
   -o  homescreen  set wallpaper on homescreen
   -l  lockscreen  set wallpaper on lockscreen
+  -d  download    save current wallpaper to storage
   -h  help        this help message
   -u  update      update wanda
   -v  version     current version
-
-Examples:
-  wanda
-  wanda -s ea
-  wanda -s un -t eiffel tower -ol
-  wanda -s lo -t folder/path -ol
-  wanda -s wa -t stars,clouds -ol
-  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495
-
 ```
+
+## Examples:
+- No need for parameters. Random image from unsplash.
+  wanda
+- First two letters of source is fine (earthview in this case)
+  wanda -s ea
+- Search terms/tags can be specified using t
+  wanda -sun -t eiffel tower
+- However some sources have different meaning for t
+  imgur takes gallery id. eg: https://imgur.com/gallery/[L8ystCU]
+  local takes path wrt $HOME. eg: [storage/shared/Downloads]
+  4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
+  artstation takes author id. eg: https://www.artstation.com/[huniartist]
+
+## Notes
+- By default the source is [unsplash](https://unsplash.com).
+- Please be aware that sources like 4chan, artstation or wallhaven may have inapt images sometimes.
 
 ## Supported sources
 
+- [4chan](https://boards.4chan.org)
+- [artstation](https://artstation.com)
+- [canvas](https://github.com/adi1090x/canvas)
+- [earthview](https://earthview.withgoogle.com)
+- [imgur](https://imgur.com)
 - [local](https://wiki.termux.com/wiki/Termux-setup-storage)
 - [reddit](https://reddit.com)
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
-- [4chan](https://boards.4chan.org)
-- [canvas](https://github.com/adi1090x/canvas)
-- [earthview](https://earthview.withgoogle.com)
 
 ## Automate
 
