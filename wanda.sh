@@ -332,18 +332,21 @@ imgur | im)
 artstation | ar)
   check_connectivity
   if [[ -z $query ]]; then
-    api="https://www.artstation.com/api/v2/search/projects.json?page=1&per_page=50&pro_first=0&tags=wallpaper,background"
-  else
-    api="https://www.artstation.com/users/$query/projects.json?page=1"
+    artists=("huniartist" "tohad" "snatti" "aenamiart" "seventeenth" "andreasrocha" "slawekfedorczuk")
+    i=0
+    if [[ $(basename $SHELL) == "zsh" ]]; then
+      i=1
+    fi
+    query=${artists[$(($RANDOM % ${#artists[@]} + i ))]}
   fi
-  res=$(curl -A $user_agent -s "${api}")
-  posts=$(echo $res | jq --raw-output ".total_count")
-  rand=$(shuf -i 0-$posts -n 1)
+  api="https://www.artstation.com/users/$query/projects.json?page=1&per_page=50"
+  res=$(curl -s -A $user_agent "${api}")
+  rand=$(shuf -i 0-49 -n 1)
   id=$(echo "$res" | jq --raw-output ".data[$rand].id")
-  res=$(curl -A $user_agent -s "https://www.artstation.com/projects/$id.json")
-  url=$(echo "$res" | jq --raw-output ".assets[0].image_url")
+  res=$(curl -s -A $user_agent "https://www.artstation.com/projects/$id.json")
+  url=$(echo $res | jq --raw-output ".assets[0].image_url")
   set_wp_url $url
-;;
+  ;;
 *)
   echo "Unknown source $source"
   usage
