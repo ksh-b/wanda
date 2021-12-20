@@ -1,17 +1,15 @@
 # wanda
 Bash script to set randomly picked wallpaper using [termux](https://github.com/termux/termux-app)
 
-Check out the [lite version](https://gitlab.com/kshib/wanda/-/tree/lite) if you do not wish to edit config files or want to have minimal setup.
-
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7c33b1c42b8d4a3fb80c74c9c8ececb9)](https://www.codacy.com/gl/kshib/wanda/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=kshib/wanda&amp;utm_campaign=Badge_Grade)
 
 ## Installation
 
-1. Install [termux](https://f-droid.org/en/packages/com.termux/) and [termux-api](https://f-droid.org/en/packages/com.termux.api/)
+1. Install [termux](https://f-droid.org/en/packages/com.termux) and [termux-api](https://f-droid.org/en/packages/com.termux.api)
 
 2. Install wanda
 
-- Download latest release from [here](https://gitlab.com/kshib/wanda/-/releases)
+- Download latest release from [gitlab](https://gitlab.com/kshib/wanda/-/releases) or [package-cloud](https://packagecloud.io/kshib/wanda-main)
 - Install it
 ```
 termux-setup-storage
@@ -21,9 +19,9 @@ pkg in ./wanda_version_all.deb
 ## Usage
 ```
 wanda [-s source] [-t search term] [-o] [-l] [-h]
-  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal
-                  [4c]han,[ca]nvas,[ea]rthview
-  -t  term        search term.
+  -s  source      unsplash,wallhaven,reddit
+                  4chan,canvas,earthview,local
+  -t  term        search term(s)
   -o  homescreen  set wallpaper on homescreen
   -l  lockscreen  set wallpaper on lockscreen
   -h  help        this help message
@@ -31,24 +29,34 @@ wanda [-s source] [-t search term] [-o] [-l] [-h]
   -v  version     current version
 
 Examples:
-  wanda
-  wanda -s ea
-  wanda -s un -t eiffel tower -ol
-  wanda -s lo -t folder/path -ol
-  wanda -s wa -t stars,clouds -ol
-  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495
-
+  - No need for parameters. Random image from unsplash.
+    wanda
+  - First two letters of source is fine (earthview in this case)
+    wanda -s ea
+  - Search terms/tags can be specified using t
+    wanda -sun -t eiffel tower
+  - However some sources have different meaning for t
+    imgur takes gallery id. eg: https://imgur.com/gallery/[L8ystCU]
+    local takes path wrt $HOME. eg: [storage/shared/Downloads]
+    4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
+    artstation takes author id. eg: https://www.artstation.com/[huniartist]
 ```
+
+## Note
+Please be aware of the source you set. Some sources may have inapt content.
+If not sure use earthview.
 
 ## Supported sources
 
+- [4chan](https://boards.4chan.org)
+- [artstation](https://artstation.com)
+- [canvas](https://github.com/adi1090x/canvas)
+- [earthview](https://earthview.withgoogle.com)
+- [imgur](https://imgur.com)
 - [local](https://wiki.termux.com/wiki/Termux-setup-storage)
 - [reddit](https://reddit.com)
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
-- [4chan](https://boards.4chan.org)
-- [canvas](https://github.com/adi1090x/canvas)
-- [earthview](https://earthview.withgoogle.com)
 
 ## Automate
 
@@ -66,7 +74,7 @@ crontab -e
 ```
 3. Set your desired interval. For hourly:
 ```
-0 * * * * wanda -t mountains
+@hourly wanda -t mountains
 ```
 [(more examples)](https://crontab.guru/examples.html)
 
