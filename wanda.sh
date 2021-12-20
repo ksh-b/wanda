@@ -185,8 +185,8 @@ while getopts ':s:t:huvdlo' flag; do
     ;;
   d)
     url=$(config_get "last_wallpaper_path")
-    path="$HOME/Downloads/$(basename $url)"
-    curl -s $url -o $path
+    path="$HOME/Downloads/$(basename "$url")"
+    curl -s "$url" -o "$path"
     echo "Saved to $path"
     ;;
   :)
@@ -289,10 +289,10 @@ reddit | re)
   else
     api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$query&restrict_sr=on&limit=100"
   fi
-  curl -s "$api" -A $user_agent -o "$tmp/temp.json"
-  posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
+  curl -s "$api" -A "$user_agent" -o "$tmp/temp.json"
+  posts=$(jq --raw-output ".data.dist" < "$tmp/temp.json")
   rand=$(shuf -i 0-"$posts" -n 1)
-  url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
+  url=$(jq --raw-output ".data.children[$rand].data.url"< "$tmp/temp.json")
   while [[ $url == *"/gallery/"* ]]; do
     rand=$(shuf -i 0-$posts -n 1)
     url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
@@ -319,33 +319,33 @@ imgur | im)
   else
     url="https://imgur.com/gallery/$query"
   fi
-  res=$(curl -A $user_agent -s "${url/http:/https:}" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
+  res=$(curl -A "$user_agent" -s "${url/http:/https:}" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
   clean=${res//\\\"/\"}
   clean=${clean/window.postDataJSON=/}
   clean=${clean/\\\'/\'}
   clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
-  posts=$(echo $clean | jq --raw-output ".image_count")
+  posts=$(echo "$clean" | jq --raw-output ".image_count")
   rand=$(shuf -i 0-$posts -n 1)
   url=$(echo "$clean" | jq --raw-output ".media[$rand].url")
-  set_wp_url $url
+  set_wp_url "$url"
   ;;
 artstation | ar)
   check_connectivity
   if [[ -z $query ]]; then
     artists=("huniartist" "tohad" "snatti" "aenamiart" "seventeenth" "andreasrocha" "slawekfedorczuk")
     i=0
-    if [[ $(basename $SHELL) == "zsh" ]]; then
+    if [[ $(basename "$SHELL") == "zsh" ]]; then
       i=1
     fi
     query=${artists[$(($RANDOM % ${#artists[@]} + i ))]}
   fi
   api="https://www.artstation.com/users/$query/projects.json?page=1&per_page=50"
-  res=$(curl -s -A $user_agent "${api}")
+  res=$(curl -s -A "$user_agent" "${api}")
   rand=$(shuf -i 0-49 -n 1)
   id=$(echo "$res" | jq --raw-output ".data[$rand].id")
-  res=$(curl -s -A $user_agent "https://www.artstation.com/projects/$id.json")
-  url=$(echo $res | jq --raw-output ".assets[0].image_url")
-  set_wp_url $url
+  res=$(curl -s -A "$user_agent" "https://www.artstation.com/projects/$id.json")
+  url=$(echo "$res" | jq --raw-output ".assets[0].image_url")
+  set_wp_url "$url"
   ;;
 *)
   echo "Unknown source $source"
