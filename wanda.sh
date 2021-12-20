@@ -4,7 +4,7 @@ source="unsplash"
 query=""
 home="false"
 lock="false"
-version=0.36
+version=0.361
 no_results="No results for '$query'. Try another source/keyword"
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$PREFIX/tmp"
@@ -13,12 +13,13 @@ usage() {
   echo "wanda ($version)"
   echo "Usage:"
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
-  echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
-  echo "                  [4c]han,[ca]nvas,[ea]rthview,[im]gur"
-  echo "                  [ar]tstation"
-  echo "  -t  t           search term."
+  echo "  -s  source      unsplash,wallhaven,reddit"
+  echo "                  4chan,canvas,earthview,imgur"
+  echo "                  artstation,local"
+  echo "  -t  term        search term"
   echo "  -o  homescreen  set wallpaper on homescreen"
   echo "  -l  lockscreen  set wallpaper on lockscreen"
+  echo "  -d  download    save current wallpaper to storage"
   echo "  -h  help        this help message"
   echo "  -u  update      update wanda"
   echo "  -v  version     current version"
@@ -219,7 +220,7 @@ unsplash | un)
   set_wp_url "$url"
   ;;
 local | lo)
-  filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
+  filepath=$(find "$HOME/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
   set_wp_file "$filepath"
   ;;
 canvas | ca)
