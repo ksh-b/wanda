@@ -1,4 +1,4 @@
-image: debian:latest
+image: ubuntu:latest
 
 before_script:
   - apt-get update -y && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
