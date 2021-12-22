@@ -2,7 +2,8 @@ image: debian:latest
 
 before_script:
   - apt-get update -y && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
-  - apt-get install -y python3 python3-pip
+  - apt install python3 python3-pip dh-make build-essential autoconf autotools-dev libncurses5-dev libglib2.0-dev libgeoip-dev libtokyocabinet-dev zlib1g-dev libncursesw5-dev libbz2-dev -y
+  - autoreconf -fvi-y
   - pip install termux-create-package
 
 build:
@@ -11,7 +12,6 @@ build:
     - chmod +x wanda.sh
     - chmod +x canvas.sh
     - termux-create-package manifest.json
-    - tar cvfz wanda.tar.gz wanda*.deb
   artifacts:
     paths:
       - wanda*.deb
