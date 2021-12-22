@@ -1,8 +1,8 @@
 image: debian:latest
 
 before_script:
-  - apt-get install -y python
   - apt-get update -y && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
+  - apt-get install -y python3 python3-pip
   - pip install termux-create-package
 
 build:
