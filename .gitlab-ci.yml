@@ -1,8 +1,7 @@
 image: debian:latest
 
 before_script:
-  - apt-get install -y libncurses5-dev libglib2.0-dev libgeoip-dev libtokyocabinet-dev zlib1g-dev libncursesw5-dev libbz2-dev python3 python3-pip dh-make build-essential autoconf autotools-dev
-  - autoreconf -fvi tar
+  - apt-get install -y python3 python3-pip dh-make build-essential autoconf autotools-dev
   - apt-get update -y && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
   - pip install termux-create-package
 
