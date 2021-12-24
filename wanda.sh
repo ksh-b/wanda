@@ -235,8 +235,10 @@ artstation() {
       i=1
     fi
     query=${artists[$((RANDOM % ${#artists[@]} + i))]}
+  else
+    query=$1
   fi
-  api="https://www.artstation.com/users/$1/projects.json?page=1&per_page=50"
+  api="https://www.artstation.com/users/$query/projects.json?page=1&per_page=50"
   res=$(curl -s -A "$user_agent" "${api}")
   if [[ -z $res ]]; then
     echo $no_results
