@@ -162,6 +162,9 @@ fourchan() {
     board=$(echo "$1" | cut -d'/' -f4)
   fi
   res=$(curl -s "$api")
+  if [[ -z $res ]]; then
+    validate_url 0
+  fi
   posts=$(echo "$res" | jq '.[] | length')
   rand=$(shuf -i 0-$posts -n 1)
   post_image=$(echo "$res" | jq ".[][$rand].tim")
