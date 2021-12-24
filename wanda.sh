@@ -1,13 +1,11 @@
 #!/usr/bin/bash
 
-PREFIX=.
-
 source="unsplash"
 query=""
 home="false"
 lock="false"
 version=0.361
-no_results="No results for given term. Try another source/term."
+no_results="No results found. Try another source/term."
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$PREFIX/tmp"
 CONFIG_FILE="$PREFIX/etc/wanda.conf"
@@ -36,10 +34,6 @@ usage() {
   echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
 }
 
-termux-wallpaper(){
-echo ""
-}
-
 set_wp_url() {
   validate_url $1
   if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
@@ -51,8 +45,8 @@ set_wp_url() {
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lu "$1"
   fi
-  # config_set "last_wallpaper_path" "$1"
-  # config_set "last_wallpaper_time" "$(date)"
+  config_set "last_wallpaper_path" "$1"
+  config_set "last_wallpaper_time" "$(date)"
 }
 
 set_wp_file() {
@@ -149,13 +143,24 @@ earthview() {
 }
 
 fourchan() {
-  if [ -z "$1" ]; then
-    echo "4chan requires a thread link."
-    echo "$(wanda -h | grep 4chan)"
-  fi
-  board=$(echo "$1" | cut -d'/' -f4)
   image_host="https://i.4cdn.org/${board}/"
-  api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
+  # handle no search term -> find threads with mobile/phone in their title.
+  # if no threads with mobile/phone in their title exists, first thread is selected
+  if [ -z "$1" ]; then
+    api="https://a.4cdn.org/wg/catalog.json"
+    res=$(curl -s "$api")
+    thread=$(echo "$res" | jq '[.[].threads[] | {title: .semantic_url, no: .no} | select( .title | contains("mobile")).no ][0]')
+    if [[ -z "$thread" ]]; then
+      thread=$(echo "$res" | jq '[.[].threads[] | {title: .semantic_url, no: .no} | select( .title | contains("phone")).no ][0]')
+    fi
+    if [[ -z "$thread" ]]; then
+      thread=$(echo "$res" | jq '.[0].threads[1].no')
+    fi
+    api="https://a.4cdn.org/wg/thread/$thread.json"
+  else
+    api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
+    board=$(echo "$1" | cut -d'/' -f4)
+  fi
   res=$(curl -s "$api")
   posts=$(echo "$res" | jq '.[] | length')
   rand=$(shuf -i 0-$posts -n 1)
