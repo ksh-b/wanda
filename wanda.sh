@@ -95,7 +95,6 @@ update() {
   res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
   latest_version=$(echo "$res" | jq --raw-output ".version")
   if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
-    res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
     latest_version=$(echo "$res" | jq --raw-output ".version")
     res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
     link=$(echo "$res" | jq --raw-output ".[].url")
