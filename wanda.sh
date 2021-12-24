@@ -64,7 +64,7 @@ set_wp_file() {
 }
 
 validate_url() {
-  if [[ "$1" != *"http"* ]]; then
+  if [[ $1 != *"http"* ]]; then
     echo "$no_results"
     exit 1
   fi
@@ -150,10 +150,10 @@ fourchan() {
     api="https://a.4cdn.org/wg/catalog.json"
     res=$(curl -s "$api")
     thread=$(echo "$res" | jq '[.[].threads[] | {title: .semantic_url, no: .no} | select( .title | contains("mobile")).no ][0]')
-    if [[ -z "$thread" ]]; then
+    if [[ -z $thread ]]; then
       thread=$(echo "$res" | jq '[.[].threads[] | {title: .semantic_url, no: .no} | select( .title | contains("phone")).no ][0]')
     fi
-    if [[ -z "$thread" ]]; then
+    if [[ -z $thread ]]; then
       thread=$(echo "$res" | jq '.[0].threads[1].no')
     fi
     api="https://a.4cdn.org/wg/thread/$thread.json"
@@ -181,9 +181,9 @@ reddit() {
     api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$1&restrict_sr=on&limit=100"
   fi
   curl -s "$api" -A "$user_agent" -o "$tmp/temp.json"
-  posts=$(jq --raw-output ".data.dist" < "$tmp/temp.json")
+  posts=$(jq --raw-output ".data.dist" <"$tmp/temp.json")
   rand=$(shuf -i 0-"$posts" -n 1)
-  url=$(jq --raw-output ".data.children[$rand].data.url"< "$tmp/temp.json")
+  url=$(jq --raw-output ".data.children[$rand].data.url" <"$tmp/temp.json")
   while [[ $url == *"/gallery/"* ]]; do
     rand=$(shuf -i 0-$posts -n 1)
     url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
@@ -211,7 +211,7 @@ imgur() {
     url="https://imgur.com/gallery/$1"
   fi
   res=$(curl -A "$user_agent" -s "${url/http:/https:}" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
-  if [[ "$res" != *"i.imgur.com"* ]]; then
+  if [[ $res != *"i.imgur.com"* ]]; then
     validate_url 0
   else
     clean=${res//\\\"/\"}
@@ -231,7 +231,7 @@ artstation() {
     if [[ $(basename "$SHELL") == "zsh" ]]; then
       i=1
     fi
-    query=${artists[$(($RANDOM % ${#artists[@]} + i ))]}
+    query=${artists[$((RANDOM % ${#artists[@]} + i))]}
   fi
   api="https://www.artstation.com/users/$1/projects.json?page=1&per_page=50"
   res=$(curl -s -A "$user_agent" "${api}")
