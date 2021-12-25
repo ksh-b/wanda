@@ -152,7 +152,8 @@ fourchan() {
     if [[ -z $thread ]]; then
       thread=$(echo "$res" | jq '.[0].threads[1].no')
     fi
-    api="https://a.4cdn.org/wg/thread/$thread.json"
+    board="wg"
+    api="https://a.4cdn.org/$board/thread/$thread.json"
   else
     api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
     board=$(echo "$1" | cut -d'/' -f4)
