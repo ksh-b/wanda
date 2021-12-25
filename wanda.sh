@@ -123,7 +123,7 @@ unsplash() {
 
 earthview() {
   local filepath
-  slug=config_get "earthview_slug"
+  slug=$(config_get "earthview_slug")
   api="https://earthview.withgoogle.com/_api$slug.json"
   res=$(curl -s "${api}")
   slug=$(echo "$res" | jq --raw-output ".nextSlug")
@@ -335,9 +335,11 @@ while getopts ':s:t:huvdlo' flag; do
     ;;
   d)
     url=$(config_get "last_wallpaper_path")
-    path="$HOME/Downloads/$(basename "$url")"
+    mkdir -p "$HOME/Download/wanda/"
+    path="$HOME/Download/wanda/$(basename "$url")"
     curl -s "$url" -o "$path"
     echo "Saved to $path"
+    exit 0
     ;;
   :)
     echo "The $OPTARG option requires an argument."
