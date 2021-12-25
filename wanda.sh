@@ -263,6 +263,14 @@ canvas() {
   esac
   config_set "last_wallpaper_path" "canvas"
   config_set "last_wallpaper_time" "$(date)"
+  retry=10
+  while ! test -f "$filepath"; do
+    sleep 2
+    retry=$(( retry - 1 ))
+    if [[ $retry == 0 ]];then
+      break
+    fi
+  done
   echo "$filepath"
 }
 
