@@ -12,7 +12,7 @@ build:
     - chmod 755 "termux-create-package"
     - chmod +x wanda.sh
     - chmod +x canvas.sh
-    - termux-create-package manifest.json
+    - ./termux-create-package manifest.json
   artifacts:
     paths:
       - wanda*.deb
