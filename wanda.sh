@@ -344,8 +344,8 @@ while getopts ':s:t:huvdlo' flag; do
     ;;
   d)
     url=$(config_get "last_wallpaper_path")
-    mkdir -p "$HOME/Download/wanda/"
-    path="$HOME/Download/wanda/$(basename "$url")"
+    mkdir -p "$HOME/storage/shared/Download/wanda/"
+    path="$HOME/storage/shared/Download/wanda/$(basename "$url")"
     curl -s "$url" -o "$path"
     echo "Saved to $path"
     exit 0
