@@ -122,7 +122,6 @@ unsplash() {
 }
 
 earthview() {
-  local filepath
   slug=$(config_get "earthview_slug")
   if [[ -z $slug ]]; then
     slug=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
@@ -132,7 +131,7 @@ earthview() {
   slug=$(echo "$res" | jq --raw-output ".nextSlug")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
   config_set "earthview_slug" "$slug"
-  validate_url
+  validate_url $url
   filepath="$tmp/earthview.jpg"
   curl -s "$url" -o "$filepath"
   mogrify -rotate 90 "$filepath"
