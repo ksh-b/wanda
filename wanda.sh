@@ -22,7 +22,6 @@ usage() {
   echo "  -l  lockscreen  set wallpaper on lockscreen"
   echo "  -d  download    save current wallpaper to storage"
   echo "  -h  help        this help message"
-  echo "  -u  update      update wanda"
   echo "  -v  version     current version"
   echo ""
   echo "Examples:"
@@ -85,24 +84,6 @@ check_connectivity() {
   if [ "$?" != 0 ]; then
     echo "Please check your internet connection and try again."
     exit 1
-  fi
-}
-
-update() {
-  check_connectivity
-  res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
-  latest_version=$(echo "$res" | jq --raw-output ".version")
-  if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
-    latest_version=$(echo "$res" | jq --raw-output ".version")
-    res=$(curl -s "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
-    link=$(echo "$res" | jq --raw-output ".[].url")
-    binary=$(basename "$link")
-    curl -L "$link" -o "$binary"
-    pkg in "./$binary"
-    rm "$binary"
-    wanda -h
-  else
-    echo "Already latest version ($version)"
   fi
 }
 

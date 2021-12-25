@@ -27,7 +27,6 @@ wanda [-s source] [-t search term] [-o] [-l] [-h] [-d]
   -l  lockscreen  set wallpaper on lockscreen
   -d  download    save current wallpaper to storage
   -h  help        this help message
-  -u  update      update wanda
   -v  version     current version
 ```
 
