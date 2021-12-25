@@ -18,7 +18,7 @@ pkg in ./wanda*.deb
 
 ## Usage
 ```
-wanda [-s source] [-t search term] [-o] [-l] [-h]
+wanda [-s source] [-t search term] [-o] [-l] [-h] [-d]
   -s  source      unsplash,wallhaven,reddit
                   4chan,canvas,earthview,local
   -t  term        search term
@@ -32,6 +32,7 @@ wanda [-s source] [-t search term] [-o] [-l] [-h]
 
 ## Examples:
 - No need for parameters. Random image from unsplash.
+
   ```
   wanda
   ```
