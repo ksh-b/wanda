@@ -32,15 +32,19 @@ wanda [-s source] [-t search term] [-o] [-l] [-h]
 
 ## Examples:
 - No need for parameters. Random image from unsplash.
-  wanda
+  `wanda`
 - First two letters of source is fine (earthview in this case)
-  wanda -s ea
+  `wanda -s ea`
 - Search terms/tags can be specified using t
-  wanda -sun -t eiffel tower
+  `wanda -sun -t eiffel tower`
 - However some sources have different meaning for t
+
   imgur takes gallery id. eg: https://imgur.com/gallery/[L8ystCU]
+
   local takes path wrt $HOME. eg: [storage/shared/Downloads]
+
   4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
+
   artstation takes author id. eg: https://www.artstation.com/[huniartist]
 
 ## Notes
