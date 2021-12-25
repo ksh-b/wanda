@@ -10,7 +10,6 @@
   "files" :{
     "wanda.sh": "bin/wanda",
     "canvas.sh": "bin/canvas",
-    "tmp.json":"tmp/temp.json",
     "wanda.conf":"etc/wanda.conf"
   }
 }
