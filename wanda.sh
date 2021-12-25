@@ -139,7 +139,6 @@ earthview() {
 }
 
 fourchan() {
-  image_host="https://i.4cdn.org/${board}/"
   # handle no search term -> find threads with mobile/phone in their title.
   # if no threads with mobile/phone in their title exists, first thread is selected
   if [ -z "$1" ]; then
@@ -158,6 +157,7 @@ fourchan() {
     api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
     board=$(echo "$1" | cut -d'/' -f4)
   fi
+  image_host="https://i.4cdn.org/${board}/"
   res=$(curl -s "$api")
   if [[ -z $res ]]; then
     validate_url 0
