@@ -59,8 +59,6 @@ set_wp_file() {
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lf "$1"
   fi
-  config_set "last_wallpaper_path" "$1"
-  config_set "last_wallpaper_time" "$(date)"
 }
 
 validate_url() {
@@ -122,9 +120,9 @@ unsplash() {
 }
 
 earthview() {
-  slug=$(config_get "earthview_slug")
+  slug="/$(config_get "earthview_slug")"
   if [[ -z $slug ]]; then
-    slug=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
+    slug="$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)"
   fi
   api="https://earthview.withgoogle.com/_api$slug.json"
   res=$(curl -s "${api}")
@@ -346,6 +344,7 @@ while getopts ':s:t:huvdlo' flag; do
     ;;
   d)
     url=$(config_get "last_wallpaper_path")
+    validate_url $url
     mkdir -p "$HOME/storage/shared/Download/wanda/"
     path="$HOME/storage/shared/Download/wanda/$(basename "$url")"
     curl -s "$url" -o "$path"
