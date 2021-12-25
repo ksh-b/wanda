@@ -13,7 +13,7 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 - Install it
 ```
 termux-setup-storage
-pkg in ./wanda_version_all.deb
+pkg in ./wanda*.deb
 ```
 
 ## Usage
@@ -32,24 +32,26 @@ wanda [-s source] [-t search term] [-o] [-l] [-h]
 
 ## Examples:
 - No need for parameters. Random image from unsplash.
-  `wanda`
+  ```
+  wanda
+  ```
 - First two letters of source is fine (earthview in this case)
-  `wanda -s ea`
+  ```
+  wanda -s ea
+  ```
 - Search terms/tags can be specified using t
-  `wanda -sun -t eiffel tower`
+  ```
+  wanda -s un -t eiffel tower
+  ```
 - However some sources have different meaning for t
-
-  imgur takes gallery id. eg: https://imgur.com/gallery/[L8ystCU]
-
-  local takes path wrt $HOME. eg: [storage/shared/Downloads]
-
-  4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
-
-  artstation takes author id. eg: https://www.artstation.com/[huniartist]
+  - imgur takes gallery id. eg: [L8ystCU]
+  - local takes path wrt $HOME. eg: [storage/shared/Downloads]
+  - 4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
+  - artstation takes author id. eg: [huniartist]
 
 ## Notes
 - By default the source is [unsplash](https://unsplash.com).
-- Please be aware that sources like 4chan, artstation or wallhaven may have inapt images sometimes.
+- Some sources may have inapt images. Use them at your own risk.
 
 ## Supported sources
 
@@ -67,9 +69,9 @@ wanda [-s source] [-t search term] [-o] [-l] [-h]
 
 * To set wallpaper at regular intervals automatically:
 
-0. You might have to 'Acquire Wakelock' from the termux notification for this to run properly.
 1. Install:
 ```
+termux-wake-lock
 pkg in cronie termux-services nano
 sv-enable crond
 ```
@@ -84,7 +86,6 @@ crontab -e
 [(more examples)](https://crontab.guru/examples.html)
 
 4. ctrl+o to save, ctrl+x to exit the editor
-
 
 ## Build
 python and [termux-create-package](https://github.com/termux/termux-create-package) are needed
