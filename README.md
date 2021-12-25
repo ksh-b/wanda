@@ -11,9 +11,10 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 
 - Download latest release from [gitlab](https://gitlab.com/kshib/wanda/-/releases) or [package-cloud](https://packagecloud.io/kshib/wanda-main)
 - Install it
+
 ```
-termux-setup-storage
-pkg in ./wanda*.deb
+curl https://kshib.gitlab.io/termux-repo/install.sh | sh
+pkg in wanda
 ```
 
 ## Usage
@@ -96,4 +97,10 @@ git clone https://gitlab.com/kshib/wanda.git
 cd wanda
 chmod +x wanda
 ../termux-create-package/termux-create-package manifest.json
+```
+
+## Uninstall
+```
+pkg un wanda
+rm $PREFIX/etc/apt/sources.list.d/kshib.list
 ```
