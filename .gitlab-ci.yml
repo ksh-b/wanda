@@ -8,8 +8,8 @@ before_script:
 build:
   stage: build
   script:
-    - curl -L 'https://github.com/agnostic-apollo/termux-create-package/raw/rewrite/src/termux-create-package' -o "$install_path/termux-create-package"
-    - chmod 755 "$install_path/termux-create-package"
+    - curl -L 'https://github.com/agnostic-apollo/termux-create-package/raw/rewrite/src/termux-create-package' -o "termux-create-package"
+    - chmod 755 "termux-create-package"
     - chmod +x wanda.sh
     - chmod +x canvas.sh
     - termux-create-package manifest.json
