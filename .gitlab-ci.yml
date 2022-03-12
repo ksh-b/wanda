@@ -1,14 +1,18 @@
-image: python:latest
+image: debian:latest
 
 before_script:
-  - pip install termux-create-package
+  - apt-get update -y && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
+  - apt install python3 python3-pip curl binutils -y
+  - pip install ruamel.yaml
 
 build:
   stage: build
   script:
+    - curl -L 'https://github.com/agnostic-apollo/termux-create-package/raw/rewrite/src/termux-create-package' -o "termux-create-package"
+    - chmod 755 "termux-create-package"
     - chmod +x wanda.sh
     - chmod +x canvas.sh
-    - termux-create-package manifest.json
+    - ./termux-create-package manifest.json
   artifacts:
     paths:
       - wanda*.deb

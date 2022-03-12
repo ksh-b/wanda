@@ -1,6 +1,6 @@
 {
   "name": "wanda",
-  "version": "0.32",
+  "version": "0.37",
   "homepage": "https://gitlab.com/kshib",
   "maintainer": "@kshib",
   "description": "Set wallpapers with keywords or randomly",
@@ -9,6 +9,7 @@
   "suggests": ["imagemagick", "libxml2-utils"],
   "files" :{
     "wanda.sh": "bin/wanda",
-    "canvas.sh": "bin/canvas"
+    "canvas.sh": "bin/canvas",
+    "wanda.conf":"etc/wanda.conf"
   }
 }
