@@ -8,12 +8,9 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 1. Install [termux](https://f-droid.org/en/packages/com.termux) and [termux-api](https://f-droid.org/en/packages/com.termux.api)
 
 2. Install wanda
-
-- Download latest release from [gitlab](https://gitlab.com/kshib/wanda/-/releases) or [package-cloud](https://packagecloud.io/kshib/wanda-main)
-- Install it
 ```
-termux-setup-storage
-pkg in ./wanda*.deb
+curl https://kshib.gitlab.io/termux-repo/install.sh | sh
+pkg in wanda
 ```
 
 ## Usage
@@ -26,7 +23,6 @@ wanda [-s source] [-t search term] [-o] [-l] [-h] [-d]
   -l  lockscreen  set wallpaper on lockscreen
   -d  download    save current wallpaper to storage
   -h  help        this help message
-  -u  update      update wanda
   -v  version     current version
 ```
 
@@ -97,3 +93,12 @@ cd wanda
 chmod +x wanda
 ../termux-create-package/termux-create-package manifest.json
 ```
+
+## Uninstall
+```
+pkg un wanda
+rm $PREFIX/etc/apt/sources.list.d/kshib.list
+```
+
+## License
+MIT
