@@ -208,7 +208,7 @@ imgur() {
 artstation() {
   query=$1
   if [[ -z $query ]]; then
-    query=landscape
+    query="landscape"
   fi
   api="https://www.artstation.com/api/v2/prints/public/printed_products.json?page=1&per_page=30&orientation=portrait&q=$query&sort=trending&visibility=profile&variant_filter=price_limits_per_type"
   res=$(curl -s -A "$user_agent" "${api}")
