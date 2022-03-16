@@ -206,26 +206,18 @@ imgur() {
 }
 
 artstation() {
-  if [[ -z $1 ]]; then
-    artists=("huniartist" "tohad" "snatti" "aenamiart" "seventeenth" "andreasrocha" "slawekfedorczuk")
-    i=0
-    if [[ $(basename "$SHELL") == "zsh" ]]; then
-      i=1
-    fi
-    query=${artists[$((RANDOM % ${#artists[@]} + i))]}
-  else
-    query=$1
+  query=$1
+  if [[ -z $query ]]; then
+    query=landscape
   fi
-  api="https://www.artstation.com/users/$query/projects.json?page=1&per_page=50"
+  api="https://www.artstation.com/api/v2/prints/public/printed_products.json?page=1&per_page=30&orientation=portrait&q=$query&sort=trending&visibility=profile&variant_filter=price_limits_per_type"
   res=$(curl -s -A "$user_agent" "${api}")
   if [[ -z $res ]]; then
     echo $no_results
   fi
-  posts=$(echo -E "$res" | jq --raw-output ".total_count")
-  rand=$(shuf -i 0-49 -n 1)
-  id=$(echo -E "$res" | jq --raw-output ".data[$rand].id")
-  res=$(curl -s -A "$user_agent" "https://www.artstation.com/projects/$id.json")
-  res=$(echo -E "$res" | jq --raw-output ".assets[0].image_url")
+  posts=$(echo -E "$res" | jq --raw-output ".data | length")
+  rand=$(shuf -i 0-$posts -n 1)
+  res=$(echo -E "$res" | jq --raw-output ".data[$rand].print_type_variants[0].image_urls[0].url")
   echo "$res"
 }
 
@@ -247,8 +239,8 @@ canvas() {
   retry=10
   while ! test -f "$filepath"; do
     sleep 2
-    retry=$(( retry - 1 ))
-    if [[ $retry == 0 ]];then
+    retry=$((retry - 1))
+    if [[ $retry == 0 ]]; then
       break
     fi
   done
@@ -415,8 +407,8 @@ canvas() {
   retry=10
   while ! test -f "$filepath"; do
     sleep 2
-    retry=$(( retry - 1 ))
-    if [[ $retry == 0 ]];then
+    retry=$((retry - 1))
+    if [[ $retry == 0 ]]; then
       break
     fi
   done
