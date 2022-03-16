@@ -297,7 +297,7 @@ config_read_file() {
 ### ### ###
 
 # main
-while getopts ':s:t:huvdlo' flag; do
+while getopts ':s:t:hvdlo' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG//\//%20}" ;;
@@ -305,10 +305,6 @@ while getopts ':s:t:huvdlo' flag; do
   l) lock="true" ;;
   h)
     usage
-    exit 0
-    ;;
-  u)
-    update
     exit 0
     ;;
   v)
