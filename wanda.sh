@@ -101,12 +101,12 @@ unsplash() {
 }
 
 earthview() {
-  slug="/$(config_get "earthview_slug")"
+  slug="$(config_get "earthview_slug")"
   if [[ -z $slug ]]; then
     slug="$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)"
   fi
   api="https://earthview.withgoogle.com/_api$slug.json"
-  res=$(curl -s "${api}")
+  res=$(curl -s -A "$user_agent" "${api}")
   slug=$(echo "$res" | jq --raw-output ".nextSlug")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
   config_set "earthview_slug" "$slug"
@@ -218,175 +218,6 @@ artstation() {
   posts=$(echo -E "$res" | jq --raw-output ".data | length")
   rand=$(shuf -i 0-$posts -n 1)
   res=$(echo -E "$res" | jq --raw-output ".data[$rand].print_type_variants[0].image_urls[0].url")
-  echo "$res"
-}
-
-canvas() {
-  filepath="$tmp/canvas.png"
-  . canvas
-  case $1 in
-  1 | solid) solid ;;
-  2 | linear) linear_gradient ;;
-  3 | radial) radial_gradient ;;
-  4 | twisted) twisted_gradient ;;
-  5 | bilinear) bilinear_gradient ;;
-  6 | plasma) plasma ;;
-  7 | blurred) blurred_noise ;;
-  *) randomize ;;
-  esac
-  config_set "last_wallpaper_path" "canvas"
-  config_set "last_wallpaper_time" "$(date)"
-  retry=10
-  while ! test -f "$filepath"; do
-    sleep 2
-    retry=$((retry - 1))
-    if [[ $retry == 0 ]]; then
-      break
-    fi
-  done
-  echo "$filepath"
-}
-
-wallhaven() {
-  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$1&ratios=portrait&sorting=random")
-  echo "$(echo "$res" | jq --raw-output ".data[0].path")"
-}
-
-unsplash() {
-  local url
-  res="https://source.unsplash.com/random/1440x2560/?$1"
-  url=$(curl -Ls -o /dev/null -w "%{url_effective}" "$res")
-  if [[ $url == *"source-404"* ]]; then echo "$no_results"; fi
-  echo "$url"
-}
-
-earthview() {
-  slug="$(config_get "earthview_slug")"
-  if [[ -z $slug ]]; then
-    slug="$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)"
-  fi
-  api="https://earthview.withgoogle.com/_api$slug.json"
-  echo $api
-  res=$(curl -s -A "$user_agent" "${api}")
-  slug=$(echo "$res" | jq --raw-output ".nextSlug")
-  url=$(echo "$res" | jq --raw-output ".photoUrl")
-  config_set "earthview_slug" "$slug"
-  validate_url $url
-  filepath="$tmp/earthview.jpg"
-  curl -s "$url" -o "$filepath"
-  mogrify -rotate 90 "$filepath"
-  config_set "last_wallpaper_path" "$url"
-  config_set "last_wallpaper_time" "$(date)"
-  echo "$filepath"
-}
-
-fourchan() {
-  # handle no search term -> find threads with mobile/phone in their title.
-  # if no threads with mobile/phone in their title exists, first thread is selected
-  if [ -z "$1" ]; then
-    api="https://a.4cdn.org/wg/catalog.json"
-    res=$(curl -s "$api")
-    thread=$(echo "$res" | jq '[.[].threads[] | {title: .semantic_url, no: .no} | select( .title | contains("mobile")).no ][0]')
-    if [[ -z $thread ]]; then
-      thread=$(echo "$res" | jq '[.[].threads[] | {title: .semantic_url, no: .no} | select( .title | contains("phone")).no ][0]')
-    fi
-    if [[ -z $thread ]]; then
-      thread=$(echo "$res" | jq '.[0].threads[1].no')
-    fi
-    board="wg"
-    api="https://a.4cdn.org/$board/thread/$thread.json"
-  else
-    api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
-    board=$(echo "$1" | cut -d'/' -f4)
-  fi
-  image_host="https://i.4cdn.org/${board}/"
-  res=$(curl -s "$api")
-  if [[ -z $res ]]; then
-    validate_url 0
-  fi
-  posts=$(echo "$res" | jq '.[] | length')
-  rand=$(shuf -i 0-$posts -n 1)
-  post_image=$(echo "$res" | jq ".[][$rand].tim")
-  # if post has no image, loop till post with image is found
-  while [ "$post_image" = "null" ]; do
-    rand=$(shuf -i 0-$posts -n 1)
-    post_image=$(echo "$res" | jq ".[][$rand].tim")
-  done
-  post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
-  echo "${image_host}${post_image}${post_exten}"
-}
-
-reddit() {
-  if [[ -z $1 ]]; then
-    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers.json?limit=100"
-  else
-    api="https://old.reddit.com/r/MobileWallpaper+AMOLEDBackgrounds+VerticalWallpapers/search.json?q=$1&restrict_sr=on&limit=100"
-  fi
-  curl -s "$api" -A "$user_agent" -o "$tmp/temp.json"
-  posts=$(jq --raw-output ".data.dist" <"$tmp/temp.json")
-  rand=$(shuf -i 0-"$posts" -n 1)
-  url=$(jq --raw-output ".data.children[$rand].data.url" <"$tmp/temp.json")
-  while [[ $url == *"/gallery/"* ]]; do
-    rand=$(shuf -i 0-$posts -n 1)
-    url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
-  done
-  echo "$url"
-}
-
-imgur() {
-  if [[ -z $1 ]]; then
-    rand=$(($((RANDOM % 10)) % 2))
-    if [ $rand -eq 1 ]; then
-      api="https://old.reddit.com/r/wallpaperdump/search.json?q=mobile&restrict_sr=on&limit=100"
-    else
-      api="https://old.reddit.com/r/wallpaperdump/search.json?q=phone&restrict_sr=on&limit=100"
-    fi
-    curl -s "$api" -A $user_agent -o "$tmp/temp.json"
-    posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
-    rand=$(shuf -i 0-"$posts" -n 1)
-    url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
-    while [[ $url != *"/gallery/"* ]]; do
-      rand=$(shuf -i 0-$posts -n 1)
-      url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
-    done
-  else
-    url="https://imgur.com/gallery/$1"
-  fi
-  res=$(curl -A "$user_agent" -s "${url/http:/https:}" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
-  if [[ $res != *"i.imgur.com"* ]]; then
-    validate_url 0
-  else
-    clean=${res//\\\"/\"}
-    clean=${clean/window.postDataJSON=/}
-    clean=${clean/\\\'/\'}
-    clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
-    posts=$(echo "$clean" | jq --raw-output ".image_count")
-    rand=$(shuf -i 0-$posts -n 1)
-    echo "$(echo "$clean" | jq --raw-output ".media[$rand].url")"
-  fi
-}
-
-artstation() {
-  if [[ -z $1 ]]; then
-    artists=("huniartist" "tohad" "snatti" "aenamiart" "seventeenth" "andreasrocha" "slawekfedorczuk")
-    i=0
-    if [[ $(basename "$SHELL") == "zsh" ]]; then
-      i=1
-    fi
-    query=${artists[$((RANDOM % ${#artists[@]} + i))]}
-  else
-    query=$1
-  fi
-  api="https://www.artstation.com/users/$query/projects.json?page=1&per_page=50"
-  res=$(curl -s -A "$user_agent" "${api}")
-  if [[ -z $res ]]; then
-    echo $no_results
-  fi
-  posts=$(echo -E "$res" | jq --raw-output ".total_count")
-  rand=$(shuf -i 0-49 -n 1)
-  id=$(echo -E "$res" | jq --raw-output ".data[$rand].id")
-  res=$(curl -s -A "$user_agent" "https://www.artstation.com/projects/$id.json")
-  res=$(echo -E "$res" | jq --raw-output ".assets[0].image_url")
   echo "$res"
 }
 
