@@ -261,12 +261,13 @@ unsplash() {
 }
 
 earthview() {
-  slug="/$(config_get "earthview_slug")"
+  slug="$(config_get "earthview_slug")"
   if [[ -z $slug ]]; then
     slug="$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)"
   fi
   api="https://earthview.withgoogle.com/_api$slug.json"
-  res=$(curl -s "${api}")
+  echo $api
+  res=$(curl -s -A "$user_agent" "${api}")
   slug=$(echo "$res" | jq --raw-output ".nextSlug")
   url=$(echo "$res" | jq --raw-output ".photoUrl")
   config_set "earthview_slug" "$slug"
