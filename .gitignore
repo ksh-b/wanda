@@ -6,3 +6,4 @@ sources/dynamic/images/*
 *.deb
 temp.json
 data.cfg
+wanda.conf
