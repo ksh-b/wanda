@@ -53,6 +53,7 @@ wanda [-s source] [-t search term] [-o] [-l] [-h] [-d]
 ## Supported sources
 
 - [4chan](https://boards.4chan.org)
+- [500px](https://500px.com)
 - [artstation](https://artstation.com)
 - [canvas](https://github.com/adi1090x/canvas)
 - [earthview](https://earthview.withgoogle.com)
