@@ -459,6 +459,10 @@ artstation_art | ara)
   check_connectivity
   set_wp_url "$(artstation_artist "$query")"
   ;;
+500px | 5p)
+  check_connectivity
+  set_wp_url "$(fivehundredpx "$query")"
+  ;;
 *)
   echo "Unknown source $source"
   usage
