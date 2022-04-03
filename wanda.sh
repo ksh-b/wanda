@@ -2,9 +2,9 @@
 
 source="unsplash"
 query=""
-home="false"
-lock="false"
-version=0.38
+home="true"
+lock="true"
+version=0.39
 no_results="No results found. Try another source/term."
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$PREFIX/tmp"
@@ -36,7 +36,7 @@ usage() {
 set_wp_url() {
   validate_url $1
   if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
-    termux-wallpaper -u "$1"
+    exit 0
   fi
   if [ "$home" = "true" ]; then
     termux-wallpaper -u "$1"
@@ -301,8 +301,8 @@ while getopts ':s:t:hvdlo' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG//\//%20}" ;;
-  o) home="true" ;;
-  l) lock="true" ;;
+  o) lock="false" ;;
+  l) home="false" ;;
   h)
     usage
     exit 0
