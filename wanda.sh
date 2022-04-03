@@ -221,6 +221,38 @@ artstation() {
   echo "$res"
 }
 
+artstation() {
+  query=$1
+  if [[ -z $query ]]; then
+    query="landscape"
+  fi
+  api="https://www.artstation.com/api/v2/search/projects.json"
+  body='{"query":"nature","page":2,"per_page":50,"sorting":"relevance","pro_first":"1","filters":[],"additional_fields":[]}'
+  res=$(curl -s -A "$user_agent" -X POST $api \
+  -H "Content-Type: application/json" -H "Host: www.artstation.com" \
+  -H "User-Agent: PostmanRuntime/7.29.0" \
+  -d "$body"
+  )
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  total=$(echo -E "$res" | jq --raw-output ".total_count")
+  if [[ -z $total ]]; then
+    echo $no_results
+  fi
+  posts=$(echo -E "$res" | jq --raw-output ".data | length")
+  rand=$(shuf -i 0-$posts -n 1)
+  hash_id=$(echo -E "$res" | jq --raw-output ".data[$rand].hash_id")
+
+  api="https://www.artstation.com/projects/$hash_id.json"
+  res=$(curl -s -A "$user_agent" "${api}")
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  res=$(echo -E "$res" | jq --raw-output ".assets[0].image_url")
+  echo "$res"
+}
+
 canvas() {
   filepath="$tmp/canvas.png"
   . canvas
