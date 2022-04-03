@@ -4,6 +4,5 @@ downloads/*
 sources/dynamic/images/*
 *.tar.gz
 *.deb
-temp.json
-data.cfg
 wanda.conf
+termux-create-package
