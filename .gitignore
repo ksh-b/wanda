@@ -5,4 +5,5 @@ sources/dynamic/images/*
 *.tar.gz
 *.deb
 wanda.conf
+build.sh
 termux-create-package
