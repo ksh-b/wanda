@@ -144,11 +144,11 @@ fourchan() {
     validate_url 0
   fi
   posts=$(echo "$res" | jq '.[] | length')
-  rand=$(shuf -i 0-$posts -n 1)
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
   post_image=$(echo "$res" | jq ".[][$rand].tim")
   # if post has no image, loop till post with image is found
   while [ "$post_image" = "null" ]; do
-    rand=$(shuf -i 0-$posts -n 1)
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
     post_image=$(echo "$res" | jq ".[][$rand].tim")
   done
   post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
@@ -163,10 +163,10 @@ reddit() {
   fi
   curl -s "$api" -A "$user_agent" -o "$tmp/temp.json"
   posts=$(jq --raw-output ".data.dist" <"$tmp/temp.json")
-  rand=$(shuf -i 0-"$posts" -n 1)
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
   url=$(jq --raw-output ".data.children[$rand].data.url" <"$tmp/temp.json")
   while [[ $url == *"/gallery/"* ]]; do
-    rand=$(shuf -i 0-$posts -n 1)
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
     url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
   done
   echo "$url"
@@ -182,10 +182,10 @@ imgur() {
     fi
     curl -s "$api" -A $user_agent -o "$tmp/temp.json"
     posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
-    rand=$(shuf -i 0-"$posts" -n 1)
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
     url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
     while [[ $url != *"/gallery/"* ]]; do
-      rand=$(shuf -i 0-$posts -n 1)
+      rand=$(shuf -i 1-$(( posts-1 )) -n 1)
       url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
     done
   else
@@ -200,7 +200,7 @@ imgur() {
     clean=${clean/\\\'/\'}
     clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
     posts=$(echo "$clean" | jq --raw-output ".image_count")
-    rand=$(shuf -i 0-$posts -n 1)
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
     echo "$(echo "$clean" | jq --raw-output ".media[$rand].url")"
   fi
 }
@@ -216,7 +216,7 @@ artstation_prints() {
     echo $no_results
   fi
   posts=$(echo -E "$res" | jq --raw-output ".data | length")
-  rand=$(shuf -i 0-$posts -n 1)
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
   res=$(echo -E "$res" | jq --raw-output ".data[$rand].print_type_variants[0].image_urls[0].url")
   echo "$res"
 }
@@ -241,7 +241,7 @@ artstation_alt() {
     echo $no_results
   fi
   posts=$(echo -E "$res" | jq --raw-output ".data | length")
-  rand=$(shuf -i 0-$posts -n 1)
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
   hash_id=$(echo -E "$res" | jq --raw-output ".data[$rand].hash_id")
 
   api="https://www.artstation.com/projects/$hash_id.json"
@@ -264,7 +264,7 @@ artstation_artist() {
     echo $no_results
   fi
   posts=$(echo -E "$res" | jq --raw-output ".data | length")
-  rand=$(shuf -i 0-$posts -n 1)
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
   hash_id=$(echo -E "$res" | jq --raw-output ".data[$rand].hash_id")
 
   api="https://www.artstation.com/projects/$hash_id.json"
@@ -300,6 +300,27 @@ canvas() {
     fi
   done
   echo "$filepath"
+}
+
+fivehundredpx() {
+  query=$1
+  payload='
+{"operationName":"PhotoSearchQueryRendererQuery","variables":{"sort":"RELEVANCE","search":"'$query'"},"query":"query PhotoSearchQueryRendererQuery($sort: PhotoSort, $search: String!) {\n...PhotoSearchPaginationContainer_query_67nah\n}\n\nfragment PhotoSearchPaginationContainer_query_67nah on Query {\nphotoSearch(sort: $sort, first: 20, search: $search) { \nedges { \nnode {\n id\n legacyId\n canonicalPath\n name\n description\n category\n uploadedAt\n location\n width\n height\n isLikedByMe\n notSafeForWork\n tags\n photographer: uploader { \n id \n legacyId \n username \n displayName \n canonicalPath \n avatar { \n images { \n url \n id \n } \n id \n } \n followedByUsers { \n totalCount \n isFollowedByMe \n }\n }\n images(sizes: [33, 35]) { \n size \n url \n jpegUrl \n webpUrl \n id\n }\n __typename \n} \ncursor \n} \ntotalCount \npageInfo { \nendCursor \nhasNextPage \n}\n}\n}\n"}'
+  if [[ -z $query ]]; then
+    query="landscape"
+  fi
+  api="https://api.500px.com/graphql"
+  res=$(curl -s -A "$user_agent" -X POST $api \
+  -H "Content-Type: application/json" -H "Host: api.500px.com" \
+  -d "$payload"
+  )
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  posts=$(echo -E "$res" | jq --raw-output ".data.photoSearch.edges | length")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  url=$(echo -E "$res" | jq --raw-output ".data.photoSearch.edges[$rand].node.images[1].url")
+  echo "$url"
 }
 
 ### config editor ###
