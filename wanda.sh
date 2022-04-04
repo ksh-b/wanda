@@ -13,7 +13,7 @@ CONFIG_FILE="$PREFIX/etc/wanda.conf"
 usage() {
   echo "wanda ($version)"
   echo "Usage:"
-  echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
+  echo "  wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]"
   echo "  -s  source      unsplash,wallhaven,reddit"
   echo "                  4chan,canvas,earthview,imgur"
   echo "                  artstation,local, 500px"

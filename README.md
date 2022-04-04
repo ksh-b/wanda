@@ -15,15 +15,16 @@ pkg in wanda
 
 ## Usage
 ```
-wanda [-s source] [-t search term] [-o] [-l] [-h] [-d]
+wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]
   -s  source      unsplash,wallhaven,reddit
-                  4chan,canvas,earthview,local
+                  4chan,canvas,earthview,imgur
+                  artstation,local, 500px
   -t  term        search term
-  -o  homescreen  set wallpaper on homescreen
-  -l  lockscreen  set wallpaper on lockscreen
+  -o  homescreen  set wallpaper on homescreen only
+  -l  lockscreen  set wallpaper on lockscreen only
   -d  download    save current wallpaper to storage
-  -h  help        this help message
   -v  version     current version
+  -x  list        print supported sources
 ```
 
 ## Examples:
