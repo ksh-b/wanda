@@ -45,7 +45,7 @@ wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]
   - imgur takes gallery id. eg: [L8ystCU]
   - local takes path wrt $HOME. eg: [storage/shared/Downloads]
   - 4chan takes full thread url. eg: [https://boards.4chan.org/wg/thread/6872254]
-  - artstation takes author id. eg: [huniartist]
+  - canvas takes texture name. eg: plasma
 
 ## Notes
 - By default the source is [unsplash](https://unsplash.com).
