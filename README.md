@@ -89,11 +89,9 @@ crontab -e
 ## Build
 python and [termux-create-package](https://github.com/termux/termux-create-package) are needed
 ```
-git clone https://github.com/termux/termux-create-package.git
-git clone https://gitlab.com/kshib/wanda.git
-cd wanda
-chmod +x wanda
-../termux-create-package/termux-create-package manifest.json
+pip install termux-create-package
+git clone https://gitlab.com/kshib/wanda.git && cd wanda
+termux-create-package manifest.json
 ```
 
 ## Uninstall
