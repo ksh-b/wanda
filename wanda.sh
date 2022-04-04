@@ -16,20 +16,21 @@ usage() {
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
   echo "  -s  source      unsplash,wallhaven,reddit"
   echo "                  4chan,canvas,earthview,imgur"
-  echo "                  artstation,local"
+  echo "                  artstation,local, 500px"
   echo "  -t  term        search term"
-  echo "  -o  homescreen  set wallpaper on homescreen"
-  echo "  -l  lockscreen  set wallpaper on lockscreen"
+  echo "  -o  homescreen  set wallpaper on homescreen only"
+  echo "  -l  lockscreen  set wallpaper on lockscreen only"
   echo "  -d  download    save current wallpaper to storage"
   echo "  -h  help        this help message"
   echo "  -v  version     current version"
+  echo "  -x  list        print supported sources"
   echo ""
   echo "Examples:"
   echo "  wanda"
   echo "  wanda -s ea"
-  echo '  wanda -s un -t eiffel tower -ol'
-  echo "  wanda -s lo -t folder/path -ol"
-  echo "  wanda -s wa -t stars,clouds -ol"
+  echo '  wanda -s un -t eiffel tower'
+  echo "  wanda -s lo -t folder/path"
+  echo "  wanda -s wa -t stars,clouds"
   echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
 }
 
@@ -323,6 +324,22 @@ fivehundredpx() {
   echo "$url"
 }
 
+supported() {
+  echo -e "Supported sources. Shortcodes are \e[1mbold\e[0m"
+  echo -e "\e[1m4c\e[0mhan \e[35m[thread url]\e[0m"
+  echo -e "\e[1m5\e[0m00\e[1mp\e[0mx \e[35m[search_term]\e[0m"
+  echo -e "\e[1mar\e[0mtstation \e[35m[search term]\e[0m"
+  echo -e "\e[1mar\e[0mtstation_\e[1ma\e[0mrt \e[35m[artist id]\e[0m"
+  echo -e "\e[1mar\e[0mtstation_\e[1mg\e[0m \e[35m[search_term]\e[0m"
+  echo -e "\e[1mca\e[0mnvas \e[35m[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]\e[0m"
+  echo -e "\e[1mea\e[0mrthview \e[35m(takes no search term)\e[0m"
+  echo -e "\e[1mim\e[0mgur \e[35m[gallery id]\e[0m"
+  echo -e "\e[1mlo\e[0mcal \e[35m[path relative to $HOME]\e[0m"
+  echo -e "\e[1mre\e[0mddit \e[35m[search_term]\e[0m"
+  echo -e "\e[1mun\e[0msplash \e[35m[search_term]\e[0m"
+  echo -e "\e[1mwa\e[0mllhaven \e[35m[search_term]\e[0m"
+}
+
 ### config editor ###
 # https://stackoverflow.com/a/60116613
 # https://stackoverflow.com/a/2464883
@@ -373,7 +390,7 @@ config_read_file() {
 ### ### ###
 
 # main
-while getopts ':s:t:hvdlo' flag; do
+while getopts ':s:t:hvdlox' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG//\//%20}" ;;
@@ -400,6 +417,10 @@ while getopts ':s:t:hvdlo' flag; do
     echo "The $OPTARG option requires an argument."
     usage
     exit 1
+    ;;
+
+  x)
+    supported
     ;;
   \?)
     echo "$OPTARG is not a valid option."
@@ -465,6 +486,6 @@ artstation_art | ara)
   ;;
 *)
   echo "Unknown source $source"
-  usage
+  supported
   ;;
 esac
