@@ -13,7 +13,7 @@ CONFIG_FILE="$PREFIX/etc/wanda.conf"
 usage() {
   echo "wanda ($version)"
   echo "Usage:"
-  echo "  wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]"
+  echo "  wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-i]"
   echo "  -s  source      unsplash,wallhaven,reddit"
   echo "                  4chan,canvas,earthview,imgur"
   echo "                  artstation,local, 500px"
@@ -23,7 +23,7 @@ usage() {
   echo "  -d  download    save current wallpaper to storage"
   echo "  -h  help        this help message"
   echo "  -v  version     current version"
-  echo "  -x  list        print supported sources"
+  echo "  -i  list        print supported sources"
   echo ""
   echo "Examples:"
   echo "  wanda"
@@ -390,7 +390,7 @@ config_read_file() {
 ### ### ###
 
 # main
-while getopts ':s:t:hvdlox' flag; do
+while getopts ':s:t:hvdloi' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
   t) query="${OPTARG//\//%20}" ;;
@@ -419,8 +419,9 @@ while getopts ':s:t:hvdlox' flag; do
     exit 1
     ;;
 
-  x)
+  i)
     supported
+    exit 0
     ;;
   \?)
     echo "$OPTARG is not a valid option."
