@@ -1,21 +1,30 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 source="unsplash"
 query=""
-version=0.33
-no_results="No results for $query. Try another source/keyword"
+version=0.41
+no_results="No results found. Try another source/term."
+user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
+tmp="$HOME/.local/share/wanda/temp"
+CONFIG_FILE="/etc/wanda.conf"
+resolution=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
+mkdir -p $tmp
 
 usage() {
   echo "wanda ($version)"
   echo "Usage:"
-  echo "  wanda [-s source] [-t search term] [-o] [-l] [-h]"
-  echo "  -s  source      [un]splash,[wa]llhaven,[re]ddit,[lo]cal"
-  echo "                  [4c]han,[ca]nvas,[ea]rthview"
-  echo "  -t  t           search term."
+  echo "  wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-i]"
+  echo "  -s  source      unsplash,wallhaven,reddit"
+  echo "                  4chan,canvas,earthview,imgur"
+  echo "                  artstation,local, 500px"
+  echo "  -t  term        search term"
+  echo "  -o  homescreen  set wallpaper on homescreen only"
+  echo "  -l  lockscreen  set wallpaper on lockscreen only"
+  echo "  -d  download    save current wallpaper to storage"
   echo "  -h  help        this help message"
   echo "  -u  update      update wanda"
   echo "  -v  version     current version"
-  echo "  -d  download    download current wallpaper"
+  echo "  -i  list        print supported sources"
   echo ""
   echo "Examples:"
   echo "  wanda"
@@ -26,43 +35,58 @@ usage() {
   echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
 }
 
-set_wp_url() {
-  validate_url
-  filename=$(echo "$(basename "$1")"  | cut -d '?' -f 1)
-  filepath="/tmp/$filename"
-  curl -s "$1" -o $filepath
-  set_wp_file $filepath
-  rm -rf $filepath
-  config_set "last_wallpaper_path" "$1"
-  config_set "last_wallpaper_time" "$(date)"
+### Thanks to adi1090x ###
+# https://github.com/adi1090x/canvas/blob/master/canvas
+case "$OSTYPE" in
+	linux*)
+			if [ -n "$SWAYSOCK" ]; then
+				SETTER="eval ogurictl output '*' --image";
+			elif [[ "$DESKTOP_SESSION" =~ ^(MATE|Mate|mate)$ ]]; then
+				SETTER="gsettings set org.mate.background picture-filename";
+			elif [[ "$DESKTOP_SESSION" =~ ^(Xfce Session|xfce session|XFCE|xfce|Xubuntu|xubuntu)$ ]]; then
+				SETTER="xfconf-query --channel xfce4-desktop --property /backdrop/screen$SCREEN/monitor$MONITOR/workspace0/last-image --set";
+			elif [[ "$DESKTOP_SESSION" =~ ^(LXDE|Lxde|lxde)$ ]]; then
+				SETTER="pcmanfm --set-wallpaper";
+            elif [[ "$DESKTOP_SESSION" =~ ^(/usr/share/xsessions/plasma|NEON|Neon|neon|PLASMA|Plasma|plasma|KDE|Kde|kde)$ ]]; then
+				SETTER=setkde;
+			elif [[ "$DESKTOP_SESSION" =~ ^(PANTHEON|Pantheon|pantheon|GNOME|Gnome|gnome|Gnome-xorg|gnome-xorg|UBUNTU|Ubuntu|ubuntu|DEEPIN|Deepin|deepin|POP|Pop|pop)$ ]]; then
+				SETTER="gsettings set org.gnome.desktop.background picture-uri";
+			else
+				SETTER="feh --bg-scale";
+			fi
+			;;
+esac
+
+setkde() {
+	qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+		var allDesktops = desktops();
+		print (allDesktops);
+		for (i=0;i<allDesktops.length;i++) {
+			d = allDesktops[i];
+			d.wallpaperPlugin = 'org.kde.image';
+			d.currentConfigGroup = Array('Wallpaper',
+										'org.kde.image',
+										'General');
+			d.writeConfig('Image', 'file://$1')
+		}"
 }
 
-set_wp_file() {
-  qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
-  		var allDesktops = desktops();
-  		print (allDesktops);
-  		for (i=0;i<allDesktops.length;i++) {
-  			d = allDesktops[i];
-  			d.wallpaperPlugin = 'org.kde.image';
-  			d.currentConfigGroup = Array('Wallpaper',
-  										'org.kde.image',
-  										'General');
-  			d.writeConfig('Image', 'file://"/$1"')
-  		}"
-      config_set "last_wallpaper_path" "$1"
-      config_set "last_wallpaper_time" "$(date)"
-}
+### ### ###
 
 validate_url() {
-  if [ -z "$url" ]; then
+  if [[ "$1" != *"http"* ]]; then
     echo "$no_results"
     exit 1
   fi
-  urlstatus=$(curl -o /dev/null --silent --head --write-out '%{http_code}' "$url")
-  if [ "$urlstatus" != 200 ]; then
-    echo "[$urlstatus] Failed to load url: $url."
-    exit 1
-  fi
+}
+
+set_wp_url() {
+  validate_url $1
+  filename=$(echo "$(basename "$1")"  | cut -d '?' -f 1)
+  filepath="$tmp/$filename"
+  curl -s "$1" -o "$filepath"
+  "$SETTER" "$filepath"
+  echo "$SETTER" "$filepath"
 }
 
 install_package() {
@@ -85,93 +109,309 @@ check_connectivity() {
   fi
 }
 
+wallhaven() {
+  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$1&ratios=landscape&sorting=random")
+  echo "$(echo "$res" | jq --raw-output ".data[0].path")"
+}
 
-update() {
-  check_connectivity
-  res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
-  latest_version=$(echo "$res" | jq --raw-output ".version")
-  if (($(echo "$latest_version $version" | awk '{print ($1 > $2)}'))); then
-    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/repository/files/manifest.json/raw")
-    latest_version=$(echo "$res" | jq --raw-output ".version")
-    res=$(curl -s curl "https://gitlab.com/api/v4/projects/29639604/releases/v$latest_version/assets/links")
-    link=$(echo "$res" | jq --raw-output ".[].url")
-    binary=$(basename "$link")
-    curl -L "$link" -o "$binary"
-    pkg in "./$binary"
-    rm "$binary"
-    wanda -h
+unsplash() {
+  local url
+  res="https://source.unsplash.com/random/$resolution/?$1"
+  url=$(curl -Ls -o /dev/null -w "%{url_effective}" "$res")
+  if [[ $url == *"source-404"* ]]; then echo "$no_results"; fi
+  echo "$url"
+}
+
+earthview() {
+  slug="$(config_get "earthview_slug")"
+  if [[ -z $slug ]]; then
+    slug="$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)"
+  fi
+  api="https://earthview.withgoogle.com/_api$slug.json"
+  res=$(curl -s -A "$user_agent" "${api}")
+  slug=$(echo "$res" | jq --raw-output ".nextSlug")
+  url=$(echo "$res" | jq --raw-output ".photoUrl")
+  config_set "earthview_slug" "$slug"
+  validate_url $url
+  filepath="$tmp/earthview.jpg"
+  curl -s "$url" -o "$filepath"
+  config_set "last_wallpaper_path" "$url"
+  config_set "last_wallpaper_time" "$(date)"
+  echo "$filepath"
+}
+
+fourchan() {
+  if [ -z "$1" ]; then
+    api="https://a.4cdn.org/wg/catalog.json"
+    res=$(curl -s "$api")
+    thread=$(echo "$res" | jq '.[0].threads[1].no')
+    board="wg"
+    api="https://a.4cdn.org/$board/thread/$thread.json"
   else
-    echo "Already latest version ($version)"
+    api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
+    board=$(echo "$1" | cut -d'/' -f4)
+  fi
+  image_host="https://i.4cdn.org/${board}/"
+  res=$(curl -s "$api")
+  if [[ -z $res ]]; then
+    validate_url 0
+  fi
+  posts=$(echo "$res" | jq '.[] | length')
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  post_image=$(echo "$res" | jq ".[][$rand].tim")
+  # if post has no image, loop till post with image is found
+  while [ "$post_image" = "null" ]; do
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+    post_image=$(echo "$res" | jq ".[][$rand].tim")
+  done
+  post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
+  echo "${image_host}${post_image}${post_exten}"
+}
+
+reddit() {
+  if [[ -z $1 ]]; then
+    api="https://old.reddit.com/r/wallpaper+wallpapers+spaceporn+earthporn/search.json?limit=100"
+  else
+    api="https://old.reddit.com/r/wallpaper+wallpapers+spaceporn+earthporn/search.json?q=$1&restrict_sr=on&limit=100"
+  fi
+  curl -s "$api" -A "$user_agent" -o "$tmp/temp.json"
+  posts=$(jq --raw-output ".data.dist" <"$tmp/temp.json")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  url=$(jq --raw-output ".data.children[$rand].data.url" <"$tmp/temp.json")
+  while [[ $url == *"/gallery/"* ]]; do
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+    url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
+  done
+  echo "$url"
+}
+
+imgur() {
+  if [[ -z $1 ]]; then
+    rand=$(($((RANDOM % 10)) % 2))
+    if [ $rand -eq 1 ]; then
+      api="https://old.reddit.com/r/wallpaperdump/search.json?q=-mobile+-phone&restrict_sr=on&limit=100"
+    else
+      api="https://old.reddit.com/r/wallpaperdump/search.json?q=-mobile+-phone&restrict_sr=on&limit=100"
+    fi
+    curl -s "$api" -A $user_agent -o "$tmp/temp.json"
+    posts=$(cat "$tmp/temp.json" | jq --raw-output ".data.dist")
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+    url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
+    while [[ $url != *"/gallery/"* ]]; do
+      rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+      url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
+    done
+  else
+    url="https://imgur.com/gallery/$1"
+  fi
+  res=$(curl -A "$user_agent" -s "${url/http:/https:}" | xmllint --html --xpath 'string(//script[1])' - 2>/dev/null)
+  if [[ $res != *"i.imgur.com"* ]]; then
+    validate_url 0
+  else
+    clean=${res//\\\"/\"}
+    clean=${clean/window.postDataJSON=/}
+    clean=${clean/\\\'/\'}
+    clean=$(sed -e 's/^"//' -e 's/"$//' <<<"$clean")
+    posts=$(echo "$clean" | jq --raw-output ".image_count")
+    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+    echo "$(echo "$clean" | jq --raw-output ".media[$rand].url")"
   fi
 }
 
+artstation_prints() {
+  query=$1
+  if [[ -z $query ]]; then
+    query="landscape"
+  fi
+  api="https://www.artstation.com/api/v2/prints/public/printed_products.json?page=1&per_page=30&orientation=landscape&q=$query&sort=trending&visibility=profile&variant_filter=price_limits_per_type"
+  res=$(curl -s -A "$user_agent" "${api}")
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  posts=$(echo -E "$res" | jq --raw-output ".data | length")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  res=$(echo -E "$res" | jq --raw-output ".data[$rand].print_type_variants[0].image_urls[0].url")
+  echo "$res"
+}
+
+artstation_alt() {
+  query=$1
+  if [[ -z $query ]]; then
+    query="landscape"
+  fi
+  api="https://www.artstation.com/api/v2/search/projects.json"
+  body='{"query":"'$query'","page":1,"per_page":50,"sorting":"relevance","pro_first":"1","filters":[],"additional_fields":[]}'
+  res=$(curl -s -A "$user_agent" -X POST $api \
+  -H "Content-Type: application/json" -H "Host: www.artstation.com" \
+  -H "User-Agent: PostmanRuntime/7.29.0" \
+  -d "$body"
+  )
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  total=$(echo -E "$res" | jq --raw-output ".total_count")
+  if [[ -z $total ]]; then
+    echo $no_results
+  fi
+  posts=$(echo -E "$res" | jq --raw-output ".data | length")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  hash_id=$(echo -E "$res" | jq --raw-output ".data[$rand].hash_id")
+
+  api="https://www.artstation.com/projects/$hash_id.json"
+  res=$(curl -s -A "$user_agent" "${api}")
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  res=$(echo -E "$res" | jq --raw-output ".assets[0].image_url")
+  echo "$res"
+}
+
+artstation_artist() {
+  query=$1
+  if [[ -z $query ]]; then
+    query="landscape"
+  fi
+  api="https://www.artstation.com/users/$query/projects.json"
+  res=$(curl -s -A "$user_agent" $api)
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  posts=$(echo -E "$res" | jq --raw-output ".data | length")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  hash_id=$(echo -E "$res" | jq --raw-output ".data[$rand].hash_id")
+
+  api="https://www.artstation.com/projects/$hash_id.json"
+  res=$(curl -s -A "$user_agent" "${api}")
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  res=$(echo -E "$res" | jq --raw-output ".assets[0].image_url")
+  echo "$res"
+}
+
+canvas() {
+  filepath="$tmp/canvas.png"
+  . canvas
+  case $1 in
+  1 | solid) solid ;;
+  2 | linear) linear_gradient ;;
+  3 | radial) radial_gradient ;;
+  4 | twisted) twisted_gradient ;;
+  5 | bilinear) bilinear_gradient ;;
+  6 | plasma) plasma ;;
+  7 | blurred) blurred_noise ;;
+  *) randomize ;;
+  esac
+  config_set "last_wallpaper_path" "canvas"
+  config_set "last_wallpaper_time" "$(date)"
+  retry=10
+  while ! test -f "$filepath"; do
+    sleep 2
+    retry=$((retry - 1))
+    if [[ $retry == 0 ]]; then
+      break
+    fi
+  done
+  echo "$filepath"
+}
+
+fivehundredpx() {
+  query=$1
+  payload='
+{"operationName":"PhotoSearchQueryRendererQuery","variables":{"sort":"RELEVANCE","search":"'$query'"},"query":"query PhotoSearchQueryRendererQuery($sort: PhotoSort, $search: String!) {\n...PhotoSearchPaginationContainer_query_67nah\n}\n\nfragment PhotoSearchPaginationContainer_query_67nah on Query {\nphotoSearch(sort: $sort, first: 20, search: $search) { \nedges { \nnode {\n id\n legacyId\n canonicalPath\n name\n description\n category\n uploadedAt\n location\n width\n height\n isLikedByMe\n notSafeForWork\n tags\n photographer: uploader { \n id \n legacyId \n username \n displayName \n canonicalPath \n avatar { \n images { \n url \n id \n } \n id \n } \n followedByUsers { \n totalCount \n isFollowedByMe \n }\n }\n images(sizes: [33, 35]) { \n size \n url \n jpegUrl \n webpUrl \n id\n }\n __typename \n} \ncursor \n} \ntotalCount \npageInfo { \nendCursor \nhasNextPage \n}\n}\n}\n"}'
+  if [[ -z $query ]]; then
+    query="landscape"
+  fi
+  api="https://api.500px.com/graphql"
+  res=$(curl -s -A "$user_agent" -X POST $api \
+  -H "Content-Type: application/json" -H "Host: api.500px.com" \
+  -d "$payload"
+  )
+  if [[ -z $res ]]; then
+    echo $no_results
+  fi
+  posts=$(echo -E "$res" | jq --raw-output ".data.photoSearch.edges | length")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  url=$(echo -E "$res" | jq --raw-output ".data.photoSearch.edges[$rand].node.images[1].url")
+  echo "$url"
+}
+
+supported() {
+  echo -e "Supported sources. Shortcodes are \e[1mbold\e[0m"
+  echo -e "\e[1m4c\e[0mhan \e[35m[thread url]\e[0m"
+  echo -e "\e[1m5\e[0m00\e[1mp\e[0mx \e[35m[search_term]\e[0m"
+  echo -e "\e[1mar\e[0mtstation \e[35m[search term]\e[0m"
+  echo -e "\e[1mar\e[0mtstation_\e[1ma\e[0mrt \e[35m[artist id]\e[0m"
+  echo -e "\e[1mar\e[0mtstation_\e[1mg\e[0m \e[35m[search_term]\e[0m"
+  echo -e "\e[1mca\e[0mnvas \e[35m[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]\e[0m"
+  echo -e "\e[1mea\e[0mrthview \e[35m(takes no search term)\e[0m"
+  echo -e "\e[1mim\e[0mgur \e[35m[gallery id]\e[0m"
+  echo -e "\e[1mlo\e[0mcal \e[35m[path relative to $HOME]\e[0m"
+  echo -e "\e[1mre\e[0mddit \e[35m[search_term]\e[0m"
+  echo -e "\e[1mun\e[0msplash \e[35m[search_term]\e[0m"
+  echo -e "\e[1mwa\e[0mllhaven \e[35m[search_term]\e[0m"
+}
 
 ### config editor ###
 # https://stackoverflow.com/a/60116613
 # https://stackoverflow.com/a/2464883
 # https://unix.stackexchange.com/a/331965/312709
 # thanks to ixz in #bash on irc.freenode.net
-CONFIG_FILE="data.cfg"
-function config_set() {
+config_set() {
   if [[ $2 == *"<CANCEL>"* ]]; then
     exit 0
   fi
   local file=$CONFIG_FILE
   local key=$1
-  local val=${@:2}
-
+  local val=${*:2}
   ensureConfigFileExists "${file}"
 
   # create key if not exists
   if ! grep -q "^${key}=" "$file"; then
-    # insert a newline just in case the file does not end with one
-    printf "\n%s=" "${key}" >> "$file"
+    printf "\n%s=" "${key}" >>"$file"
   fi
 
   chc "$file" "$key" "$val"
 }
 
-function ensureConfigFileExists() {
-  if [ ! -e "$1" ] ; then
+ensureConfigFileExists() {
+  if [ ! -e "$1" ]; then
     if [ -e "$1.example" ]; then
-      cp "$1.example" "$1";
+      cp "$1.example" "$1"
     else
       touch "$1"
     fi
   fi
 }
 
-function chc() {
-    gawk -v OFS== -v FS== -e \
+chc() {
+  gawk -v OFS== -v FS== -e \
     'BEGIN { ARGC = 1 } $1 == ARGV[2] { print ARGV[4] ? ARGV[4] : $1, ARGV[3]; next } 1' \
-    "$@" <"$1" >"$1.1"; mv "$1"{.1,};
+    "$@" <"$1" >"$1.1"
+  mv "$1"{.1,}
 }
 
-function config_get() {
-    val="$(config_read_file "$CONFIG_FILE" "${1}")";
-    if [ "${val}" = "__UNDEFINED__" ]; then
-        val="$(config_read_file "$CONFIG_FILE".example "${1}")";
-    fi
-    printf -- "%s" "${val}";
+config_get() {
+  val="$(config_read_file "$CONFIG_FILE" "${1}")"
+  if [ "${val}" = "__UNDEFINED__" ]; then
+    val="$(config_read_file "$CONFIG_FILE".example "${1}")"
+  fi
+  printf -- "%s" "${val}"
 }
 
-function config_read_file() {
-    (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
+config_read_file() {
+  (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-
 }
 ### ### ###
 
 
 # main
-while getopts ':s:t:huvd' flag; do
+while getopts ':s:t:hvdi' flag; do
   case "${flag}" in
   s) source="${OPTARG}" ;;
-  t) query="${OPTARG// /%20}" ;;
+  t) query="${OPTARG//\//%20}" ;;
   h)
     usage
-    exit 0
-    ;;
-  u)
-    update
     exit 0
     ;;
   v)
@@ -180,14 +420,22 @@ while getopts ':s:t:huvd' flag; do
     ;;
   d)
     url=$(config_get "last_wallpaper_path")
-    path="$HOME/Downloads/$(basename $url)"
-    curl -s $url -o $path
+    validate_url $url
+    mkdir -p "$HOME/storage/shared/Download/wanda/"
+    path="$HOME/storage/shared/Download/wanda/$(basename "$url")"
+    curl -s "$url" -o "$path"
     echo "Saved to $path"
+    exit 0
     ;;
   :)
     echo "The $OPTARG option requires an argument."
     usage
     exit 1
+    ;;
+
+  i)
+    supported
+    exit 0
     ;;
   \?)
     echo "$OPTARG is not a valid option."
@@ -200,50 +448,20 @@ done
 case $source in
 wallhaven | wa)
   check_connectivity
-  res=$(curl -s "https://wallhaven.cc/api/v1/search?q=$query&ratios=landscape&sorting=random&categories=111")
-  url=$(echo "$res" | jq --raw-output ".data[0].path")
-  set_wp_url "$url"
+  set_wp_url "$(wallhaven "$query")"
   ;;
 unsplash | un)
   check_connectivity
-  res="https://source.unsplash.com/random/1366x768/?$query"
-  url=$(curl -Ls -o /dev/null -w "%{url_effective}" "$res")
-  if [[ $url == *"source-404"* ]]; then
-    echo "$no_results"
-  fi
-  set_wp_url "$url"
-  ;;
-reddit | re)
-  check_connectivity
-  api="https://old.reddit.com/r/Wallpaper+Wallpapers/search.json?q=$query&restrict_sr=on&limit=100"
-  res=$(curl -s -A "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" "$api")
-  url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
-  posts=$(echo "$res" | jq --raw-output ".data.dist")
-  rand=$(shuf -i 0-"$posts" -n 1)
-  while [[ $url == *"/gallery/"* ]]; do
-    rand=$(shuf -i 0-$posts -n 1)
-    url=$(echo "$res" | jq --raw-output ".data.children[$rand].data.url")
-  done
-  set_wp_url "$url"
+  echo "$(unsplash "$query")"
+  set_wp_url "$(unsplash "$query")"
   ;;
 local | lo)
-  filepath=$(find "$HOME/storage/shared/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
+  filepath=$(find "$HOME/$query" -type f -exec file --mime-type {} \+ | awk -F: '{if ($2 ~/image\//) print $1}' | shuf -n 1)
   set_wp_file "$filepath"
   ;;
 canvas | ca)
   install_package "Imagemagick" "imagemagick"
-  filepath="/tmp/canvas.png"
-  . canvas
-  case $query in
-  1 | solid) solid ;;
-  2 | linear) linear_gradient ;;
-  3 | radial) radial_gradient ;;
-  4 | twisted) twisted_gradient ;;
-  5 | bilinear) bilinear_gradient ;;
-  6 | plasma) plasma ;;
-  7 | blurred) blurred_noise ;;
-  *) randomize ;;
-  esac
+  filepath="$(canvas "$query")"
   set_wp_file "$filepath"
   rm -rf "$filepath"
   config_set "last_wallpaper_path" "canvas:$query"
@@ -251,41 +469,41 @@ canvas | ca)
   ;;
 4chan | 4c)
   check_connectivity
-  if [ -z "$query" ]; then
-    echo "4chan requires a thread link."
-    echo "$(wanda -h | grep 4chan)";
-  fi
-  board=$(echo "$query" | cut -d'/' -f4)
-  image_host="https://i.4cdn.org/${board}/"
-  api="${query/"boards.4chan.org"/"a.4cdn.org"}.json"
-  res=$(curl -s "$api")
-  posts=$(echo "$res" | jq '.[] | length')
-  rand=$(shuf -i 0-$posts -n 1)
-  post_image=$(echo "$res" | jq ".[][$rand].tim")
-  # if post has no image, loop till post with image is found
-  while [ "$post_image" = "null" ]; do
-    rand=$(shuf -i 0-$posts -n 1)
-    post_image=$(echo "$res" | jq ".[][$rand].tim")
-  done
-  post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
-  url="${image_host}${post_image}${post_exten}"
-  set_wp_url "$url"
+  set_wp_url "$(fourchan "$query")"
   ;;
 earthview | ea)
   install_package "xmllint" "libxml2-utils"
   check_connectivity
-  if [[ -z $link ]]; then
-    link=$(curl -s "https://earthview.withgoogle.com" | xmllint --html --xpath 'string(//a[@title="Next image"]/@href)' - 2>/dev/null)
-  fi
-
-  api="https://earthview.withgoogle.com/_api$link.json"
-  res=$(curl -s "${api}")
-  url=$(echo "$res" | jq --raw-output ".photoUrl")
-  validate_url
-  set_wp_url $url
+  filepath="$(earthview)"
+  set_wp_file "$filepath"
+  rm -rf "$filepath"
+  ;;
+reddit | re)
+  check_connectivity
+  set_wp_url "$(reddit "$query")"
+  ;;
+imgur | im)
+  check_connectivity
+  set_wp_url "$(imgur "$query")"
+  ;;
+artstation | ar)
+  check_connectivity
+  set_wp_url "$(artstation_prints "$query")"
+  ;;
+artstation_x | arx)
+  check_connectivity
+  set_wp_url "$(artstation_alt "$query")"
+  ;;
+artstation_art | ara)
+  check_connectivity
+  set_wp_url "$(artstation_artist "$query")"
+  ;;
+500px | 5p)
+  check_connectivity
+  set_wp_url "$(fivehundredpx "$query")"
   ;;
 *)
   echo "Unknown source $source"
-  usage
+  supported
   ;;
 esac
