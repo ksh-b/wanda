@@ -5,7 +5,7 @@
 
 ## Generate a solid color wallpaper
 
-size="1366x768"
+size=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
 DIR="$PREFIX/tmp"
 name="canvas.png"
 
