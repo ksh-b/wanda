@@ -9,6 +9,6 @@
   "suggests": ["imagemagick", "libxml2-utils"],
   "files" :{
     "wanda.sh": "bin/wanda",
-    "canvas.sh": "bin/canvas"
+    "canvas": "bin/canvas"
   }
 }
