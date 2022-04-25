@@ -3,15 +3,12 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7c33b1c42b8d4a3fb80c74c9c8ececb9)](https://www.codacy.com/gl/kshib/wanda/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=kshib/wanda&amp;utm_campaign=Badge_Grade)
 
+## Note
+- This branch might not have all features as the main branch.
+- Only tested on KDE
+
 ## Installation
-
-1. Install [termux](https://f-droid.org/en/packages/com.termux) and [termux-api](https://f-droid.org/en/packages/com.termux.api)
-
-2. Install wanda
-```
-curl https://kshib.gitlab.io/termux-repo/install.sh | sh
-pkg in wanda
-```
+No binaries/installation scripts for now. Follow build instructions.
 
 ## Usage
 ```
@@ -24,7 +21,7 @@ wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]
   -l  lockscreen  set wallpaper on lockscreen only
   -d  download    save current wallpaper to storage
   -v  version     current version
-  -x  list        print supported sources
+  -i  list        print supported sources
 ```
 
 ## Examples:
@@ -91,13 +88,8 @@ python and [termux-create-package](https://github.com/termux/termux-create-packa
 ```
 pip install termux-create-package
 git clone https://gitlab.com/kshib/wanda.git && cd wanda
+git checkout desktop
 termux-create-package manifest.json
-```
-
-## Uninstall
-```
-pkg un wanda
-rm $PREFIX/etc/apt/sources.list.d/kshib.list
 ```
 
 ## License
