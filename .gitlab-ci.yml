@@ -7,7 +7,7 @@ build:
   stage: build
   script:
     - chmod +x wanda.sh
-    - chmod +x canvas.sh
+    - chmod +x canvas
     - termux-create-package manifest.json
   artifacts:
     paths:
