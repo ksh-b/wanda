@@ -3,8 +3,10 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7c33b1c42b8d4a3fb80c74c9c8ececb9)](https://www.codacy.com/gl/kshib/wanda/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=kshib/wanda&amp;utm_campaign=Badge_Grade)
 
-## Installation
+## Desktop version
+Try the desktop version [here](https://gitlab.com/kshib/wanda/-/tree/desktop). Should work on most linux systems.
 
+## Installation
 1. Install [termux](https://f-droid.org/en/packages/com.termux) and [termux-api](https://f-droid.org/en/packages/com.termux.api)
 
 2. Install wanda
