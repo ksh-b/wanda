@@ -6,7 +6,7 @@ version=0.41
 no_results="No results found. Try another source/term."
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$HOME/.local/share/wanda/temp"
-CONFIG_FILE="/etc/wanda.conf"
+CONFIG_FILE="$HOME/.local/share/wanda/wanda.conf"
 resolution=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
 mkdir -p $tmp
 
@@ -86,7 +86,10 @@ set_wp_url() {
   filepath="$tmp/$filename"
   curl -s "$1" -o "$filepath"
   "$SETTER" "$filepath"
-  echo "$SETTER" "$filepath"
+}
+
+set_wp_file() {
+  "$SETTER" "$filepath"
 }
 
 install_package() {
