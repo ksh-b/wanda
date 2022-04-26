@@ -145,26 +145,27 @@ earthview() {
 
 fourchan() {
   if [ -z "$1" ]; then
-    api="https://a.4cdn.org/wg/catalog.json"
-    res=$(curl -s "$api")
-    thread=$(echo "$res" | jq '.[0].threads[1].no')
-    board="wg"
-    api="https://a.4cdn.org/$board/thread/$thread.json"
+      api="https://a.4cdn.org/wg/catalog.json"
+      res=$(curl -s "$api")
+      thread=$(echo "$res" | jq '.[0].threads[1].no')
+      board="wg"
+      api="https://a.4cdn.org/$board/thread/$thread.json"
   else
-    api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
-    board=$(echo "$1" | cut -d'/' -f4)
+      query="${1//%20//}"
+      api="${query/"boards.4chan.org"/"a.4cdn.org"}.json"
+      board=$(echo "$query" | cut -d'/' -f4)
   fi
   image_host="https://i.4cdn.org/${board}/"
   res=$(curl -s "$api")
   if [[ -z $res ]]; then
-    validate_url 0
+      validate_url $api
   fi
   posts=$(echo "$res" | jq '.[] | length')
-  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  lim=$((posts-1))
+  rand=$(shuf -i "1-$lim" -n 1)
   post_image=$(echo "$res" | jq ".[][$rand].tim")
-  # if post has no image, loop till post with image is found
   while [ "$post_image" = "null" ]; do
-    rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+    rand=$(shuf -i "1-$lim" -n 1)
     post_image=$(echo "$res" | jq ".[][$rand].tim")
   done
   post_exten=$(echo "$res" | jq --raw-output ".[][$rand].ext")
