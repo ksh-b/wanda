@@ -136,7 +136,8 @@ fourchan() {
     board="wg"
     api="https://a.4cdn.org/$board/thread/$thread.json"
   else
-    api="${1/"boards.4chan.org"/"a.4cdn.org"}.json"
+    query="${1//%20//}"
+    api="${query/"boards.4chan.org"/"a.4cdn.org"}.json"
     board=$(echo "$1" | cut -d'/' -f4)
   fi
   image_host="https://i.4cdn.org/${board}/"
