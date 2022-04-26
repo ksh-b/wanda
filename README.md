@@ -3,9 +3,6 @@ Bash script to set randomly picked wallpaper using [termux](https://github.com/t
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7c33b1c42b8d4a3fb80c74c9c8ececb9)](https://www.codacy.com/gl/kshib/wanda/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=kshib/wanda&amp;utm_campaign=Badge_Grade)
 
-## Desktop version
-Try the desktop version [here](https://gitlab.com/kshib/wanda/-/tree/desktop). Should work on most linux systems.
-
 ## Installation
 1. Install [termux](https://f-droid.org/en/packages/com.termux) and [termux-api](https://f-droid.org/en/packages/com.termux.api)
 
@@ -26,7 +23,7 @@ wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]
   -l  lockscreen  set wallpaper on lockscreen only
   -d  download    save current wallpaper to storage
   -v  version     current version
-  -x  list        print supported sources
+  -i  list        print supported sources with usage
 ```
 
 ## Examples:
@@ -101,6 +98,9 @@ termux-create-package manifest.json
 pkg un wanda
 rm $PREFIX/etc/apt/sources.list.d/kshib.list
 ```
+
+## Desktop version
+Try the desktop version [here](https://gitlab.com/kshib/wanda/-/tree/desktop). Should work on most linux systems.
 
 ## License
 MIT
