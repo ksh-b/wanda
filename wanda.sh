@@ -326,19 +326,22 @@ fivehundredpx() {
 }
 
 supported() {
-  echo -e "Supported sources. Shortcodes are \e[1mbold\e[0m"
-  echo -e "\e[1m4c\e[0mhan \e[35m[thread url]\e[0m"
-  echo -e "\e[1m5\e[0m00\e[1mp\e[0mx \e[35m[search_term]\e[0m"
-  echo -e "\e[1mar\e[0mtstation \e[35m[search term]\e[0m"
-  echo -e "\e[1mar\e[0mtstation_\e[1ma\e[0mrt \e[35m[artist id]\e[0m"
-  echo -e "\e[1mar\e[0mtstation_\e[1mg\e[0m \e[35m[search_term]\e[0m"
-  echo -e "\e[1mca\e[0mnvas \e[35m[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]\e[0m"
-  echo -e "\e[1mea\e[0mrthview \e[35m(takes no search term)\e[0m"
-  echo -e "\e[1mim\e[0mgur \e[35m[gallery id]\e[0m"
-  echo -e "\e[1mlo\e[0mcal \e[35m[path relative to $HOME]\e[0m"
-  echo -e "\e[1mre\e[0mddit \e[35m[search_term]\e[0m"
-  echo -e "\e[1mun\e[0msplash \e[35m[search_term]\e[0m"
-  echo -e "\e[1mwa\e[0mllhaven \e[35m[search_term]\e[0m"
+  CYAN="$(printf '\033[36m')"
+  MAGENTA="$(printf '\033[35m')"
+  ORANGE="$(printf '\033[33m')"
+  echo -e "Supported sources."
+  echo -e "${CYAN}4c ${MAGENTA}[thread url]"
+  echo -e "${CYAN}5${MAGENTA}00${CYAN}p${MAGENTA}x ${ORANGE}[search_term]${MAGENTA}"
+  echo -e "${CYAN}ar${MAGENTA}station ${ORANGE}[search term]${MAGENTA}"
+  echo -e "${CYAN}ar${MAGENTA}station_${CYAN}a${MAGENTA}rt ${ORANGE}[artist id]${MAGENTA}"
+  echo -e "${CYAN}ar${MAGENTA}station_${CYAN}g${MAGENTA} ${ORANGE}[search_term]${MAGENTA}"
+  echo -e "${CYAN}ca${MAGENTA}nvas ${ORANGE}[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]${MAGENTA}"
+  echo -e "${CYAN}ea${MAGENTA}rthview ${ORANGE}(takes no search term)${MAGENTA}"
+  echo -e "${CYAN}im${MAGENTA}gur ${ORANGE}[gallery id]${MAGENTA}"
+  echo -e "${CYAN}lo${MAGENTA}cal ${ORANGE}[path relative to $HOME]${MAGENTA}"
+  echo -e "${CYAN}re${MAGENTA}ddit ${ORANGE}[search_term]${MAGENTA}"
+  echo -e "${CYAN}un${MAGENTA}splash ${ORANGE}[search_term]${MAGENTA}"
+  echo -e "${CYAN}wa${MAGENTA}llhaven ${ORANGE}[search_term]${MAGENTA}"
 }
 
 ### config editor ###
