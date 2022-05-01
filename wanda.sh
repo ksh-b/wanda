@@ -303,7 +303,7 @@ artstation_artist() {
 
 canvas() {
   filepath="$tmp/canvas.png"
-  . canvas
+  . canvas "$(size)"
   case $1 in
   1 | solid) solid ;;
   2 | linear) linear_gradient ;;

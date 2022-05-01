@@ -5,7 +5,7 @@
 
 ## Generate a solid color wallpaper
 
-size="1440x2560"
+size=$1
 DIR="$PREFIX/tmp"
 name="canvas.png"
 
@@ -92,11 +92,8 @@ plasma() {
 
 ## Generate a random, multi-colored blurred/gradient wallpaper
 blurred_noise() {
-	get_random_number "30"
-	blur="$RNUM"
-
 	convert -size "$size" xc: +noise Random "$DIR/$name"
-	convert "$DIR/$name" -virtual-pixel tile -blur 0x"${blur:-14}" -auto-level -resize "$size" "$DIR/$name"
+	convert "$DIR/$name" -virtual-pixel tile -blur 0x200 -auto-level "$DIR/$name"
 }
 
 ## Generate random number lower than giver parameter
