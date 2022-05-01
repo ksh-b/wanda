@@ -34,9 +34,6 @@ usage() {
 
 set_wp_url() {
   validate_url $1
-  if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
-    exit 0
-  fi
   if [ "$home" = "true" ]; then
     termux-wallpaper -u "$1"
   fi
@@ -48,15 +45,13 @@ set_wp_url() {
 }
 
 set_wp_file() {
-  if [ "$home" = "false" ] && [ "$lock" = "false" ]; then
-    termux-wallpaper -f "$1"
-  fi
   if [ "$home" = "true" ]; then
     termux-wallpaper -f "$1"
   fi
   if [ "$lock" = "true" ]; then
     termux-wallpaper -lf "$1"
   fi
+  config_set "last_wallpaper_time" "$(date)"
 }
 
 size() {
@@ -314,7 +309,6 @@ canvas() {
   7 | blurred) blurred_noise ;;
   *) randomize ;;
   esac
-  config_set "last_wallpaper_path" "canvas"
   config_set "last_wallpaper_time" "$(date)"
   retry=10
   while ! test -f "$filepath"; do
