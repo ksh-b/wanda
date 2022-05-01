@@ -59,6 +59,17 @@ set_wp_file() {
   fi
 }
 
+size() {
+  hxw=$(getprop "persist.vendor.camera.display.umax")
+  if [ -z "$hxw" ]; then
+    w=$(cut -d "x" -f1 <<< "$hxw")
+    h=$(cut -d "x" -f2 <<< "$hxw")
+    echo "$("${w}x${h}")"
+  else
+    echo "1440x2960"
+  fi
+}
+
 validate_url() {
   if [[ $1 != *"http"* ]]; then
     echo "$no_results"
@@ -169,6 +180,20 @@ reddit() {
     rand=$(shuf -i 1-$(( posts-1 )) -n 1)
     url=$(cat "$tmp/temp.json" | jq --raw-output ".data.children[$rand].data.url")
   done
+  echo "$url"
+}
+
+imsea() {
+  size=$(size)
+  if [[ -z $1 ]]; then
+    api="https://imsea.herokuapp.com/api/1?q=$size+wallpaper"
+  else
+    api="https://imsea.herokuapp.com/api/1?q=$size+$1"
+  fi
+  res=$(curl -s "${api}")
+  posts=$(echo "$res" | jq  ".results | length")
+  rand=$(shuf -i 1-$(( posts-1 )) -n 1)
+  url=$(echo "$res" | jq --raw-output ".results[$rand]")
   echo "$url"
 }
 
@@ -470,6 +495,10 @@ reddit | re)
 imgur | im)
   check_connectivity
   set_wp_url "$(imgur "$query")"
+  ;;
+imsea | is)
+  check_connectivity
+  set_wp_url "$(imsea "$query")"
   ;;
 artstation | ar)
   check_connectivity
