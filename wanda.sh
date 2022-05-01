@@ -23,15 +23,13 @@ usage() {
   echo "  -d  download    save current wallpaper to storage"
   echo "  -h  help        this help message"
   echo "  -v  version     current version"
-  echo "  -i  list        print supported sources"
+  echo "  -i  list        print supported sources and their specific usage"
   echo ""
   echo "Examples:"
   echo "  wanda"
-  echo "  wanda -s ea"
+  echo "  wanda -s earthview"
   echo '  wanda -s un -t eiffel tower'
   echo "  wanda -s lo -t folder/path"
-  echo "  wanda -s wa -t stars,clouds"
-  echo "  wanda -s 4c -t https://boards.4chan.org/wg/thread/7812495"
 }
 
 set_wp_url() {
@@ -330,18 +328,18 @@ supported() {
   MAGENTA="$(printf '\033[35m')"
   ORANGE="$(printf '\033[33m')"
   echo -e "Supported sources."
-  echo -e "${CYAN}4c ${MAGENTA}[thread url]"
-  echo -e "${CYAN}5${MAGENTA}00${CYAN}p${MAGENTA}x ${ORANGE}[search_term]${MAGENTA}"
-  echo -e "${CYAN}ar${MAGENTA}station ${ORANGE}[search term]${MAGENTA}"
-  echo -e "${CYAN}ar${MAGENTA}station_${CYAN}a${MAGENTA}rt ${ORANGE}[artist id]${MAGENTA}"
-  echo -e "${CYAN}ar${MAGENTA}station_${CYAN}g${MAGENTA} ${ORANGE}[search_term]${MAGENTA}"
-  echo -e "${CYAN}ca${MAGENTA}nvas ${ORANGE}[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]${MAGENTA}"
-  echo -e "${CYAN}ea${MAGENTA}rthview ${ORANGE}(takes no search term)${MAGENTA}"
-  echo -e "${CYAN}im${MAGENTA}gur ${ORANGE}[gallery id]${MAGENTA}"
-  echo -e "${CYAN}lo${MAGENTA}cal ${ORANGE}[path relative to $HOME]${MAGENTA}"
-  echo -e "${CYAN}re${MAGENTA}ddit ${ORANGE}[search_term]${MAGENTA}"
-  echo -e "${CYAN}un${MAGENTA}splash ${ORANGE}[search_term]${MAGENTA}"
-  echo -e "${CYAN}wa${MAGENTA}llhaven ${ORANGE}[search_term]${MAGENTA}"
+  echo -e "${CYAN}4c${MAGENTA}han ${ORANGE}[thread url. example: https://boards.4chan.org/wg/thread/1234567]"
+  echo -e "${CYAN}5${MAGENTA}00${CYAN}p${MAGENTA}x ${ORANGE}[search term]"
+  echo -e "${CYAN}ar${MAGENTA}station ${ORANGE}[search term for prints page]"
+  echo -e "${CYAN}ar${MAGENTA}station_${CYAN}a${MAGENTA}rt ${ORANGE}[artist id. example: tohad]"
+  echo -e "${CYAN}ar${MAGENTA}station_${CYAN}g${MAGENTA}en ${ORANGE}[search term for main page]"
+  echo -e "${CYAN}ca${MAGENTA}nvas ${ORANGE}[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]"
+  echo -e "${CYAN}ea${MAGENTA}rthview ${ORANGE}(takes no search term)"
+  echo -e "${CYAN}im${MAGENTA}gur ${ORANGE}[gallery id. example: qF259WO]"
+  echo -e "${CYAN}lo${MAGENTA}cal ${ORANGE}[path relative to $HOME]"
+  echo -e "${CYAN}re${MAGENTA}ddit ${ORANGE}[search term]"
+  echo -e "${CYAN}un${MAGENTA}splash ${ORANGE}[search term]"
+  echo -e "${CYAN}wa${MAGENTA}llhaven ${ORANGE}[search term]"
 }
 
 ### config editor ###
@@ -477,7 +475,7 @@ artstation | ar)
   check_connectivity
   set_wp_url "$(artstation_prints "$query")"
   ;;
-artstation_x | arx)
+artstation_gen | arg)
   check_connectivity
   set_wp_url "$(artstation_alt "$query")"
   ;;
