@@ -32,7 +32,7 @@ wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-x]
   ```
   wanda
   ```
-- First two letters of source is fine (earthview in this case)
+- Shortcodes for sources. `wanda -i` for all shortcodes.
   ```
   wanda -s ea
   ```
