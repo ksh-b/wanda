@@ -4,7 +4,7 @@ source="unsplash"
 query=""
 home="true"
 lock="true"
-version=0.43
+version=0.44
 no_results="No results found. Try another source/term."
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$PREFIX/tmp"
@@ -16,7 +16,7 @@ usage() {
   echo "  wanda [-s source] [-t search term] [-o] [-l] [-d] [-h] [-v] [-i]"
   echo "  -s  source      unsplash,wallhaven,reddit"
   echo "                  4chan,canvas,earthview,imgur"
-  echo "                  artstation,local, 500px"
+  echo "                  artstation,local, 500px, imsea"
   echo "  -t  term        search term"
   echo "  -o  homescreen  set wallpaper on homescreen only"
   echo "  -l  lockscreen  set wallpaper on lockscreen only"
