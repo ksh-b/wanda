@@ -99,7 +99,7 @@ wallhaven() {
 
 unsplash() {
   local url
-  res="https://source.unsplash.com/random/1440x2560/?$1"
+  res="https://source.unsplash.com/random/$size/?$1"
   url=$(curl -Ls -o /dev/null -w "%{url_effective}" "$res")
   if [[ $url == *"source-404"* ]]; then echo "$no_results"; fi
   echo "$url"
