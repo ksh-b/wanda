@@ -5,10 +5,10 @@
   "maintainer": "@kshib",
   "description": "Set wallpapers with keywords or randomly",
   "arch": "all",
-  "depends": ["termux-api","curl","jq","file"],
-  "suggests": ["imagemagick", "libxml2-utils"],
+  "depends": ["termux-api","python"],
+  "suggests": ["imagemagick"],
   "files" :{
-    "wanda.sh": "bin/wanda",
+    "wanda.py": "bin/wanda",
     "canvas.sh": "bin/canvas",
     "wanda.conf":"etc/wanda.conf"
   }
