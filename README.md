@@ -23,7 +23,6 @@ wanda -s wallhaven -t japan
 - [4chan](https://boards.4chan.org)
 - [500px](https://500px.com)
 - [artstation](https://artstation.com)
-- [canvas](https://github.com/adi1090x/canvas)
 - [imgur](https://imgur.com)
 - local
 - [reddit](https://reddit.com)
