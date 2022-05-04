@@ -1,9 +1,2 @@
-**/*config
-!config
-downloads/*
-sources/dynamic/images/*
-*.tar.gz
-*.deb
-wanda.conf
-build.sh
-termux-create-package
+.idea
+poetry.lock
