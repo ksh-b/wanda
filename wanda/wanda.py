@@ -13,12 +13,10 @@ from random import randrange
 import requests
 from lxml import etree
 
-version = 0.53
+version = 0.56
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-home = True
-lock = True
 
 
 def __version__():
@@ -70,23 +68,15 @@ def parser():
     if is_android():
         parser_.add_argument(
             '-o',
-            metavar='homescreen',
-            type=bool,
-            default=True,
             help='Set wallpaper on homescreen.',
             required=False,
-            action="store_const",
-            const=None
+            action="store_true",
         )
         parser_.add_argument(
             '-l',
-            metavar='lockscreen',
-            type=bool,
-            default=True,
             help='Set wallpaper on lockscreen.',
             required=False,
-            action="store_const",
-            const=None
+            action="store_true",
         )
     return parser_
 
@@ -114,9 +104,9 @@ def short_url(url: str) -> str:
     return f"{response['result_url']}" if "result_url" in response else url
 
 
-def set_wp(url: str):
+def set_wp(url: str, home=True, lock=True):
     if is_android():
-        t = "f" if url.startswith("https://") else "u"
+        t = "u" if url.startswith("https://") else "f"
         if home:
             subprocess.call(f"termux-wallpaper -{t} {url}", shell=True)
         if lock:
@@ -396,6 +386,8 @@ def usage():
 
 
 def run():
+    home = True
+    lock = True
     source = "unsplash"
     term = None
     args = parser().parse_args()
@@ -419,27 +411,33 @@ def run():
             source = args.s.strip()
         if opt in "-t":
             term = args.t.strip()
+        if opt in "-l":
+            lock = True
+            home = False
+        if opt in "-h":
+            lock = False
+            home = True
 
     if contains(source, False, ["4c", "4chan"]):
-        set_wp(fourchan(term))
+        set_wp(fourchan(term), home, lock)
     elif contains(source, False, ["5p", "500px"]):
-        set_wp(fivehundredpx(term))
+        set_wp(fivehundredpx(term), home, lock)
     elif contains(source, False, ["un", "unsplash"]):
-        set_wp(unsplash(term))
+        set_wp(unsplash(term), home, lock)
     elif contains(source, False, ["wa", "wallhaven"]):
-        set_wp(wallhaven(term))
+        set_wp(wallhaven(term), home, lock)
     elif contains(source, False, ["im", "imgur"]):
-        set_wp(imgur(term))
+        set_wp(imgur(term), home, lock)
     elif contains(source, False, ["is", "imsea"]):
-        set_wp(imsea(term))
+        set_wp(imsea(term), home, lock)
     elif contains(source, False, ["ar", "artstation"]):
-        set_wp(artstation_any(term))
+        set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["arp", "artstation_prints"]):
-        set_wp(artstation_any(term))
+        set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["re", "reddit"]):
         if term.contains("@"):
             set_wp(reddit(term.split("@")[1], reddit(term.split("@")[0])))
-        set_wp(reddit(search=term))
+        set_wp(reddit(search=term), home, lock)
     else:
         print("Unknown source")
 
