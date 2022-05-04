@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wanda"
-version = "0.53"
+version = "0.56"
 description = "Set wallpapers with keywords or randomly"
 authors = ["kshib <ksyko@pm.me>"]
 license = "MIT"
