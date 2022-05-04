@@ -6,7 +6,6 @@ import random
 import shutil
 import subprocess
 import sys
-import tempfile
 import time
 from pathlib import Path
 from random import randrange
@@ -14,10 +13,12 @@ from random import randrange
 import requests
 from lxml import etree
 
-version = 0.5
+version = 0.53
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
+home = True
+lock = True
 
 
 def __version__():
@@ -107,9 +108,11 @@ def no_results():
 def command(string: str) -> str:
     return subprocess.check_output(string.split(" ")).decode()
 
-def short_url(url: str)->str:
+
+def short_url(url: str) -> str:
     response = requests.post("https://cleanuri.com/api/v1/shorten", data={"url": url}).json()
     return f"{response['result_url']}" if "result_url" in response else url
+
 
 def set_wp(url: str):
     if is_android():
@@ -224,7 +227,7 @@ def fourchan_auto(search=None):
     for page in range(pages):
         threads = response[page]["threads"]
         if not search or search == "":
-            return f"https://boards.4chan.org/wg/thread/{threads[1]['no']}"
+            return f"https://boards.4chan.org/wg/thread/{random.choice(threads)['no']}"
         for thread in response[page]["threads"]:
             semantic_url = thread["semantic_url"]
             if is_android() and contains(semantic_url, True,
@@ -392,9 +395,7 @@ def usage():
     print(f"{cyan}wa{pink}llhaven {gray}[search term]")
 
 
-if __name__ == '__main__':
-    home = True
-    lock = True
+def run():
     source = "unsplash"
     term = None
     args = parser().parse_args()
@@ -405,12 +406,15 @@ if __name__ == '__main__':
     for opt, arg in options:
         if opt in "-v":
             print(__version__())
+            exit(0)
         elif opt in "-u":
             usage()
+            exit(0)
         elif opt in "-d":
             if os.path.exists(args.d):
                 shutil.move(folder, args.d.strip())
             print(args.d)
+            exit(0)
         if opt in "-s":
             source = args.s.strip()
         if opt in "-t":
@@ -438,3 +442,7 @@ if __name__ == '__main__':
         set_wp(reddit(search=term))
     else:
         print("Unknown source")
+
+
+if __name__ == "__main__":
+    sys.exit(run())
