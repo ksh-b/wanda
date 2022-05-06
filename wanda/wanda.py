@@ -11,7 +11,7 @@ from pathlib import Path
 from random import randrange
 
 import requests
-from defusedxml import lxml
+from lxml import html
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -102,9 +102,9 @@ def set_wp(url: str, home=True, lock=True):
     if is_android():
         t = "u" if url.startswith("https://") else "f"
         if home:
-            subprocess.call(f"termux-wallpaper -{t} {url}", shell=True)
+            subprocess.call(f"termux-wallpaper -{t} {url}", shell=False)
         if lock:
-            subprocess.call(f"termux-wallpaper -l{t} {url}", shell=True)
+            subprocess.call(f"termux-wallpaper -l{t} {url}", shell=False)
         return
     path = os.path.normpath(f'{folder}/wanda_{time.time()}')
     if not os.path.exists(folder):
@@ -273,7 +273,7 @@ def imgur(search=None):
             response = requests.get(api, headers=user_agent).json()["data"]["children"]
             imgur_url = random.choice(response)["data"]["url"] if response else no_results()
 
-    tree = lxml._etree.HTML(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
+    tree = html.fromstring(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
     images = tree.xpath("//div[@class='center']//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
 
