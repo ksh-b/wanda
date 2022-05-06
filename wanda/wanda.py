@@ -16,7 +16,7 @@ from lxml import html
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-version = '0.57.3'
+version = '0.57.4'
 
 
 def parser():
