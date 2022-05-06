@@ -16,7 +16,7 @@ from lxml import html
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-version = '0.57.2'
+version = '0.57.3'
 
 
 def parser():
@@ -234,12 +234,13 @@ def fourchan_auto(search=None):
 
 
 def fourchan(thread=None):
-    thread = fourchan_auto(thread) if thread and not thread.startswith("http") else thread
+    thread = fourchan_auto(thread) if thread and not thread.startswith("https://boards.4channel.org/") else thread
+    board = thread.split('/')[3] if thread and thread.startswith("https://boards.4channel.org/") else "wg"
     posts = requests.get(f"{thread or fourchan_auto()}.json").json()["posts"]
     for _ in posts:
         post = random.choice(posts)
         if "ext" in post and contains(post["ext"], False, [".jpg", ".png"]):
-            return f"https://i.4cdn.org/wg/{post['tim']}{post['ext']}"
+            return f"https://i.4cdn.org/{board}/{post['tim']}{post['ext']}"
     no_results()
 
 
