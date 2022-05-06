@@ -34,6 +34,9 @@ wanda -s wallhaven -t japan
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
 
+# Demo
+- [Desktop, Manjaro Linux](https://z.zz.fo/om26p.webm)
+
 ## Automate
 * To set wallpaper at regular intervals automatically:
 
