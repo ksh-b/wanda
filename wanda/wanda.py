@@ -165,7 +165,7 @@ def set_wp_linux(path):
 
 def size():
     if is_android():
-        hxw = command("getprop 'persist.vendor.camera.display.umax'")
+        hxw = command("getprop persist.vendor.camera.display.umax").strip()
         return f"{hxw.split('x')[1]}x{hxw.split('x')[0]}" if hxw is not None else "1440x2960"
     try:
         dimensions = filter(lambda l: "dimensions" in l, subprocess.check_output("xdpyinfo").decode().split("\n"))
