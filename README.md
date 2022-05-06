@@ -1,10 +1,11 @@
 # wanda
-Bash script to set randomly picked wallpaper using [termux](https://github.com/termux/termux-app)
+Script to set wallpaper using keyword or randomly
 
 ## Installation
 ```
 pip install wanda
 ```
+or `pip install -i https://test.pypi.org/simple/ wanda` for dev version
 
 ## Usage
 ```
