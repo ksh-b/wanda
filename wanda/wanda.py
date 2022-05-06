@@ -17,6 +17,7 @@ user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
 
+
 def parser():
     parser_ = argparse.ArgumentParser(description='Set wallpapers')
 
@@ -102,9 +103,9 @@ def set_wp(url: str, home=True, lock=True):
     if is_android():
         t = "u" if url.startswith("https://") else "f"
         if home:
-            subprocess.call(f"termux-wallpaper -{t} {url}", shell=False)
+            command(f"termux-wallpaper -{t} {url}")
         if lock:
-            subprocess.call(f"termux-wallpaper -l{t} {url}", shell=False)
+            command(f"termux-wallpaper -l{t} {url}")
         return
     path = os.path.normpath(f'{folder}/wanda_{time.time()}')
     if not os.path.exists(folder):
@@ -343,7 +344,7 @@ def artstation_any(search=None):
         "Content-Type": content_json
     }
     assets = requests.get(api, json=body, headers=headers).json()["data"]
-    if type(assets) == str:
+    if isinstance(assets) == str:
         no_results()
     hash_id = random.choice(assets)["hash_id"] if assets else no_results()
 
@@ -395,11 +396,11 @@ def run():
 
 def handle_args(home, lock, source, term):
     args = parser().parse_args()
-    options, remainder = getopt.getopt(
+    options, _ = getopt.getopt(
         sys.argv[1:],
         'us:t:d:ho',
     )
-    for opt, arg in options:
+    for opt, _ in options:
         if opt in "-u":
             usage()
             exit(0)
