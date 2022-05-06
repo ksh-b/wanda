@@ -16,7 +16,7 @@ from lxml import html
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-version = '0.57'
+version = '0.57.1'
 
 
 def parser():
@@ -439,8 +439,8 @@ def handle_source(home, lock, source, term):
     elif contains(source, False, ["arp", "artstation_prints"]):
         set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["re", "reddit"]):
-        if term.contains("@"):
-            set_wp(reddit(term.split("@")[1], reddit(term.split("@")[0])))
+        if "@" in term:
+            set_wp(reddit(term.split("@")[1], term.split("@")[0]))
         set_wp(reddit(search=term), home, lock)
     else:
         print("Unknown source")
