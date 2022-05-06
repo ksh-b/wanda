@@ -16,7 +16,7 @@ from lxml import html
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-
+version = '0.56.1'
 
 def parser():
     parser_ = argparse.ArgumentParser(description='Set wallpapers')
@@ -373,10 +373,8 @@ def usage():
     print(f"{cyan}4c{pink}han {gray}[thread url. example: https://boards.4chan.org/wg/thread/1234567]")
     print(f"{cyan}5{pink}00{cyan}p{pink}x {gray}[search term]")
     print(f"{cyan}ar{pink}station {gray}[search term for prints page]")
-    print(f"{cyan}ar{pink}station_{cyan}a{pink}rt {gray}[artist id. example: tohad]")
-    print(f"{cyan}ar{pink}station_{cyan}g{pink}en {gray}[search term for main page]")
-    print(f"{cyan}ca{pink}nvas {gray}[solid|linear|radial|twisted|bilinear|plasma|blurred|[1-7]]")
-    print(f"{cyan}ea{pink}rthview {gray}(takes no search term)")
+    print(f"{cyan}ar{pink}station {gray}[search term]")
+    print(f"{cyan}ar{pink}station_{cyan}p{pink}rints {gray}[search term for prints]")
     print(f"{cyan}im{pink}gur {gray}[gallery id. example: qF259WO]")
     print(f"{cyan}lo{pink}cal {gray}[path relative to $HOME]")
     print(f"{cyan}re{pink}ddit {gray}[search term]")
