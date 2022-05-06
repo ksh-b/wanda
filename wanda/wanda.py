@@ -168,7 +168,7 @@ def size():
     try:
         dimensions = filter(lambda l: "dimensions" in l, subprocess.check_output("xdpyinfo").decode().split("\n"))
         return list(dimensions)[0].split()[1]
-    except Exception:
+    except NameError:
         return "2560x1440"
 
 
@@ -204,13 +204,17 @@ def unsplash(search=None):
     return response if "source-404" not in response else no_results()
 
 
+def blank(search):
+    return not search or search == ""
+
+
 def fourchan_auto(search=None):
     catalog = "https://a.4cdn.org/wg/catalog.json"
     response: list = requests.get(catalog).json()
     pages = len(response)
     for page in range(pages):
         threads = response[page]["threads"]
-        if not search or search == "":
+        if blank(search):
             return f"https://boards.4chan.org/wg/thread/{random.choice(threads)['no']}"
         for thread in response[page]["threads"]:
             semantic_url = thread["semantic_url"]
@@ -329,7 +333,7 @@ def artstation_prints(search=None):
 
 
 def artstation_any(search=None):
-    search = "nature" if not search or search == "" else search
+    search = "nature" if blank(search) else search
     body = {"query": search, "page": 1, "per_page": 50, "sorting": "relevance", "pro_first": "1", "filters": "[]",
             "additional_fields": []}
     api = "https://www.artstation.com/api/v2/search/projects.json"
@@ -384,6 +388,12 @@ def run():
     lock = True
     source = "unsplash"
     term = None
+    home, lock, source, term = handle_args(home, lock, source, term)
+
+    handle_source(home, lock, source, term)
+
+
+def handle_args(home, lock, source, term):
     args = parser().parse_args()
     options, remainder = getopt.getopt(
         sys.argv[1:],
@@ -408,7 +418,10 @@ def run():
         if opt in "-h":
             lock = False
             home = True
+    return home, lock, source, term
 
+
+def handle_source(home, lock, source, term):
     if contains(source, False, ["4c", "4chan"]):
         set_wp(fourchan(term), home, lock)
     elif contains(source, False, ["5p", "500px"]):
