@@ -344,7 +344,7 @@ def artstation_any(search=None):
         "Content-Type": content_json
     }
     assets = requests.get(api, json=body, headers=headers).json()["data"]
-    if isinstance(assets) == str:
+    if isinstance(assets, str):
         no_results()
     hash_id = random.choice(assets)["hash_id"] if assets else no_results()
 
