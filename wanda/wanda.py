@@ -18,6 +18,7 @@ content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
 version = '0.57'
 
+
 def parser():
     parser_ = argparse.ArgumentParser(description='Set wallpapers')
 
