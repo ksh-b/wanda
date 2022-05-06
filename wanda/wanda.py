@@ -11,17 +11,11 @@ from pathlib import Path
 from random import randrange
 
 import requests
-from lxml import etree
+from defusedxml import lxml
 
-version = 0.56
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-
-
-def __version__():
-    return version
-
 
 def parser():
     parser_ = argparse.ArgumentParser(description='Set wallpapers')
@@ -279,7 +273,7 @@ def imgur(search=None):
             response = requests.get(api, headers=user_agent).json()["data"]["children"]
             imgur_url = random.choice(response)["data"]["url"] if response else no_results()
 
-    tree = etree.HTML(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
+    tree = lxml._etree.HTML(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
     images = tree.xpath("//div[@class='center']//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
 
@@ -393,13 +387,10 @@ def run():
     args = parser().parse_args()
     options, remainder = getopt.getopt(
         sys.argv[1:],
-        'vus:t:d:ho',
+        'us:t:d:ho',
     )
     for opt, arg in options:
-        if opt in "-v":
-            print(__version__())
-            exit(0)
-        elif opt in "-u":
+        if opt in "-u":
             usage()
             exit(0)
         elif opt in "-d":

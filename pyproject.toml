@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.10"
 lxml = "^4.8.0"
 requests = "^2.27.1"
+defusedxml = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
 
