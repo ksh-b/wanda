@@ -1,6 +1,4 @@
 import time
-
-import wanda.wanda
 from wanda import wanda
 
 import unittest
