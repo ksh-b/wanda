@@ -420,7 +420,8 @@ def usage():
     print(f"{cyan}ar{pink}station {gray}[search term]")
     print(f"{cyan}ar{pink}station_{cyan}p{pink}rints {gray}[search term for prints]")
     print(f"{cyan}im{pink}gur {gray}[gallery id. example: qF259WO]")
-    print(f"{cyan}lo{pink}cal {gray}[path relative to $HOME]")
+    print(f"{cyan}ea{pink}rthview")
+    print(f"{cyan}lo{pink}cal {gray}[full path to folder]")
     print(f"{cyan}re{pink}ddit {gray}[search term]")
     print(f"{cyan}un{pink}splash {gray}[search term]")
     print(f"{cyan}wa{pink}llhaven {gray}[search term]")
@@ -481,6 +482,8 @@ def handle_source(home, lock, source, term):
         set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["arp", "artstation_prints"]):
         set_wp(artstation_any(term), home, lock)
+    elif contains(source, False, ["ea", "earthview"]):
+        set_wp(earthview(), home, lock)
     elif contains(source, False, ["lo", "local"]):
         set_wp(local(term), home, lock)
     elif contains(source, False, ["re", "reddit"]):
