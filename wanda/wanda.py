@@ -1,6 +1,7 @@
 import argparse
 import getopt
 import glob
+import json
 import os
 import random
 import shutil
@@ -115,9 +116,15 @@ def set_wp(url: str, home=True, lock=True):
     files = glob.glob(f'{folder}/*')
     for f in files:
         os.remove(f)
-    with open(path, 'wb') as f:
-        print(url)
-        f.write(requests.get(url).content)
+    if url.startswith("https://"):
+        with open(path, 'wb') as f:
+            print(url)
+            f.write(requests.get(url).content)
+    elif os.path.exists(url):
+        path = url
+    else:
+        print("Invalid url/path")
+        return 1
     import platform
     if platform.system() == "Linux":
         set_wp_linux(path)
@@ -204,6 +211,11 @@ def unsplash(search=None):
     api = f"https://source.unsplash.com/random/{size()}/?{search or ''}"
     response = requests.get(api).url
     return response if "source-404" not in response else no_results()
+
+
+def earthview():
+    tree = html.fromstring(requests.get("https://earthview.withgoogle.com").content)
+    return json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
 
 
 def blank(search):
@@ -382,8 +394,10 @@ def artstation_any(search=None):
 
 
 def local(path):
+    if not path.endswith("/"):
+        path = f'{path}/'
     if os.path.exists(path):
-        return random.choice(list(filter(lambda f: f.endswith(".png") or f.endswith(".jpg"), os.listdir(path))))
+        return path+random.choice(list(filter(lambda f: f.endswith(".png") or f.endswith(".jpg"), os.listdir(path))))
     return no_results()
 
 
@@ -459,6 +473,8 @@ def handle_source(home, lock, source, term):
         set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["arp", "artstation_prints"]):
         set_wp(artstation_any(term), home, lock)
+    elif contains(source, False, ["lo", "local"]):
+        set_wp(local(term), home, lock)
     elif contains(source, False, ["re", "reddit"]):
         if "@" in term:
             set_wp(reddit(term.split("@")[1], term.split("@")[0]), home, lock)
