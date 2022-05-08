@@ -213,19 +213,26 @@ def blank(search):
 def fourchan(search=None):
     if "@" not in search:
         search = f"subject={search}" if search else ""
-        board = "w.wg.hr"
+        board = "wg"
     else:
         search = search.split("@")[0]
         board = search.split("@")[1]
     if is_android():
         search = f"{search} {random.choice(['phone', 'mobile'])}".strip()
     api = f"https://archive.alice.al/_/api/chan/search/?boards={board}&{search}"
-    post = random.choice(requests.get(api).json()["posts"])
+    posts = requests.get(api).json()["0"]["posts"]
+    posts = list(filter(lambda p: "media" in p and "nimages" in p, posts))
+    if not posts:
+        no_results()
+    post = random.choice(posts)
     thread = post["num"]
     board = post["board"]["shortname"]
     api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
-    posts = list(filter(lambda p: p["media"] is not None, requests.get(api).json()["posts"]))
-    return random.choice(posts)["media"]["media_link"] if posts else no_results()
+    posts = requests.get(api).json()[thread]["posts"]
+    if not posts:
+        no_results()
+    post = random.choice(list(filter(lambda p: "media" not in p, posts)))
+    return posts[post]["media"]["media_link"]
 
 
 def subreddit():
@@ -385,7 +392,7 @@ def usage():
     pink = "\033[35m"
     gray = "\033[37m"
     print("Supported sources:")
-    print(f"{cyan}4c{pink}han {gray}[thread url. example: https://boards.4chan.org/wg/thread/1234567]")
+    print(f"{cyan}4c{pink}han {gray}[search term]")
     print(f"{cyan}5{pink}00{cyan}p{pink}x {gray}[search term]")
     print(f"{cyan}ar{pink}station {gray}[search term for prints page]")
     print(f"{cyan}ar{pink}station {gray}[search term]")
