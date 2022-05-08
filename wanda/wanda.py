@@ -82,7 +82,7 @@ def is_connected():
 
 
 def validate_url(url):
-    response = requests.get(url)
+    response = requests.get(url, headers=user_agent)
     return response if response.status_code == 200 else no_results()
 
 
@@ -118,7 +118,7 @@ def set_wp(url: str, home=True, lock=True):
     if url.startswith("https://"):
         with open(path, 'wb') as f:
             print(url)
-            f.write(requests.get(url).content)
+            f.write(requests.get(url, headers=user_agent).content)
     elif os.path.exists(url):
         path = url
     else:
@@ -219,7 +219,7 @@ def earthview():
         return url
     path = os.path.normpath(f'{folder}/wanda_{time.time()}')
     with open(path, 'wb') as f:
-        f.write(requests.get(url).content)
+        f.write(requests.get(url, headers=user_agent).content)
     with Image(filename=path) as i:
         i.rotate(90)
         i.save(filename=path)
@@ -434,6 +434,7 @@ def usage():
     print(f"{cyan}ar{pink}station {gray}[search term]")
     print(f"{cyan}ar{pink}station_{cyan}p{pink}rints {gray}[search term for prints]")
     print(f"{cyan}im{pink}gur {gray}[gallery id. example: qF259WO]")
+    print(f"{cyan}im{pink}sea {gray}[search term")
     print(f"{cyan}ea{pink}rthview")
     print(f"{cyan}lo{pink}cal {gray}[full path to folder]")
     print(f"{cyan}re{pink}ddit {gray}[search term]")
@@ -481,29 +482,29 @@ def handle_args(home, lock, source, term):
 
 
 def handle_source(home, lock, source, term):
-    if contains(source, False, ["4c", "4chan"]):
+    if contains(source, False, ["4", "4chan"]):
         set_wp(fourchan(term), home, lock, )
-    elif contains(source, False, ["5p", "500px"]):
+    elif contains(source, False, ["5", "500px"]):
         set_wp(fivehundredpx(term), home, lock)
-    elif contains(source, False, ["un", "unsplash"]):
+    elif contains(source, False, ["u", "unsplash"]):
         set_wp(unsplash(term), home, lock)
-    elif contains(source, False, ["wa", "wallhaven"]):
+    elif contains(source, False, ["w", "wallhaven"]):
         set_wp(wallhaven(term), home, lock)
-    elif contains(source, False, ["im", "imgur"]):
+    elif contains(source, False, ["i", "imgur"]):
         set_wp(imgur(term), home, lock)
-    elif contains(source, False, ["is", "imsea"]):
+    elif contains(source, False, ["im", "imsea"]):
         set_wp(imsea(term), home, lock)
-    elif contains(source, False, ["ar", "artstation"]):
+    elif contains(source, False, ["a", "artstation"]):
         set_wp(artstation_any(term), home, lock)
-    elif contains(source, False, ["arp", "artstation_prints"]):
+    elif contains(source, False, ["ap", "artstation_prints"]):
         set_wp(artstation_prints(term), home, lock)
-    elif contains(source, False, ["ea", "earthview"]):
+    elif contains(source, False, ["e", "earthview"]):
         set_wp(earthview(), home, lock)
     elif contains(source, False, ["wi", "waifuim"]):
         set_wp(waifuim(term), home, lock)
-    elif contains(source, False, ["lo", "local"]):
+    elif contains(source, False, ["l", "local"]):
         set_wp(local(term), home, lock)
-    elif contains(source, False, ["re", "reddit"]):
+    elif contains(source, False, ["r", "reddit"]):
         if "@" in term:
             set_wp(reddit(term.split("@")[1], term.split("@")[0]), home, lock)
         else:
