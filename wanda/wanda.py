@@ -482,7 +482,7 @@ def handle_args(home, lock, source, term):
 
 def handle_source(home, lock, source, term):
     if contains(source, False, ["4c", "4chan"]):
-        set_wp(fourchan(term), home, lock)
+        set_wp(fourchan(term), home, lock, )
     elif contains(source, False, ["5p", "500px"]):
         set_wp(fivehundredpx(term), home, lock)
     elif contains(source, False, ["un", "unsplash"]):
@@ -496,7 +496,7 @@ def handle_source(home, lock, source, term):
     elif contains(source, False, ["ar", "artstation"]):
         set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["arp", "artstation_prints"]):
-        set_wp(artstation_any(term), home, lock)
+        set_wp(artstation_prints(term), home, lock)
     elif contains(source, False, ["ea", "earthview"]):
         set_wp(earthview(), home, lock)
     elif contains(source, False, ["wi", "waifuim"]):
