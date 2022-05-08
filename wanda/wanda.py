@@ -181,6 +181,11 @@ def size():
     except NameError:
         return "2560x1440"
 
+def is_landscape():
+    return int(size().split("x")[0]) > int(size().split("x")[1])
+
+def is_portrait():
+    return not is_landscape()
 
 def is_android():
     return os.environ.get('TERMUX_VERSION') is not None
@@ -191,7 +196,7 @@ def is_desktop():
 
 
 def good_size(w, h):
-    return (is_android() and w < h) or (is_desktop() and w > h)
+    return (is_portrait() and w < h) or (is_landscape() and w > h)
 
 
 def contains(word: str, match_all: bool, desired: list) -> bool:
@@ -203,7 +208,7 @@ def contains(word: str, match_all: bool, desired: list) -> bool:
 
 def wallhaven(search=None):
     api = "https://wallhaven.cc/api/v1/search?sorting=random"
-    ratios = "portrait" if is_android() else "landscape"
+    ratios = "portrait" if is_portrait() else "landscape"
     response = requests.get(f"{api}&ratios={ratios}&q={search or ''}").json()["data"]
     return response[0]["path"] if response else no_results()
 
@@ -217,7 +222,7 @@ def unsplash(search=None):
 def earthview():
     tree = html.fromstring(requests.get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
-    if not is_android():
+    if is_landscape():
         return url
     path = os.path.normpath(f'{folder}/wanda_{time.time()}')
     with open(path, 'wb') as f:
@@ -239,7 +244,7 @@ def fourchan(search=None):
     else:
         search = search.split("@")[0]
         board = search.split("@")[1]
-    if is_android():
+    if is_portrait():
         search = f"{search} {random.choice(['phone', 'mobile'])}".strip()
     api = f"https://archive.alice.al/_/api/chan/search/?boards={board}&{search}"
     posts = requests.get(api).json()["0"]["posts"]
@@ -258,7 +263,7 @@ def fourchan(search=None):
 
 
 def subreddit():
-    if is_android():
+    if is_portrait():
         return "mobilewallpaper+amoledbackgrounds+verticalwallpapers"
     return "wallpaper+wallpapers+minimalwallpaper"
 
@@ -293,7 +298,7 @@ def reddit_compare_image_size(title):
         w = int(sr.group().split("x")[0]) >= int(size().split("x")[0])
         h = int(sr.group().split("x")[1]) >= int(size().split("x")[1])
         return w and h
-    return is_android() or False
+    return is_portrait() or False
 
 
 def reddit(search=None, subreddits=subreddit()):
@@ -324,7 +329,7 @@ def imgur(search=None):
         imgur_url = f"https://{alt}/gallery/{search}"
     else:
         api = reddit_search("wallpaperdump", search)
-        if is_android():
+        if is_portrait():
             search = f"{search or ''} {random.choice(['phone', 'mobile'])}"
             api = f"{reddit_search('wallpaperdump', search)}"
         imgur_url = ""
@@ -382,7 +387,7 @@ def fivehundredpx(search=None):
 
 
 def artstation_prints(search=None):
-    orientation = "portrait" if is_android() else "landscape"
+    orientation = "portrait" if is_portrait() else "landscape"
     search = search or ""
     api = f"https://www.artstation.com/api/v2/prints/public/printed_products.json?page=1&per_page=30" \
           f"&orientation={orientation}&sort=trending&visibility=profile&variant_filter=price_limits_per_type" \
@@ -426,7 +431,7 @@ def local(path):
 
 
 def waifuim(search=None):
-    orientation = "PORTRAIT" if is_android() else "LANDSCAPE"
+    orientation = "PORTRAIT" if is_portrait() else "LANDSCAPE"
     accept = f"&selected_tags={search}" if search else ""
     reject = ""
     if "-" in search:
