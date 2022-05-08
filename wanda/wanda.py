@@ -286,7 +286,10 @@ def reddit_search(sub, search=None):
         return f"{base}{sub}.json"
 
 
-def reddit(subreddits=subreddit(), search=None):
+def reddit(search=None, subreddits=subreddit()):
+    if "@" in search:
+        search = search.split("@")[0]
+        subreddits = search.split("@")[1]
     api = f"{reddit_search(subreddits, search)}"
     posts = requests.get(api, headers=user_agent).json()["data"]["children"]
     image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery"]
@@ -427,20 +430,22 @@ def waifuim(search=None):
 def usage():
     cyan = "\033[36m"
     pink = "\033[35m"
-    gray = "\033[37m"
     print("Supported sources:")
-    print(f"{cyan}4c{pink}han {gray}[search term]")
-    print(f"{cyan}5{pink}00{cyan}p{pink}x {gray}[search term]")
-    print(f"{cyan}ar{pink}station {gray}[search term]")
-    print(f"{cyan}ar{pink}station_{cyan}p{pink}rints {gray}[search term for prints]")
-    print(f"{cyan}im{pink}gur {gray}[gallery id. example: qF259WO]")
-    print(f"{cyan}im{pink}sea {gray}[search term")
-    print(f"{cyan}ea{pink}rthview")
-    print(f"{cyan}lo{pink}cal {gray}[full path to folder]")
-    print(f"{cyan}re{pink}ddit {gray}[search term]")
-    print(f"{cyan}un{pink}splash {gray}[search term]")
-    print(f"{cyan}wa{pink}llhaven {gray}[search term]")
-    print(f"{cyan}wa{pink}ifu.im {gray}[selected_tag-(excluded_tag)]")
+    print(f"{cyan}4chan {pink}[search term]")
+    print(f"{cyan}500{cyan}px {pink}[search term]")
+    print(f"{cyan}arstation {pink}[search term]")
+    print(f"{cyan}arstation_{cyan}prints {pink}[search term for prints]")
+    print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]")
+    print(f"{cyan}imsea {pink}[search term]")
+    print(f"{cyan}earthview")
+    print(f"{cyan}local {pink}[full path to folder]")
+    print(f"{cyan}reddit {pink}[search term]")
+    print(f"{cyan}unsplash {pink}[search term]")
+    print(f"{cyan}wallhaven {pink}[search term]")
+    print(f"{cyan}waifu.im {pink}[selected_tag-(excluded_tag)]")
+    print("")
+    print("Short codes:")
+    print(json.dumps(shortcodes(), indent=4))
 
 
 def run():
@@ -481,36 +486,32 @@ def handle_args(home, lock, source, term):
     return home, lock, source, term
 
 
+def shortcodes():
+    return {
+        "4": "4chan",
+        "5": "500px",
+        "ap": "artstation_prints",
+        "a": "artstation",
+        "e": "earthview",
+        "im": "imsea",
+        "i": "imgur",
+        "l": "local",
+        "r": "reddit",
+        "u": "unsplash",
+        "wi": "waifuim",
+        "w": "wallhaven",
+    }
+
+def source_map(shortcode):
+    return shortcodes().get(shortcode, None)
+
+
 def handle_source(home, lock, source, term):
-    if contains(source, False, ["4", "4chan"]):
-        set_wp(fourchan(term), home, lock, )
-    elif contains(source, False, ["5", "500px"]):
-        set_wp(fivehundredpx(term), home, lock)
-    elif contains(source, False, ["u", "unsplash"]):
-        set_wp(unsplash(term), home, lock)
-    elif contains(source, False, ["w", "wallhaven"]):
-        set_wp(wallhaven(term), home, lock)
-    elif contains(source, False, ["i", "imgur"]):
-        set_wp(imgur(term), home, lock)
-    elif contains(source, False, ["im", "imsea"]):
-        set_wp(imsea(term), home, lock)
-    elif contains(source, False, ["a", "artstation"]):
-        set_wp(artstation_any(term), home, lock)
-    elif contains(source, False, ["ap", "artstation_prints"]):
-        set_wp(artstation_prints(term), home, lock)
-    elif contains(source, False, ["e", "earthview"]):
-        set_wp(earthview(), home, lock)
-    elif contains(source, False, ["wi", "waifuim"]):
-        set_wp(waifuim(term), home, lock)
-    elif contains(source, False, ["l", "local"]):
-        set_wp(local(term), home, lock)
-    elif contains(source, False, ["r", "reddit"]):
-        if "@" in term:
-            set_wp(reddit(term.split("@")[1], term.split("@")[0]), home, lock)
-        else:
-            set_wp(reddit(search=term), home, lock)
+    if source := source_map(source):
+        set_wp(eval(source_map(source))(term), home, lock)
     else:
-        print("Unknown source")
+        print("Unknown source. Available sources: ")
+        usage()
 
 
 if __name__ == "__main__":
