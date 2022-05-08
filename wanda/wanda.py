@@ -231,7 +231,7 @@ def fourchan(search=None):
 def subreddit():
     if is_android():
         return "mobilewallpaper+amoledbackgrounds+verticalwallpapers"
-    return "wallpaper+wallpapers+earthporn+spaceporn+skyporn+minimalwallpaper"
+    return "wallpaper+wallpapers+minimalwallpaper"
 
 
 def reddit_gallery(url):
