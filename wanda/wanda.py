@@ -9,10 +9,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from random import randrange
-
 import requests
 from lxml import html
+from wand.image import Image
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -215,7 +214,16 @@ def unsplash(search=None):
 
 def earthview():
     tree = html.fromstring(requests.get("https://earthview.withgoogle.com").content)
-    return json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
+    url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
+    if not is_android():
+        return url
+    path = os.path.normpath(f'{folder}/wanda_{time.time()}')
+    with open(path, 'wb') as f:
+        f.write(requests.get(url).content)
+    with Image(filename=path) as i:
+        i.rotate(90)
+        i.save(filename=path)
+    return path
 
 
 def blank(search):
@@ -397,7 +405,7 @@ def local(path):
     if not path.endswith("/"):
         path = f'{path}/'
     if os.path.exists(path):
-        return path+random.choice(list(filter(lambda f: f.endswith(".png") or f.endswith(".jpg"), os.listdir(path))))
+        return path + random.choice(list(filter(lambda f: f.endswith(".png") or f.endswith(".jpg"), os.listdir(path))))
     return no_results()
 
 
