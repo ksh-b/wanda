@@ -1,6 +1,7 @@
 import argparse
 import getopt
 import glob
+import json
 import os
 import random
 import shutil
@@ -250,10 +251,25 @@ def subreddit():
     return "wallpaper+wallpapers+earthporn+spaceporn+skyporn+minimalwallpaper"
 
 
+def reddit_gallery(url):
+    if "/gallery/" not in url:
+        return
+    else:
+        url = url.replace("/gallery/", "/comments/")
+
+    images = requests.get(f"{url}.json", headers=user_agent).json()[0]["data"]["children"][0]["data"]["media_metadata"]
+    ids = images.keys()
+    return list(map(lambda i: f'https://i.redd.it/{i}.{images[i]["m"].split("/")[1]}', ids))
+
+
+def is_imgur_gallery(url):
+    return contains(url, False, ["imgur.com/a", "imgur.com/gallery"])
+
+
 def reddit_search(sub, search=None):
     base = "https://old.reddit.com/r/"
     if search:
-        common_param = "&restrict_sr=on&sort=relevance&t=all"
+        common_param = "&restrict_sr=on&sort=relevance&t=all&sort=top&limit=100&type=link"
         search_api = "/search.json?q="
         return f"{base}{sub}{search_api}{search}{common_param}"
     else:
@@ -263,7 +279,18 @@ def reddit_search(sub, search=None):
 def reddit(subreddits=subreddit(), search=None):
     api = f"{reddit_search(subreddits, search)}"
     posts = requests.get(api, headers=user_agent).json()["data"]["children"]
-    return random.choice(posts)["data"]["url"] if posts else no_results()
+    image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery"]
+    posts = list(filter(lambda p: contains(p["data"]["url"], False, image_urls), posts))
+    url = random.choice(posts)["data"]["url"]
+    if "reddit.com/gallery" in url:
+        return random.choice(reddit_gallery(url))
+    elif is_imgur_gallery(url):
+        return get_imgur_image(url)
+    elif contains(url, False, ["i.redd.it", "i.imgur", ".png", ".jpg"]):
+        return url
+    else:
+        no_results()
+
 
 
 def imgur(search=None):
@@ -280,6 +307,10 @@ def imgur(search=None):
             response = requests.get(api, headers=user_agent).json()["data"]["children"]
             imgur_url = random.choice(response)["data"]["url"] if response else no_results()
 
+    return get_imgur_image(alt, imgur_url)
+
+
+def get_imgur_image(imgur_url, alt = "rimgo.pussthecat.org"):
     tree = html.fromstring(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
     images = tree.xpath("//div[@class='center']//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
