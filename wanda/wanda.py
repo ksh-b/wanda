@@ -409,6 +409,21 @@ def local(path):
     return no_results()
 
 
+def waifuim(search=None):
+    orientation = "PORTRAIT" if is_android() else "LANDSCAPE"
+    accept = f"&selected_tags={search}" if search else ""
+    reject = ""
+    if "-" in search:
+        accept = f"&selected_tags={search.split('-')[0]}"
+        reject = f"&excluded_tags={search.split('-')[1]}"
+    api = f"https://api.waifu.im/random/?gif=false&is_nsfw=false" \
+          f"&orientation={orientation}{accept}{reject}"
+    response = requests.get(api).json()
+    if "detail" in response:
+        no_results()
+    return response["images"][0]["url"]
+
+
 def usage():
     cyan = "\033[36m"
     pink = "\033[35m"
@@ -416,7 +431,6 @@ def usage():
     print("Supported sources:")
     print(f"{cyan}4c{pink}han {gray}[search term]")
     print(f"{cyan}5{pink}00{cyan}p{pink}x {gray}[search term]")
-    print(f"{cyan}ar{pink}station {gray}[search term for prints page]")
     print(f"{cyan}ar{pink}station {gray}[search term]")
     print(f"{cyan}ar{pink}station_{cyan}p{pink}rints {gray}[search term for prints]")
     print(f"{cyan}im{pink}gur {gray}[gallery id. example: qF259WO]")
@@ -425,6 +439,7 @@ def usage():
     print(f"{cyan}re{pink}ddit {gray}[search term]")
     print(f"{cyan}un{pink}splash {gray}[search term]")
     print(f"{cyan}wa{pink}llhaven {gray}[search term]")
+    print(f"{cyan}wa{pink}ifu.im {gray}[selected_tag-(excluded_tag)]")
 
 
 def run():
@@ -484,6 +499,8 @@ def handle_source(home, lock, source, term):
         set_wp(artstation_any(term), home, lock)
     elif contains(source, False, ["ea", "earthview"]):
         set_wp(earthview(), home, lock)
+    elif contains(source, False, ["wi", "waifuim"]):
+        set_wp(waifuim(term), home, lock)
     elif contains(source, False, ["lo", "local"]):
         set_wp(local(term), home, lock)
     elif contains(source, False, ["re", "reddit"]):
