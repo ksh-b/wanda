@@ -4,6 +4,7 @@ import glob
 import json
 import os
 import random
+import re
 import shutil
 import subprocess
 import sys
@@ -13,10 +14,11 @@ import requests
 from lxml import html
 from wand.image import Image
 
+version = '0.57.4'
+
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f'{str(Path.home())}/wanda'
-version = '0.57.4'
 
 
 def parser():
@@ -286,6 +288,14 @@ def reddit_search(sub, search=None):
         return f"{base}{sub}.json"
 
 
+def reddit_compare_image_size(title):
+    if sr := re.search("[0-9]+x[0-9]+", title):
+        w = int(sr.group().split("x")[0]) >= int(size().split("x")[0])
+        h = int(sr.group().split("x")[1]) >= int(size().split("x")[1])
+        return w and h
+    return is_android() or False
+
+
 def reddit(search=None, subreddits=subreddit()):
     if "@" in search:
         search = search.split("@")[0]
@@ -293,7 +303,10 @@ def reddit(search=None, subreddits=subreddit()):
     api = f"{reddit_search(subreddits, search)}"
     posts = requests.get(api, headers=user_agent).json()["data"]["children"]
     image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery"]
-    posts = list(filter(lambda p: contains(p["data"]["url"], False, image_urls), posts))
+    posts = list(filter(lambda p:
+                        contains(p["data"]["url"], False, image_urls) and
+                        reddit_compare_image_size(p["data"]["title"])
+                        , posts))
     url = random.choice(posts)["data"]["url"]
     if "reddit.com/gallery" in url:
         return random.choice(reddit_gallery(url))
@@ -444,8 +457,8 @@ def usage():
     print(f"{cyan}wallhaven {pink}[search term]")
     print(f"{cyan}waifu.im {pink}[selected_tag-(excluded_tag)]")
     print("")
-    print("Short codes:")
-    print(json.dumps(shortcodes(), indent=4))
+    print("\033[33mShort codes:")
+    print(json.dumps(shortcodes(), indent=2).strip("{}").replace("\"", ""))
 
 
 def run():
@@ -501,6 +514,7 @@ def shortcodes():
         "wi": "waifuim",
         "w": "wallhaven",
     }
+
 
 def source_map(shortcode):
     return shortcodes().get(shortcode, None)
