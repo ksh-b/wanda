@@ -1,7 +1,6 @@
 import argparse
 import getopt
 import glob
-import json
 import os
 import random
 import shutil
@@ -211,38 +210,22 @@ def blank(search):
     return not search or search == ""
 
 
-def fourchan_auto(search=None):
-    catalog = "https://a.4cdn.org/wg/catalog.json"
-    response: list = requests.get(catalog).json()
-    pages = len(response)
-    for page in range(pages):
-        threads = response[page]["threads"]
-        if blank(search):
-            return f"https://boards.4chan.org/wg/thread/{random.choice(threads)['no']}"
-        for thread in response[page]["threads"]:
-            semantic_url = thread["semantic_url"]
-            if is_android() and contains(semantic_url, True,
-                                         [search, "mobile", "phone", "!official-image-modification"]):
-                return f"https://boards.4chan.org/wg/thread/{thread['no']}"
-            elif is_desktop():
-                page = randrange(pages)
-                thread = random.choice(response[page]["threads"])
-                semantic_url = thread["semantic_url"]
-                if search in semantic_url and not contains(semantic_url, True,
-                                                           ["mobile", "phone", "official-image-modification"]):
-                    return f"https://boards.4chan.org/wg/thread/{thread['no']}"
-    return no_results()
-
-
-def fourchan(thread=None):
-    thread = fourchan_auto(thread) if thread and not thread.startswith("https://boards.4channel.org/") else thread
-    board = thread.split('/')[3] if thread and thread.startswith("https://boards.4channel.org/") else "wg"
-    posts = requests.get(f"{thread or fourchan_auto()}.json").json()["posts"]
-    for _ in posts:
-        post = random.choice(posts)
-        if "ext" in post and contains(post["ext"], False, [".jpg", ".png"]):
-            return f"https://i.4cdn.org/{board}/{post['tim']}{post['ext']}"
-    no_results()
+def fourchan(search=None):
+    if "@" not in search:
+        search = f"subject={search}" if search else ""
+        board = "w.wg.hr"
+    else:
+        search = search.split("@")[0]
+        board = search.split("@")[1]
+    if is_android():
+        search = f"{search} {random.choice(['phone', 'mobile'])}".strip()
+    api = f"https://archive.alice.al/_/api/chan/search/?boards={board}&{search}"
+    post = random.choice(requests.get(api).json()["posts"])
+    thread = post["num"]
+    board = post["board"]["shortname"]
+    api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
+    posts = list(filter(lambda p: p["media"] is not None, requests.get(api).json()["posts"]))
+    return random.choice(posts)["media"]["media_link"] if posts else no_results()
 
 
 def subreddit():
@@ -292,7 +275,6 @@ def reddit(subreddits=subreddit(), search=None):
         no_results()
 
 
-
 def imgur(search=None):
     alt = "rimgo.pussthecat.org"
     if search and not search.islower():
@@ -310,7 +292,7 @@ def imgur(search=None):
     return get_imgur_image(alt, imgur_url)
 
 
-def get_imgur_image(imgur_url, alt = "rimgo.pussthecat.org"):
+def get_imgur_image(imgur_url, alt="rimgo.pussthecat.org"):
     tree = html.fromstring(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
     images = tree.xpath("//div[@class='center']//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
