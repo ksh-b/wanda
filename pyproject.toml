@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.10"
 lxml = "^4.8.0"
 requests = "^2.27.1"
+Wand = "^0.6.7"
 
 [tool.poetry.dev-dependencies]
 
