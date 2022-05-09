@@ -1,17 +1,29 @@
 [tool.poetry]
 name = "wanda"
-version = "0.58.2"
+version = "0.58.3"
 description = "Set wallpapers with keywords or randomly"
 authors = ["kshib <ksyko@pm.me>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://gitlab.com/kshib/wanda"
+repository = "https://gitlab.com/kshib/wanda"
+keywords=["wallpaper", "reddit", "wallhaven","unsplash","termux"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://gitlab.com/kshib/wanda/-/issues"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 lxml = "^4.8.0"
 requests = "^2.27.1"
 Wand = "^0.6.7"
+cloudscraper = "^1.2.60"
 
 [tool.poetry.dev-dependencies]
+lxml = "^4.8.0"
+requests = "^2.27.1"
+Wand = "^0.6.7"
+cloudscraper = "^1.2.60"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
