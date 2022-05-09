@@ -522,14 +522,14 @@ def shortcodes():
 
 
 def source_map(shortcode):
-    return shortcodes().get(shortcode, None)
+    return shortcodes().get(shortcode, shortcode)
 
 
 def handle_source(home, lock, source, term):
-    if source := source_map(source):
+    try:
         set_wp(eval(source_map(source))(term), home, lock)
-    else:
-        print("Unknown source. Available sources: ")
+    except NameError:
+        print(f"Unknown source: '{source}'. Available sources: ")
         usage()
 
 
