@@ -14,7 +14,7 @@ import requests
 from lxml import html
 from wand.image import Image
 
-version = '0.58.2'
+version = '0.58.3'
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -44,9 +44,9 @@ def parser():
         '-d',
         metavar='download',
         type=str,
-        default=Path.home(),
-        help='Save current wallpaper to home directory or given path',
+        default=None,
         required=False,
+        help='Save current wallpaper to home directory or given path',
     )
     parser_.add_argument(
         '-u',
@@ -60,8 +60,9 @@ def parser():
         '-v',
         metavar='version',
         help='Current version',
+        required=False,
         action="store_const",
-        const=None
+        const=version
     )
     if is_android():
         parser_.add_argument(
@@ -181,11 +182,14 @@ def size():
     except NameError:
         return "2560x1440"
 
+
 def is_landscape():
     return int(size().split("x")[0]) > int(size().split("x")[1])
 
+
 def is_portrait():
     return not is_landscape()
+
 
 def is_android():
     return os.environ.get('TERMUX_VERSION') is not None
@@ -219,7 +223,7 @@ def unsplash(search=None):
     return response if "source-404" not in response else no_results()
 
 
-def earthview(_):
+def earthview(_):  # NOSONAR
     tree = html.fromstring(requests.get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
     if is_landscape():
@@ -387,16 +391,35 @@ def fivehundredpx(search=None):
 
 
 def artstation_prints(search=None):
+    import cloudscraper
+
+    scraper = cloudscraper.create_scraper()
     orientation = "portrait" if is_portrait() else "landscape"
     search = search or ""
     api = f"https://www.artstation.com/api/v2/prints/public/printed_products.json?page=1&per_page=30" \
           f"&orientation={orientation}&sort=trending&visibility=profile&variant_filter=price_limits_per_type" \
           f"&q={search}"
-    response = requests.get(api, headers=user_agent).json()["data"]
+    response = scraper.get(api, headers=user_agent).json()["data"]
     return random.choice(response)["print_type_variants"][0]["image_urls"][0]["url"] if response else no_results()
 
 
+def artstation_artist(search=None):
+    import cloudscraper
+
+    scraper = cloudscraper.create_scraper()
+    response = scraper.get(f"https://www.artstation.com/users/{search}/hovercard.json", headers=user_agent)
+    if response.status_code != 200:
+        no_results()
+    projects = scraper.get(f"https://www.artstation.com/users/{search}/projects.json", headers=user_agent).json()
+    artwork = random.choice(projects["data"])["permalink"].split("/")[-1]
+    return scraper.get(f"https://www.artstation.com/projects/{artwork}.json", headers=user_agent).json()["assets"][0][
+        "image_url"]
+
+
 def artstation_any(search=None):
+    import cloudscraper
+
+    scraper = cloudscraper.create_scraper()
     search = "nature" if blank(search) else search
     body = {"query": search, "page": 1, "per_page": 50, "sorting": "relevance", "pro_first": "1", "filters": "[]",
             "additional_fields": []}
@@ -406,13 +429,13 @@ def artstation_any(search=None):
         "Host": "www.artstation.com",
         "Content-Type": content_json
     }
-    assets = requests.get(api, json=body, headers=headers).json()["data"]
+    assets = scraper.get(api, json=body, headers=headers).json()["data"]
     if isinstance(assets, str):
         no_results()
     hash_id = random.choice(assets)["hash_id"] if assets else no_results()
 
     api = f"https://www.artstation.com/projects/{hash_id}.json"
-    assets = requests.get(api, json=body, headers=headers).json()["assets"]
+    assets = scraper.get(api, json=body, headers=headers).json()["assets"]
     random.shuffle(assets)
     for asset in assets:
         h = asset["height"]
@@ -452,6 +475,7 @@ def usage():
     print(f"{cyan}4chan {pink}[search term]")
     print(f"{cyan}500{cyan}px {pink}[search term]")
     print(f"{cyan}arstation {pink}[search term]")
+    print(f"{cyan}arstation_{cyan}artist {pink}[id of artist]")
     print(f"{cyan}arstation_{cyan}prints {pink}[search term for prints]")
     print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]")
     print(f"{cyan}imsea {pink}[search term]")
@@ -467,47 +491,42 @@ def usage():
 
 
 def run():
+    args = parser().parse_args()
+    if '-u' in sys.argv:
+        usage()
+        exit(0)
+    if '-v' in sys.argv:
+        print(args.v)
+        exit(0)
+    if '-d' in sys.argv:
+        for src_file in Path(folder).glob('wanda_*.*'):
+            shutil.copy(src_file, args.d)
+            print(f"Copied to {src_file}")
+        exit(0)
+    source = args.s
+    term = args.t
     home = True
     lock = True
-    source = "unsplash"
-    term = None
-    home, lock, source, term = handle_args(home, lock, source, term)
+    if '-l' in sys.argv and args.l:
+        lock = True
+        home = False
+    if '-h' in sys.argv and args.h:
+        lock = False
+        home = True
 
-    handle_source(home, lock, source, term)
-
-
-def handle_args(home, lock, source, term):
-    args = parser().parse_args()
-    options, _ = getopt.getopt(
-        sys.argv[1:],
-        'us:t:d:ho',
-    )
-    for opt, _ in options:
-        if opt in "-u":
-            usage()
-            exit(0)
-        elif opt in "-d":
-            if os.path.exists(args.d):
-                shutil.move(folder, args.d.strip())
-            print(args.d)
-            exit(0)
-        if opt in "-s":
-            source = args.s.strip()
-        if opt in "-t":
-            term = args.t.strip()
-        if opt in "-l":
-            lock = True
-            home = False
-        if opt in "-h":
-            lock = False
-            home = True
-    return home, lock, source, term
+    try:
+        set_wp(eval(source_map(source))(term), home, lock)
+    except NameError:
+        print(f"Unknown source: '{source}'. Available sources:")
+        usage()
+    return 0
 
 
 def shortcodes():
     return {
         "4": "4chan",
         "5": "500px",
+        "aa": "artstation_artist",
         "ap": "artstation_prints",
         "a": "artstation",
         "e": "earthview",
@@ -525,13 +544,6 @@ def source_map(shortcode):
     return shortcodes().get(shortcode, shortcode)
 
 
-def handle_source(home, lock, source, term):
-    try:
-        set_wp(eval(source_map(source))(term), home, lock)
-    except NameError:
-        print(f"Unknown source: '{source}'. Available sources: ")
-        usage()
-
-
 if __name__ == "__main__":
+    print(parser().parse_args())
     sys.exit(run())
