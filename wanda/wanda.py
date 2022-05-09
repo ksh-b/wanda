@@ -219,7 +219,7 @@ def unsplash(search=None):
     return response if "source-404" not in response else no_results()
 
 
-def earthview():
+def earthview(_):
     tree = html.fromstring(requests.get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
     if is_landscape():
@@ -434,7 +434,7 @@ def waifuim(search=None):
     orientation = "PORTRAIT" if is_portrait() else "LANDSCAPE"
     accept = f"&selected_tags={search}" if search else ""
     reject = ""
-    if "-" in search:
+    if search and "-" in search:
         accept = f"&selected_tags={search.split('-')[0]}"
         reject = f"&excluded_tags={search.split('-')[1]}"
     api = f"https://api.waifu.im/random/?gif=false&is_nsfw=false" \
