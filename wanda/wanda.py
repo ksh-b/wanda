@@ -81,7 +81,7 @@ def parser():
 
 
 def is_connected():
-    return requests.get("https://detectportal.firefox.com/success.txt") == "success"
+    return requests.get("https://detectportal.firefox.com/success.txt").text.strip() == "success"
 
 
 def validate_url(url):
@@ -102,10 +102,12 @@ def short_url(url: str) -> str:
     response = requests.post("https://cleanuri.com/api/v1/shorten", data={"url": url}).json()
     return f"{response['result_url']}" if "result_url" in response else url
 
+def is_web_url(url):
+    return url.startswith("https://")
 
 def set_wp(url: str, home=True, lock=True):
     if is_android():
-        t = "u" if url.startswith("https://") else "f"
+        t = "u" if is_web_url(url) else "f"
         if home:
             command(f"termux-wallpaper -{t} {url}")
         if lock:
@@ -519,6 +521,9 @@ def run():
         home = True
 
     try:
+        if source != 'local' and not is_connected():
+            print("Please check your internet connection and try again")
+            exit(1)
         set_wp(eval(source_map(source))(term), home, lock)
     except NameError:
         print(f"Unknown source: '{source}'. Available sources:")
