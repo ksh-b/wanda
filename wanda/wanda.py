@@ -1,5 +1,4 @@
 import argparse
-import getopt
 import glob
 import json
 import os
@@ -10,11 +9,12 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+
 import requests
 from lxml import html
 from wand.image import Image
 
-version = '0.58.3'
+version = '0.58.4'
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -314,8 +314,7 @@ def reddit(search=None, subreddits=subreddit()):
     image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery"]
     posts = list(filter(lambda p:
                         contains(p["data"]["url"], False, image_urls) and
-                        reddit_compare_image_size(p["data"]["title"])
-                        , posts))
+                        reddit_compare_image_size(p["data"]["title"]), posts))
     url = random.choice(posts)["data"]["url"]
     if "reddit.com/gallery" in url:
         return random.choice(reddit_gallery(url))
@@ -471,20 +470,25 @@ def waifuim(search=None):
 def usage():
     cyan = "\033[36m"
     pink = "\033[35m"
+    print("Use double quotes if your keyword or path has spaces")
     print("Supported sources:")
-    print(f"{cyan}4chan {pink}[search term]")
-    print(f"{cyan}500{cyan}px {pink}[search term]")
-    print(f"{cyan}arstation {pink}[search term]")
-    print(f"{cyan}arstation_{cyan}artist {pink}[id of artist]")
-    print(f"{cyan}arstation_{cyan}prints {pink}[search term for prints]")
-    print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]")
-    print(f"{cyan}imsea {pink}[search term]")
+    print(f"{cyan}4chan {pink}[keyword]|[keyword@board]")
+    print(f"{cyan}500{cyan}px {pink}[keyword]")
+    print(f"{cyan}arstation {pink}[keyword]")
+    print(f"{cyan}arstation_{cyan}artist {pink}[id of artist. example: aenamiart]")
+    print(f"{cyan}arstation_{cyan}prints {pink}[keyword for prints]")
+    print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]|[keyword]")
+    print(f"{cyan}imsea {pink}[keyword]")
     print(f"{cyan}earthview")
     print(f"{cyan}local {pink}[full path to folder]")
-    print(f"{cyan}reddit {pink}[search term]")
-    print(f"{cyan}unsplash {pink}[search term]")
-    print(f"{cyan}wallhaven {pink}[search term]")
+    print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
+    print(f"{cyan}unsplash {pink}[keyword]")
+    print(f"{cyan}wallhaven {pink}[keyword(,keyword2,keyword3...&)]")
     print(f"{cyan}waifu.im {pink}[selected_tag-(excluded_tag)]")
+    print("")
+    print("Wallhaven advanced usage:")
+    print("For full list of parameters, go to https://wallhaven.cc/help/api#search")
+    print("example: wanda -sw -tcar,lamborghini&colors=cc3333&categories=111&purity=100")
     print("")
     print("\033[33mShort codes:")
     print(json.dumps(shortcodes(), indent=2).strip("{}").replace("\"", ""))
@@ -545,5 +549,4 @@ def source_map(shortcode):
 
 
 if __name__ == "__main__":
-    print(parser().parse_args())
     sys.exit(run())
