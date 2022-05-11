@@ -308,15 +308,17 @@ def reddit_compare_image_size(title):
 
 
 def reddit(search=None, subreddits=subreddit()):
-    if "@" in search:
-        search = search.split("@")[0]
+    if search and "@" in search:
         subreddits = search.split("@")[1]
-    api = f"{reddit_search(subreddits, search)}"
+        search = search.split("@")[0]
+    api = reddit_search(subreddits, search)
     posts = requests.get(api, headers=user_agent).json()["data"]["children"]
-    image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery"]
+    image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery", "i.redd.it", "i.imgur",]
     posts = list(filter(lambda p:
                         contains(p["data"]["url"], False, image_urls) and
                         reddit_compare_image_size(p["data"]["title"]), posts))
+    if not posts:
+        no_results()
     url = random.choice(posts)["data"]["url"]
     if "reddit.com/gallery" in url:
         return random.choice(reddit_gallery(url))
