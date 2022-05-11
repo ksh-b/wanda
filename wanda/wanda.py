@@ -353,12 +353,6 @@ def get_imgur_image(imgur_url, alt="rimgo.pussthecat.org"):
     return f"https://{alt}{random.choice(images)}" if images else no_results()
 
 
-def imsea(search=None):
-    api = f"https://imsea.herokuapp.com/api/1?q={size}+{search or 'wallpaper'}"
-    response = requests.get(api).json()["results"]
-    return random.choice(response) if response else no_results()
-
-
 def fivehundredpx(search=None):
     payload = {
         "operationName": "PhotoSearchQueryRendererQuery",
@@ -482,7 +476,6 @@ def usage():
     print(f"{cyan}arstation_{cyan}artist {pink}[id of artist. example: aenamiart]")
     print(f"{cyan}arstation_{cyan}prints {pink}[keyword for prints]")
     print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]|[keyword]")
-    print(f"{cyan}imsea {pink}[keyword]")
     print(f"{cyan}earthview")
     print(f"{cyan}local {pink}[full path to folder]")
     print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
@@ -541,7 +534,6 @@ def shortcodes():
         "ap": "artstation_prints",
         "a": "artstation",
         "e": "earthview",
-        "im": "imsea",
         "i": "imgur",
         "l": "local",
         "r": "reddit",
