@@ -14,7 +14,7 @@ import requests
 from lxml import html
 from PIL import Image
 
-version = '0.58.6'
+version = '0.58.7'
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -230,9 +230,10 @@ def unsplash(search=None):
 def earthview(_):  # NOSONAR
     tree = html.fromstring(requests.get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
+    ext = url.split(".")[-1]
     if is_landscape():
         return url
-    path = os.path.normpath(f'{folder}/wanda_{time.time()}')
+    path = os.path.normpath(f'{folder}/wanda_{int(time.time())}.{ext}')
     with open(path, 'wb') as f:
         f.write(requests.get(url, headers=user_agent).content)
     image = Image.open(path)
