@@ -480,7 +480,7 @@ def usage():
     print(f"{cyan}arstation {pink}[keyword]")
     print(f"{cyan}arstation_{cyan}artist {pink}[id of artist. example: aenamiart]")
     print(f"{cyan}arstation_{cyan}prints {pink}[keyword for prints]")
-    print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]|[keyword]")
+    print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]")
     print(f"{cyan}earthview")
     print(f"{cyan}local {pink}[full path to folder]")
     print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
