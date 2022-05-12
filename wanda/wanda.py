@@ -289,14 +289,13 @@ def is_imgur_gallery(url):
     return contains(url, False, ["imgur.com/a", "imgur.com/gallery"])
 
 
-def reddit_search(sub, search=None):
+def reddit_search(sub, search=None, extra=""):
     base = "https://old.reddit.com/r/"
-    if search:
-        common_param = "&restrict_sr=on&sort=relevance&t=all&sort=top&limit=100&type=link"
-        search_api = "/search.json?q="
-        return f"{base}{sub}{search_api}{search}{common_param}"
-    else:
-        return f"{base}{sub}.json"
+    if not search:
+        return f"{base}{sub}.json?{extra}"
+    common_param = f"&restrict_sr=on&sort=relevance&t=all&sort=top&limit=100&type=link{extra}"
+    search_api = "/search.json?q="
+    return f"{base}{sub}{search_api}{search}{common_param}"
 
 
 def reddit_compare_image_size(title):
@@ -313,7 +312,7 @@ def reddit(search=None, subreddits=subreddit()):
         search = search.split("@")[0]
     api = reddit_search(subreddits, search)
     posts = requests.get(api, headers=user_agent).json()["data"]["children"]
-    image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery", "i.redd.it", "i.imgur",]
+    image_urls = ["reddit.com/gallery", "imgur.com/a", "imgur.com/gallery", "i.redd.it", "i.imgur", ]
     posts = list(filter(lambda p:
                         contains(p["data"]["url"], False, image_urls) and
                         reddit_compare_image_size(p["data"]["title"]), posts))
