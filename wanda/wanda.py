@@ -403,7 +403,8 @@ def artstation_prints(search=None):
 
 def artstation_artist(search=None):
     import cloudscraper
-
+    if blank(search):
+        search = random.choice(["tohad"])
     scraper = cloudscraper.create_scraper()
     response = scraper.get(f"https://www.artstation.com/users/{search}/hovercard.json", headers=user_agent)
     if response.status_code != 200:
