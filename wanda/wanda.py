@@ -537,8 +537,8 @@ def run():
 
 def shortcodes():
     return {
-        "4": "4chan",
-        "5": "500px",
+        "4": "fourchan",
+        "5": "fivehundredpx",
         "aa": "artstation_artist",
         "ap": "artstation_prints",
         "a": "artstation",
