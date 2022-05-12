@@ -9,6 +9,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from screeninfo import get_monitors
 
 import requests
 from lxml import html
@@ -181,8 +182,8 @@ def size():
         hxw = command("getprop persist.vendor.camera.display.umax").strip()
         return f"{hxw.split('x')[1]}x{hxw.split('x')[0]}" if hxw is not None else "1440x2960"
     try:
-        dimensions = filter(lambda l: "dimensions" in l, subprocess.check_output("xdpyinfo").decode().split("\n"))
-        return list(dimensions)[0].split()[1]
+        dimensions = get_monitors()[0]
+        return f"{dimensions.width}x{dimensions.height}"
     except NameError:
         return "2560x1440"
 
