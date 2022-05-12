@@ -244,21 +244,25 @@ def blank(search):
 
 
 def fourchan(search=None):
-    if "@" not in search:
-        search = f"subject={search}" if search else ""
+    if not search:
+        search = ""
+        board = "wg"
+    elif "@" not in search:
+        search = f"{search}" if search else ""
         board = "wg"
     else:
-        search = search.split("@")[0]
         board = search.split("@")[1]
-    if is_portrait():
-        search = f"{search} {random.choice(['phone', 'mobile'])}".strip()
-    api = f"https://archive.alice.al/_/api/chan/search/?boards={board}&{search}"
-    posts = requests.get(api).json()["0"]["posts"]
-    posts = list(filter(lambda p: "media" in p and "nimages" in p, posts))
+        search = search.split("@")[0]
+
+    api = f"https://archive.alice.al/_/api/chan/search/?boards={board}&subject={search}"
+    response = requests.get(api).json()
+    if "error" in response:
+        no_results()
+    posts = list(filter(lambda p: "media" in p and "nimages" in p, response["0"]["posts"]))
     if not posts:
         no_results()
     post = random.choice(posts)
-    thread = post["num"]
+    thread = post["thread_num"]
     board = post["board"]["shortname"]
     api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
     posts = requests.get(api).json()[thread]["posts"]
