@@ -15,7 +15,7 @@ import requests
 from lxml import html
 from PIL import Image
 
-version = '0.58.7'
+version = '0.58.8'
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
