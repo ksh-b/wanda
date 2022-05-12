@@ -102,8 +102,10 @@ def short_url(url: str) -> str:
     response = requests.post("https://cleanuri.com/api/v1/shorten", data={"url": url}).json()
     return f"{response['result_url']}" if "result_url" in response else url
 
+
 def is_web_url(url):
     return url.startswith("https://")
+
 
 def set_wp(url: str, home=True, lock=True):
     if is_android():
