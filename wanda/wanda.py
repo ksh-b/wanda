@@ -445,7 +445,10 @@ def artstation_any(search=None):
 
 
 def local(path):
-    if not path.endswith("/"):
+    if blank(path):
+        print("Please specify path to images")
+        exit(1)
+    if path and not path.endswith("/"):
         path = f'{path}/'
     if os.path.exists(path):
         return path + random.choice(list(filter(lambda f: f.endswith(".png") or f.endswith(".jpg"), os.listdir(path))))
