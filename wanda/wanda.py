@@ -334,24 +334,22 @@ def reddit(search=None, subreddits=subreddit()):
 
 
 def imgur(search=None):
-    alt = "rimgo.pussthecat.org"
-    if search and not search.islower():
-        imgur_url = f"https://{alt}/gallery/{search}"
+    if search:
+        imgur_url = f"https://rimgo.pussthecat.org/gallery/{search}"
     else:
-        api = reddit_search("wallpaperdump", search)
+        search = ""
         if is_portrait():
-            search = f"{search or ''} {random.choice(['phone', 'mobile'])}"
-            api = f"{reddit_search('wallpaperdump', search)}"
-        imgur_url = ""
-        while not contains(imgur_url, True, ["imgur.com"]):
-            response = requests.get(api, headers=user_agent).json()["data"]["children"]
-            imgur_url = random.choice(response)["data"]["url"] if response else no_results()
+            search = f"&q={search or ''} {random.choice(['phone', 'mobile'])}"
+        api = f"https://old.reddit.com/r/wallpaperdump/search.json?q=site:imgur.com&restrict_sr=on{search}"
+        response = requests.get(api, headers=user_agent).json()["data"]["children"]
+        imgur_url = random.choice(response)["data"]["url"] if response else no_results()
 
-    return get_imgur_image(alt, imgur_url)
+    return get_imgur_image(imgur_url)
 
 
 def get_imgur_image(imgur_url, alt="rimgo.pussthecat.org"):
-    tree = html.fromstring(requests.get(imgur_url.replace("imgur.com", f"{alt}")).content)
+    tree = html.fromstring(
+        requests.get(imgur_url.replace("imgur.com", f"{alt}"), headers=user_agent).content)
     images = tree.xpath("//div[@class='center']//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
 
