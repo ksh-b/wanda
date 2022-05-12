@@ -12,9 +12,9 @@ from pathlib import Path
 
 import requests
 from lxml import html
-from wand.image import Image
+from PIL import Image
 
-version = '0.58.5'
+version = '0.58.6'
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -235,9 +235,9 @@ def earthview(_):  # NOSONAR
     path = os.path.normpath(f'{folder}/wanda_{time.time()}')
     with open(path, 'wb') as f:
         f.write(requests.get(url, headers=user_agent).content)
-    with Image(filename=path) as i:
-        i.rotate(90)
-        i.save(filename=path)
+    image = Image.open(path)
+    image.rotate(90)
+    image.save(path)
     return path
 
 
@@ -555,4 +555,6 @@ def source_map(shortcode):
 
 
 if __name__ == "__main__":
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     sys.exit(run())

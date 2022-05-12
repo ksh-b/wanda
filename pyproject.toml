@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wanda"
-version = "0.58.5"
+version = "0.58.6"
 description = "Set wallpapers with keywords or randomly"
 authors = ["kshib <ksyko@pm.me>"]
 license = "MIT"
@@ -16,14 +16,14 @@ keywords=["wallpaper", "reddit", "wallhaven","unsplash","termux"]
 python = "^3.10"
 lxml = "^4.8.0"
 requests = "^2.27.1"
-Wand = "^0.6.7"
 cloudscraper = "^1.2.60"
+Pillow = "^9.1.0"
 
 [tool.poetry.dev-dependencies]
 lxml = "^4.8.0"
 requests = "^2.27.1"
-Wand = "^0.6.7"
 cloudscraper = "^1.2.60"
+Pillow = "^9.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
