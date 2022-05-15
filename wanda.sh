@@ -4,7 +4,7 @@ source="unsplash"
 query=""
 home="true"
 lock="true"
-version=0.44
+version=0.45
 no_results="No results found. Try another source/term."
 user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
 tmp="$PREFIX/tmp"
@@ -24,6 +24,7 @@ usage() {
   echo "  -h  help        this help message"
   echo "  -v  version     current version"
   echo "  -i  list        print supported sources and their specific usage"
+  echo "  -n  hide-alert  reject python, return to shell"
   echo ""
   echo "Examples:"
   echo "  wanda"
@@ -32,7 +33,18 @@ usage() {
   echo "  wanda -s lo -t folder/path"
 }
 
+notice() {
+  if [ "$(config_get "migrate")" != "no" ]; then
+    echo "-Newer versions of wanda are available via pip"
+    echo "-To migrate, please run:"
+    echo "rm $PREFIX/etc/apt/sources.list.d/kshib.list"
+    echo "pkg un wanda && pkg in python && pip install wanda"
+    echo "-To ignore this alert run wanda -n"
+  fi
+}
+
 set_wp_url() {
+  notice
   validate_url $1
   if [ "$home" = "true" ]; then
     termux-wallpaper -u "$1"
@@ -45,6 +57,7 @@ set_wp_url() {
 }
 
 set_wp_file() {
+  notice
   if [ "$home" = "true" ]; then
     termux-wallpaper -f "$1"
   fi
@@ -411,8 +424,12 @@ config_read_file() {
 ### ### ###
 
 # main
-while getopts ':s:t:hvdloi' flag; do
+while getopts ':s:t:hnvdloi' flag; do
   case "${flag}" in
+  n)
+    config_set "migrate" "no"
+    exit 0
+    ;;
   s) source="${OPTARG}" ;;
   t) query="${OPTARG//\//%20}" ;;
   o) lock="false" ;;
@@ -434,15 +451,14 @@ while getopts ':s:t:hvdloi' flag; do
     echo "Saved to $path"
     exit 0
     ;;
+  i)
+    supported
+    exit 0
+    ;;
   :)
     echo "The $OPTARG option requires an argument."
     usage
     exit 1
-    ;;
-
-  i)
-    supported
-    exit 0
     ;;
   \?)
     echo "$OPTARG is not a valid option."
