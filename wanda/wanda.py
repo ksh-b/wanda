@@ -10,7 +10,7 @@ from pathlib import Path
 
 import cloudscraper  # type: ignore
 
-version = "0.59.0"
+version = "0.59.1"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -720,5 +720,4 @@ def source_map(shortcode):
 
 
 if __name__ == "__main__":
-    musicbrainz("Be my baby:The Ronettes")
-    # sys.exit(run())
+    sys.exit(run())
