@@ -10,7 +10,7 @@ from pathlib import Path
 
 import cloudscraper  # type: ignore
 
-version = "0.59.4"
+version = "0.59.6"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -54,7 +54,7 @@ def set_wp(url: str, home=True, lock=True):
         return 1
 
     # fit wallpaper to screen if orientation mismatch
-    path = fit(path)
+    # path = fit(path)
 
     # set wallpaper
     import platform
@@ -706,7 +706,6 @@ def shortcodes():
         "e": "earthview",
         "i": "imgur",
         "l": "local",
-        "m": "musicbrainz",
         "p": "picsum",
         "r": "reddit",
         "u": "unsplash",
