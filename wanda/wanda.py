@@ -10,7 +10,7 @@ from pathlib import Path
 
 import cloudscraper  # type: ignore
 
-version = "0.59.1"
+version = "0.59.2"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -165,7 +165,7 @@ def size():
 
 
 def screen_orientation():
-    return landscape if int(size()[0]) > int(size()[1]) else portrait
+    return landscape if size()[0] > size()[1] else portrait
 
 
 def image_orientation(image):
