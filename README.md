@@ -5,6 +5,8 @@ Script to set wallpaper using keyword or randomly
 ![PyPI](https://img.shields.io/pypi/v/wanda)
 ![PyPI - Downloads](https://img.shields.io/pypi/dw/wanda)
 ![PyPI - License](https://img.shields.io/pypi/l/wanda)
+![Gitlab code coverage](https://img.shields.io/gitlab/coverage/kshib/wanda/main)
+![Gitlab pipeline](https://img.shields.io/gitlab/pipeline-status/kshib/wanda?branch=main)
 
 ## Installation
 ```

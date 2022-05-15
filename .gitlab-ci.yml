@@ -1,0 +1,30 @@
+image: python:3.10
+
+stages:
+  - test
+  - lint
+  - types
+
+before_script:
+  - pip install poetry
+  - poetry config virtualenvs.create false
+  - poetry install
+
+Unit Tests:
+  stage: test
+  script:
+    - pytest -n 15 --reruns 2 --reruns-delay 3 --cov=./ --cov-report=xml
+    - apt install curl
+    - curl -Os https://uploader.codecov.io/latest/linux/codecov
+    - chmod +x codecov
+    - ./codecov -t ${CODECOV_TOKEN}
+
+Python Code Lint:
+  stage: lint
+  script:
+    - poetry run black .
+
+Static Type check:
+  stage: types
+  script:
+    - poetry run mypy .
