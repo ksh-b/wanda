@@ -10,7 +10,7 @@ from pathlib import Path
 
 import cloudscraper  # type: ignore
 
-version = "0.59.2"
+version = "0.59.4"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -153,10 +153,10 @@ def size():
     import screeninfo  # type: ignore
     if is_android():
         hxw = command("getprop persist.vendor.camera.display.umax")
-        return (
-                   int(hxw.split("x")[1]),
-                   int(hxw.split("x")[0]),
-               ) if hxw is not None else 1440, 2960
+        if hxw is not None:
+            int(hxw.split("x")[1]), int(hxw.split("x")[0])
+        else:
+            return 1440, 2960
     try:
         dimensions = screeninfo.get_monitors()[0]  # type: ignore
         return int(dimensions.width), int(dimensions.height)
