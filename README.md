@@ -5,17 +5,19 @@ Script to set wallpaper using keyword or randomly
 ![PyPI](https://img.shields.io/pypi/v/wanda)
 ![PyPI - Downloads](https://img.shields.io/pypi/dw/wanda)
 ![PyPI - License](https://img.shields.io/pypi/l/wanda)
+![Gitlab code coverage](https://img.shields.io/gitlab/coverage/kshib/wanda/main)
+![Gitlab pipeline](https://img.shields.io/gitlab/pipeline-status/kshib/wanda?branch=main)
 
-## Installation
+## Installation / Update
 ```
-pip install wanda
+pip install wanda -U
 ```
-or `pip install -i https://test.pypi.org/simple/ wanda` for dev version
 
 ## Usage
 ```
 wanda
 wanda -t mountain
+wanda -s earthview
 wanda -s wallhaven -t japan
 ```
 `wanda -h` for more details
@@ -26,16 +28,18 @@ wanda -s wallhaven -t japan
 
 ## Supported sources
 
-- [4chan](https://boards.4chan.org)
+- [4chan](https://boards.4chan.org) via [Rozen Arcana](https://archive.alice.al)
 - [500px](https://500px.com)
 - [artstation](https://artstation.com)
-- [imgur](https://imgur.com)
+- [imgur](https://imgur.com) via [rimgo](https://rimgo.pussthecat.org)
+- [earthview](https://earthview.withgoogle.com)
 - local
+- [picsum](https://picsum.photos)
 - [reddit](https://reddit.com)
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
 
-# Demo
+## Demo
 - [Desktop, Manjaro Linux](https://z.zz.fo/om26p.webm)
 
 ## Automate
@@ -63,6 +67,7 @@ crontab -e
 [python](https://www.python.org/downloads/) and [poetry](https://python-poetry.org/) are needed
 ```
 git clone https://gitlab.com/kshib/wanda.git && cd wanda
+poetry install
 poetry build
 ```
 
@@ -73,12 +78,10 @@ pip uninstall wanda
 
 ## Shell
 Older versions can be found [here (android)](https://gitlab.com/kshib/wanda/-/tree/sh-android) and [here (desktop)](https://gitlab.com/kshib/wanda/-/tree/sh-desktop)
-They support [canvas](https://github.com/adi1090x/canvas/blob/master/canvas) and [earthview](https://earthview.withgoogle.com/) as source which have not yet been added to python version.
 
 ## Issues
-There might be issues with certain sources or platforms.
-For now, the script is only tested on Manjaro+KDE and Android+Termux
-Feel free to raise issues if you encounter them.
+The script is only tested on Manjaro+KDE and Android+Termux. But should work on windows and other linux distros as well.
+Feel free to raise issues.
 
 ## License
 MIT
