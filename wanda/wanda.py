@@ -10,7 +10,7 @@ from pathlib import Path
 
 import cloudscraper  # type: ignore
 
-version = "0.59.6"
+version = "0.59.5"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
