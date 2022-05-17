@@ -545,6 +545,7 @@ def fit(wallpaper_path):
 
     # image smaller than screen
     if wp.height < bg.height and wp.width < bg.width:
+        print("Fitting // image smaller than screen")
         x1 = int(bg.width / 2) - int(wp.width / 2)
         y1 = int(bg.height / 2) - int(wp.height / 2)
         bg.paste(wp, (x1, y1))
@@ -552,6 +553,7 @@ def fit(wallpaper_path):
 
     # image == portrait but screen == landscape
     if image_orientation(wp) == portrait and screen_orientation() == landscape:
+        print("Fitting // image == portrait but screen == landscape")
         percentage = wp.height / bg.height
         resized_dimensions = (
             int(wp.width * (1 / percentage)),
@@ -565,6 +567,7 @@ def fit(wallpaper_path):
 
     # image == landscape but screen == portrait
     if image_orientation(wp) == landscape and screen_orientation() == portrait:
+        print("Fitting // image == landscape but screen == portrait")
         percentage = wp.width / bg.width
         resized_dimensions = (
             int(wp.width * (1 / percentage)),
