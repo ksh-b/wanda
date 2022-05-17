@@ -152,7 +152,6 @@ class SimpleTest(unittest.TestCase):
         response = wanda.artstation_artist("tohad")
         self.assertNotNone(response, url)
 
-
     def test_earthview(self):
         url = "https://www.gstatic.com/prettyearth/assets/full/"
         response = wanda.earthview(None)
@@ -184,7 +183,7 @@ class AdvancedTest(unittest.TestCase):
     def test_set_local(self):
         folder = f"{str(Path.home())}/wanda"
         path = wanda.get_dl_path()
-        wanda.download(path, "https://i.imgur.com/bBNy18H.jpeg")
+        path = wanda.download(path, "https://i.imgur.com/bBNy18H.jpeg")
         self.assertTrue(os.path.exists(path))
         wanda.set_wp(wanda.local(folder), True, True)
 
@@ -218,8 +217,9 @@ class AdvancedTest(unittest.TestCase):
     def test_set_waifuim():
         wanda.set_wp(wanda.waifuim("uniform"), True, True)
 
-    def test_set_fourchan(self):
-        wanda.set_wp(wanda.fourchan(self.good_search), True, True)
+    @staticmethod
+    def test_set_fourchan():
+        wanda.set_wp(wanda.fourchan("mobile"), True, True)
 
     def test_set_fivehundredpx(self):
         wanda.set_wp(wanda.fivehundredpx(self.good_search), True, True)
