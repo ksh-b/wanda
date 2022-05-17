@@ -194,8 +194,8 @@ def blank(search):
 
 
 def good_size(w, h):
-    return (screen_orientation() is portrait and w < h) or (
-            screen_orientation() is landscape and w > h
+    return (screen_orientation() == portrait and w < h) or (
+            screen_orientation() == landscape and w > h
     )
 
 
@@ -210,7 +210,7 @@ def contains(word: str, match_all: bool, desired: list) -> bool:
 
 def wallhaven(search=None):
     api = "https://wallhaven.cc/api/v1/search?sorting=random"
-    ratios = "portrait" if screen_orientation() is portrait else "landscape"
+    ratios = "portrait" if screen_orientation() == portrait else "landscape"
     response = get(f"{api}&ratios={ratios}&q={search or ''}").json()["data"]
     return response[0]["path"] if response else no_results()
 
@@ -227,7 +227,7 @@ def earthview(_):  # NOSONAR
     tree = html.fromstring(get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
     ext = url.split(".")[-1]
-    if screen_orientation() is landscape:
+    if screen_orientation() == landscape:
         return url
     path = os.path.normpath(f"{folder}/wanda_{int(time.time())}.{ext}")
     path = download(path, url)
@@ -273,7 +273,7 @@ def fourchan(search=None):
 
 
 def suggested_subreddits():
-    if screen_orientation() is portrait:
+    if screen_orientation() == portrait:
         return "mobilewallpaper+amoledbackgrounds+verticalwallpapers"
     return "wallpaper+wallpapers+minimalwallpaper"
 
@@ -308,11 +308,11 @@ def reddit_search(sub, search=None, extra=""):
 
 
 def reddit_compare_image_size(title):
-    if sr := re.search(r"[\d]+x[\d]+", title):
+    if sr := re.search(r"\d+x\d+", title):
         w = int(sr.group().split("x")[0]) >= int(size()[0])
         h = int(sr.group().split("x")[1]) >= int(size()[1])
         return w and h
-    return screen_orientation() is portrait or False
+    return screen_orientation() == portrait or False
 
 
 def reddit(search=None, subreddits=suggested_subreddits()):
@@ -330,8 +330,8 @@ def reddit(search=None, subreddits=suggested_subreddits()):
     ]
     posts = list(
         filter(
-            lambda p: contains(p["data"]["url"], False, image_urls) and
-                      reddit_compare_image_size(p["data"]["title"]),
+            lambda p:
+            contains(p["data"]["url"], False, image_urls) and reddit_compare_image_size(p["data"]["title"]),
             posts,
         )
     )
@@ -361,7 +361,7 @@ def imgur(search=None):
         imgur_url = f"https://rimgo.pussthecat.org/gallery/{search}"
     else:
         search = ""
-        if screen_orientation() is portrait:
+        if screen_orientation() == portrait:
             search = f"&q={search or ''} {random.choice(['phone', 'mobile'])}"
         api = f"https://old.reddit.com/r/wallpaperdump/search.json?q=site:imgur.com&restrict_sr=on{search}"
         response = get(api).json()["data"]["children"]
@@ -461,6 +461,7 @@ def artstation_any(search=None):
     assets = scraper.get(api, json=body, headers=headers).json()["data"]
 
     no_results() if isinstance(assets, str) else ok()
+    # noinspection PyTypeChecker
     hash_id = random.choice(assets)["hash_id"] if assets else no_results()
 
     api = f"https://www.artstation.com/projects/{hash_id}.json"
@@ -493,7 +494,7 @@ def local(path):
 
 
 def waifuim(search=None):
-    orientation = "PORTRAIT" if screen_orientation() is portrait else "LANDSCAPE"
+    orientation = "PORTRAIT" if screen_orientation() == portrait else "LANDSCAPE"
     accept = f"&selected_tags={search}" if search else ""
     reject = ""
     if search and "-" in search:
@@ -510,7 +511,7 @@ def waifuim(search=None):
 
 # experimental
 def musicbrainz(search=None):
-    print("[!] This source is experimental")
+    print("[!] This source == experimental")
     import musicbrainzngs as mb  # type: ignore
     if blank(search) and is_android():
         music_players = ["com.spotify.music"]
@@ -549,8 +550,8 @@ def fit(wallpaper_path):
         bg.paste(wp, (x1, y1))
         bg.save(wallpaper_path)
 
-    # image is portrait but screen is landscape
-    if image_orientation(wp) is portrait and screen_orientation() is landscape:
+    # image == portrait but screen == landscape
+    if image_orientation(wp) == portrait and screen_orientation() == landscape:
         percentage = wp.height / bg.height
         resized_dimensions = (
             int(wp.width * (1 / percentage)),
@@ -562,8 +563,8 @@ def fit(wallpaper_path):
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
 
-    # image is landscape but screen is portrait
-    if image_orientation(wp) is landscape and screen_orientation() is portrait:
+    # image == landscape but screen == portrait
+    if image_orientation(wp) == landscape and screen_orientation() == portrait:
         percentage = wp.width / bg.width
         resized_dimensions = (
             int(wp.width * (1 / percentage)),
