@@ -534,48 +534,57 @@ def musicbrainz(search=None):
     with open(get_dl_path(), "wb") as f:
         f.write(cover)
 
+def dominant_color(wallpaper_path):
+    from colorthief import ColorThief  # type: ignore
+    color_thief = ColorThief(wallpaper_path)
+    return color_thief.get_color(quality=1)
 
 def fit(wallpaper_path):
-    from colorthief import ColorThief  # type: ignore
     from PIL import Image
     wp = Image.open(wallpaper_path)
-    color_thief = ColorThief(wallpaper_path)
-    dominant_color = color_thief.get_color(quality=1)
-    bg = Image.new("RGB", (size()), dominant_color)
+    scr_width = size()[0]
+    scr_height = size()[1]
+
+    print(f"Screen size: {size()}")
+    print(f"wp height: {wp.height}")
+    print(f"wp width: {wp.width}")
 
     # image smaller than screen
-    if wp.height < bg.height and wp.width < bg.width:
+    if wp.height < scr_height and wp.width < scr_width:
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         print("Fitting // image smaller than screen")
-        x1 = int(bg.width / 2) - int(wp.width / 2)
-        y1 = int(bg.height / 2) - int(wp.height / 2)
+        x1 = int(scr_width / 2) - int(wp.width / 2)
+        y1 = int(scr_height / 2) - int(wp.height / 2)
         bg.paste(wp, (x1, y1))
         bg.save(wallpaper_path)
 
     # image == portrait but screen == landscape
     if image_orientation(wp) == portrait and screen_orientation() == landscape:
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         print("Fitting // image == portrait but screen == landscape")
-        percentage = wp.height / bg.height
+        percentage = wp.height / scr_height
         resized_dimensions = (
             int(wp.width * (1 / percentage)),
             int(wp.height * (1 / percentage)),
         )
         resized = wp.resize(resized_dimensions)
-        x1 = int(bg.width / 2) - int(resized.width / 2)
+        x1 = int(scr_width / 2) - int(resized.width / 2)
         y1 = 0
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
 
     # image == landscape but screen == portrait
     if image_orientation(wp) == landscape and screen_orientation() == portrait:
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         print("Fitting // image == landscape but screen == portrait")
-        percentage = wp.width / bg.width
+        percentage = wp.width / scr_width
         resized_dimensions = (
             int(wp.width * (1 / percentage)),
             int(wp.height * (1 / percentage)),
         )
         resized = wp.resize(resized_dimensions)
         x1 = 0
-        y1 = int(bg.height / 2) - int(resized.height / 2)
+        y1 = int(scr_height / 2) - int(resized.height / 2)
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
     return wallpaper_path
