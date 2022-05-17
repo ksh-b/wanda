@@ -641,7 +641,7 @@ def parser():
         "-d",
         metavar="download",
         type=str,
-        default=None,
+        default=str(Path.home()),
         required=False,
         help="Save current wallpaper to home directory or given path",
     )
@@ -688,9 +688,8 @@ def run():
     if "-d" in sys.argv:
         for src_file in Path(folder).glob("wanda_*.*"):
             import shutil
-
             shutil.copy(src_file, args.d)
-            print(f"Copied to {src_file}")
+            print(f"Copied wallpaper to {src_file}")
         exit(0)
     source = args.s
     term = args.t
