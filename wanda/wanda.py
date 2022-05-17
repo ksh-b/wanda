@@ -8,9 +8,10 @@ import sys
 import time
 from pathlib import Path
 
+import filetype  # type: ignore
 import cloudscraper  # type: ignore
 
-version = "0.59.5"
+version = "0.59.6"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -46,7 +47,7 @@ def set_wp(url: str, home=True, lock=True):
 
     # download wallpaper
     if url.startswith("https://"):
-        download(path, url)
+        path = download(path, url)
     elif os.path.exists(url):
         path = url
     else:
@@ -54,7 +55,7 @@ def set_wp(url: str, home=True, lock=True):
         return 1
 
     # fit wallpaper to screen if orientation mismatch
-    # path = fit(path)
+    path = fit(path)
 
     # set wallpaper
     import platform
@@ -89,6 +90,9 @@ def empty_download_folder():
 def download(path, url):
     with open(path, "wb") as f:
         f.write(get(url).content)
+    ext = filetype.guess(path).EXTENSION
+    os.rename(path, f"{path}.{ext}")
+    return f"{path}.{ext}"
 
 
 def set_wp_android(path, home, lock):
@@ -100,7 +104,12 @@ def set_wp_android(path, home, lock):
 
 def get(url):
     scraper = cloudscraper.create_scraper()
-    return scraper.get(url, headers=user_agent)
+    response = scraper.get(url, headers=user_agent)
+    if response.status_code != 200:
+        from http.client import responses
+        print(f"Got status code [{responses[response.status_code]}] from {url}")
+        exit(1)
+    return response
 
 
 def set_wp_win(path):
@@ -221,7 +230,7 @@ def earthview(_):  # NOSONAR
     if screen_orientation() is landscape:
         return url
     path = os.path.normpath(f"{folder}/wanda_{int(time.time())}.{ext}")
-    download(path, url)
+    path = download(path, url)
     from PIL import Image  # type: ignore
 
     image = Image.open(path)
@@ -259,7 +268,7 @@ def fourchan(search=None):
     api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
     posts = get(api).json()[thread]["posts"]
     ok() if posts else no_results()
-    post = random.choice(list(filter(lambda p: "media" not in p, posts)))
+    post = random.choice(list(filter(lambda p: "media" in p, posts)))
     return posts[post]["media"]["media_link"]
 
 
@@ -321,8 +330,8 @@ def reddit(search=None, subreddits=suggested_subreddits()):
     ]
     posts = list(
         filter(
-            lambda p: contains(p["data"]["url"], False, image_urls)
-                      and reddit_compare_image_size(p["data"]["title"]),
+            lambda p: contains(p["data"]["url"], False, image_urls) and
+                      reddit_compare_image_size(p["data"]["title"]),
             posts,
         )
     )
@@ -466,8 +475,6 @@ def artstation_any(search=None):
 
 
 def local(path):
-    import filetype  # type: ignore
-
     if blank(path):
         print("Please specify path to images")
         exit(1)
@@ -530,7 +537,6 @@ def musicbrainz(search=None):
 def fit(wallpaper_path):
     from colorthief import ColorThief  # type: ignore
     from PIL import Image
-
     wp = Image.open(wallpaper_path)
     color_thief = ColorThief(wallpaper_path)
     dominant_color = color_thief.get_color(quality=1)
