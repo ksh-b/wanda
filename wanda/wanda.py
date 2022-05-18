@@ -6,7 +6,6 @@ import re
 import subprocess
 import sys
 import time
-from __init__ import version
 from pathlib import Path
 
 import filetype  # type: ignore
@@ -15,6 +14,7 @@ import cloudscraper  # type: ignore
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f"{str(Path.home())}/wanda"
+version = "0.59.7"
 
 
 def is_connected():
