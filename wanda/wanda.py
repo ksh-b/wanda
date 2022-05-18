@@ -568,7 +568,6 @@ def fit(wallpaper_path):
             y1 = int(scr_height / 2) - int(resized.height / 2)
             bg.paste(resized, (x1, y1))
             bg.save(wallpaper_path)
-            return wallpaper_path
 
     # image smaller than screen
     if wp.height < scr_height and wp.width < scr_width:
@@ -578,7 +577,6 @@ def fit(wallpaper_path):
         y1 = int(scr_height / 2) - int(wp.height / 2)
         bg.paste(wp, (x1, y1))
         bg.save(wallpaper_path)
-        return wallpaper_path
 
     # image == portrait but screen == landscape
     if image_orientation(wp) == "portrait" and screen_orientation() == "landscape":
@@ -594,11 +592,10 @@ def fit(wallpaper_path):
         y1 = 0
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
-        return wallpaper_path
 
     # image == landscape but screen == portrait
     if image_orientation(wp) == "landscape" and screen_orientation() == "portrait":
-        print("Fitting // image si landscape but screen is portrait")
+        print("Fitting // image is landscape but screen is portrait")
         bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         percentage = wp.width / scr_width
         resized_dimensions = (
@@ -610,7 +607,8 @@ def fit(wallpaper_path):
         y1 = int(scr_height / 2) - int(resized.height / 2)
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
-        return wallpaper_path
+
+    return wallpaper_path
 
 
 def usage():
