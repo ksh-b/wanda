@@ -565,7 +565,7 @@ def fit(wallpaper_path):
             )
             resized = wp.resize(resized_dimensions)
             x1 = int(scr_width / 2) - int(resized.width / 2)
-            y1 = 0
+            y1 = int(scr_height / 2) - int(resized.height / 2)
             bg.paste(resized, (x1, y1))
             bg.save(wallpaper_path)
             return wallpaper_path
