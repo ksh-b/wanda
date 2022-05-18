@@ -6,12 +6,11 @@ import re
 import subprocess
 import sys
 import time
+from __init__ import version
 from pathlib import Path
 
 import filetype  # type: ignore
 import cloudscraper  # type: ignore
-
-version = "0.59.6"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
@@ -123,7 +122,7 @@ def set_wp_linux(path):
     elif os.environ.get("DESKTOP_SESSION").lower == "mate":
         setter = "gsettings set org.mate.background picture-filename"
     elif contains(
-        os.environ.get("DESKTOP_SESSION").lower(), False, ["xfce", "xubuntu"]
+            os.environ.get("DESKTOP_SESSION").lower(), False, ["xfce", "xubuntu"]
     ):
         setter = (
             "xfconf-query --channel xfce4-desktop --property /backdrop/screen0/monitor0/workspace0/last-image "
@@ -132,7 +131,7 @@ def set_wp_linux(path):
     elif os.environ.get("DESKTOP_SESSION").lower() == "lxde":
         setter = "pcmanfm --set-wallpaper"
     elif contains(
-        os.environ.get("DESKTOP_SESSION").lower(), False, ["plasma", "neon", "kde"]
+            os.environ.get("DESKTOP_SESSION").lower(), False, ["plasma", "neon", "kde"]
     ):
         return os.system(
             'qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "\n'
@@ -146,9 +145,9 @@ def set_wp_linux(path):
             + '}"'
         )
     elif contains(
-        os.environ.get("DESKTOP_SESSION").lower(),
-        False,
-        ["gnome", "pantheon", "ubuntu", "deepin", "pop"],
+            os.environ.get("DESKTOP_SESSION").lower(),
+            False,
+            ["gnome", "pantheon", "ubuntu", "deepin", "pop"],
     ):
         setter = "gsettings set org.gnome.desktop.background picture-uri"
     else:
@@ -194,7 +193,7 @@ def blank(search):
 
 def good_size(w, h):
     return (screen_orientation() == "portrait" and w < h) or (
-        screen_orientation() == "landscape" and w > h
+            screen_orientation() == "landscape" and w > h
     )
 
 
@@ -330,7 +329,7 @@ def reddit(search=None, subreddits=suggested_subreddits()):
     posts = list(
         filter(
             lambda p: contains(p["data"]["url"], False, image_urls)
-            and reddit_compare_image_size(p["data"]["title"]),
+                      and reddit_compare_image_size(p["data"]["title"]),
             posts,
         )
     )
@@ -382,14 +381,14 @@ def fivehundredpx(search=None):
         "operationName": "PhotoSearchQueryRendererQuery",
         "variables": {"sort": "RELEVANCE", "search": f"{search or ''}"},
         "query": "query PhotoSearchQueryRendererQuery($sort: PhotoSort, $search: String!) {"
-        "\n...PhotoSearchPaginationContainer_query_67nah\n}\n\nfragment "
-        "PhotoSearchPaginationContainer_query_67nah on Query {\nphotoSearch(sort: $sort, first: 20, "
-        "search: $search) { \nedges { \nnode {\n id\n legacyId\n canonicalPath\n name\n description\n "
-        "category\n uploadedAt\n location\n width\n height\n isLikedByMe\n notSafeForWork\n tags\n "
-        "photographer: uploader { \n id \n legacyId \n username \n displayName \n canonicalPath \n avatar { "
-        "\n images { \n url \n id \n } \n id \n } \n followedByUsers { \n totalCount \n isFollowedByMe \n "
-        "}\n }\n images(sizes: [33, 35]) { \n size \n url \n jpegUrl \n webpUrl \n id\n }\n __typename \n} "
-        "\ncursor \n} \ntotalCount \npageInfo { \nendCursor \nhasNextPage \n}\n}\n}\n",
+                 "\n...PhotoSearchPaginationContainer_query_67nah\n}\n\nfragment "
+                 "PhotoSearchPaginationContainer_query_67nah on Query {\nphotoSearch(sort: $sort, first: 20, "
+                 "search: $search) { \nedges { \nnode {\n id\n legacyId\n canonicalPath\n name\n description\n "
+                 "category\n uploadedAt\n location\n width\n height\n isLikedByMe\n notSafeForWork\n tags\n "
+                 "photographer: uploader { \n id \n legacyId \n username \n displayName \n canonicalPath \n avatar { "
+                 "\n images { \n url \n id \n } \n id \n } \n followedByUsers { \n totalCount \n isFollowedByMe \n "
+                 "}\n }\n images(sizes: [33, 35]) { \n size \n url \n jpegUrl \n webpUrl \n id\n }\n __typename \n} "
+                 "\ncursor \n} \ntotalCount \npageInfo { \nendCursor \nhasNextPage \n}\n}\n}\n",
     }
     headers = {
         "User-Agent": user_agent["User-Agent"],
@@ -486,7 +485,7 @@ def local(path):
             list(
                 filter(
                     lambda f: os.path.isfile(path + f)
-                    and filetype.guess(path + f).MIME.startswith("image"),
+                              and filetype.guess(path + f).MIME.startswith("image"),
                     os.listdir(path),
                 )
             )
