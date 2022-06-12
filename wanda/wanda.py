@@ -162,7 +162,7 @@ def size():
 
     if is_android():
         hxw = command("getprop persist.vendor.camera.display.umax")
-        if blank(hxw):
+        if not blank(hxw):
             return int(hxw.split("x")[1]), int(hxw.split("x")[0])
         return 1440, 2960
     try:
