@@ -8,19 +8,17 @@ import sys
 import time
 from pathlib import Path
 
+import filetype  # type: ignore
 import cloudscraper  # type: ignore
-
-version = "0.59.5"
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f"{str(Path.home())}/wanda"
-
-landscape = "landscape"
-portrait = "portrait"
+version = "0.59.9"
 
 
 def is_connected():
+    # noinspection PyBroadException
     try:
         result = get("https://detectportal.firefox.com/success.txt")
         return result.text.strip() == "success"
@@ -29,7 +27,9 @@ def is_connected():
 
 
 def no_results():
-    print("No results found. Try another source/term.")
+    print("No results found.")
+    print("• Try another source or term")
+    print("• Try again at a later time")
     exit(1)
 
 
@@ -37,16 +37,14 @@ def command(string: str) -> str:
     return subprocess.check_output(string.split(" ")).decode().strip()
 
 
-def set_wp(url: str, home=True, lock=True):
+def set_wp(url: str, home=True, lock=True, fitwp=False):
     # print selected wallpaper url
     print(url)
 
-    # setup directory
-    path = get_dl_path()
-
     # download wallpaper
     if url.startswith("https://"):
-        download(path, url)
+        path = get_dl_path()
+        path = download(path, url)
     elif os.path.exists(url):
         path = url
     else:
@@ -54,7 +52,8 @@ def set_wp(url: str, home=True, lock=True):
         return 1
 
     # fit wallpaper to screen if orientation mismatch
-    # path = fit(path)
+    if fitwp:
+        path = fit(path)
 
     # set wallpaper
     import platform
@@ -89,6 +88,9 @@ def empty_download_folder():
 def download(path, url):
     with open(path, "wb") as f:
         f.write(get(url).content)
+    ext = filetype.guess(path).EXTENSION
+    os.rename(path, f"{path}.{ext}")
+    return f"{path}.{ext}"
 
 
 def set_wp_android(path, home, lock):
@@ -100,7 +102,13 @@ def set_wp_android(path, home, lock):
 
 def get(url):
     scraper = cloudscraper.create_scraper()
-    return scraper.get(url, headers=user_agent)
+    response = scraper.get(url, headers=user_agent)
+    if response.status_code != 200:
+        from http.client import responses
+
+        print(f"Got status code [{responses[response.status_code]}] from {url}")
+        exit(1)
+    return response
 
 
 def set_wp_win(path):
@@ -151,12 +159,12 @@ def set_wp_linux(path):
 
 def size():
     import screeninfo  # type: ignore
+
     if is_android():
         hxw = command("getprop persist.vendor.camera.display.umax")
-        if hxw is not None:
-            int(hxw.split("x")[1]), int(hxw.split("x")[0])
-        else:
-            return 1440, 2960
+        if not blank(hxw):
+            return int(hxw.split("x")[1]), int(hxw.split("x")[0])
+        return 1440, 2960
     try:
         dimensions = screeninfo.get_monitors()[0]  # type: ignore
         return int(dimensions.width), int(dimensions.height)
@@ -165,11 +173,11 @@ def size():
 
 
 def screen_orientation():
-    return landscape if size()[0] > size()[1] else portrait
+    return "landscape" if size()[0] > size()[1] else "portrait"
 
 
 def image_orientation(image):
-    return landscape if image.width > image.height else portrait
+    return "landscape" if image.width > image.height else "portrait"
 
 
 def is_android():
@@ -185,8 +193,8 @@ def blank(search):
 
 
 def good_size(w, h):
-    return (screen_orientation() is portrait and w < h) or (
-            screen_orientation() is landscape and w > h
+    return (screen_orientation() == "portrait" and w < h) or (
+            screen_orientation() == "landscape" and w > h
     )
 
 
@@ -201,7 +209,7 @@ def contains(word: str, match_all: bool, desired: list) -> bool:
 
 def wallhaven(search=None):
     api = "https://wallhaven.cc/api/v1/search?sorting=random"
-    ratios = "portrait" if screen_orientation() is portrait else "landscape"
+    ratios = "portrait" if screen_orientation() == "portrait" else "landscape"
     response = get(f"{api}&ratios={ratios}&q={search or ''}").json()["data"]
     return response[0]["path"] if response else no_results()
 
@@ -218,10 +226,10 @@ def earthview(_):  # NOSONAR
     tree = html.fromstring(get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
     ext = url.split(".")[-1]
-    if screen_orientation() is landscape:
+    if screen_orientation() == "landscape":
         return url
     path = os.path.normpath(f"{folder}/wanda_{int(time.time())}.{ext}")
-    download(path, url)
+    path = download(path, url)
     from PIL import Image  # type: ignore
 
     image = Image.open(path)
@@ -259,12 +267,12 @@ def fourchan(search=None):
     api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
     posts = get(api).json()[thread]["posts"]
     ok() if posts else no_results()
-    post = random.choice(list(filter(lambda p: "media" not in p, posts)))
+    post = random.choice(list(filter(lambda p: "media" in posts[p], posts)))
     return posts[post]["media"]["media_link"]
 
 
 def suggested_subreddits():
-    if screen_orientation() is portrait:
+    if screen_orientation() == "portrait":
         return "mobilewallpaper+amoledbackgrounds+verticalwallpapers"
     return "wallpaper+wallpapers+minimalwallpaper"
 
@@ -299,11 +307,11 @@ def reddit_search(sub, search=None, extra=""):
 
 
 def reddit_compare_image_size(title):
-    if sr := re.search(r"[\d]+x[\d]+", title):
+    if sr := re.search(r"\d+x\d+", title):
         w = int(sr.group().split("x")[0]) >= int(size()[0])
         h = int(sr.group().split("x")[1]) >= int(size()[1])
         return w and h
-    return screen_orientation() is portrait or False
+    return screen_orientation() == "portrait" or False
 
 
 def reddit(search=None, subreddits=suggested_subreddits()):
@@ -340,10 +348,11 @@ def reddit(search=None, subreddits=suggested_subreddits()):
 
 
 def picsum(search=None):
+    w, h = size()
     if blank(search):
-        api = f"https://picsum.photos/{size()[0]}/{size()[1]}"
+        api = f"https://picsum.photos/{w}/{h}"
     else:
-        api = f"https://picsum.photos/seed/{search}/{size()[0]}/{size()[1]}"
+        api = f"https://picsum.photos/seed/{search}/{w}/{h}"
     return get(api).url
 
 
@@ -352,7 +361,7 @@ def imgur(search=None):
         imgur_url = f"https://rimgo.pussthecat.org/gallery/{search}"
     else:
         search = ""
-        if screen_orientation() is portrait:
+        if screen_orientation() == "portrait":
             search = f"&q={search or ''} {random.choice(['phone', 'mobile'])}"
         api = f"https://old.reddit.com/r/wallpaperdump/search.json?q=site:imgur.com&restrict_sr=on{search}"
         response = get(api).json()["data"]["children"]
@@ -403,7 +412,7 @@ def fivehundredpx(search=None):
 
 def artstation_prints(search=None):
     scraper = cloudscraper.create_scraper()
-    orientation = "portrait" if screen_orientation() == portrait else "landscape"
+    orientation = "portrait" if screen_orientation() == "portrait" else "landscape"
     search = search or ""
     api = (
         f"https://www.artstation.com/api/v2/prints/public/printed_products.json?page=1&per_page=30"
@@ -452,6 +461,7 @@ def artstation_any(search=None):
     assets = scraper.get(api, json=body, headers=headers).json()["data"]
 
     no_results() if isinstance(assets, str) else ok()
+    # noinspection PyTypeChecker
     hash_id = random.choice(assets)["hash_id"] if assets else no_results()
 
     api = f"https://www.artstation.com/projects/{hash_id}.json"
@@ -466,8 +476,6 @@ def artstation_any(search=None):
 
 
 def local(path):
-    import filetype  # type: ignore
-
     if blank(path):
         print("Please specify path to images")
         exit(1)
@@ -477,7 +485,8 @@ def local(path):
         return path + random.choice(
             list(
                 filter(
-                    lambda f: filetype.guess(path + f).MIME.startswith("image"),
+                    lambda f: os.path.isfile(path + f)
+                              and filetype.guess(path + f).MIME.startswith("image"),
                     os.listdir(path),
                 )
             )
@@ -486,7 +495,7 @@ def local(path):
 
 
 def waifuim(search=None):
-    orientation = "PORTRAIT" if screen_orientation() is portrait else "LANDSCAPE"
+    orientation = "PORTRAIT" if screen_orientation() == "portrait" else "LANDSCAPE"
     accept = f"&selected_tags={search}" if search else ""
     reject = ""
     if search and "-" in search:
@@ -505,77 +514,108 @@ def waifuim(search=None):
 def musicbrainz(search=None):
     print("[!] This source is experimental")
     import musicbrainzngs as mb  # type: ignore
-    if blank(search) and is_android():
-        music_players = ["com.spotify.music"]
-        notifications = json.loads(command("termux-notification-list"))
-        music_notification = list(filter(
-            lambda n: n["packageName"] in music_players,
-            notifications
-        ))[0]
-        title = music_notification["title"]
-        artist = music_notification["content"]
-        search = f"{artist} {title}"
-    if blank(search) and not is_android():
-        print("Please enter [artist] [track title]")
+
+    if blank(search):
+        print("Please enter [artist]-[album]")
         exit(1)
     mb.set_useragent("wanda", version, user_agent["User-Agent"])
-    albums = mb.search_release_groups(search)
-    ok() if albums else no_results()
-    album_id = albums["release-group-list"][0]["id"]
-    cover = mb.get_release_group_image_front(album_id)
-    with open(get_dl_path(), "wb") as f:
-        f.write(cover)
+    [artist, album] = search.split("-")
+    try:
+        albums = mb.search_releases(album, artist=artist)
+        ok() if albums else no_results()
+        album_id = albums["release-list"][0]["release-group"]["id"]
+        cover = mb.get_release_group_image_front(album_id)
+        path = get_dl_path()
+        with open(path, "wb") as f:
+            f.write(cover)
+        ext = filetype.guess(path).EXTENSION
+        os.rename(path, f"{path}.{ext}")
+        return f"{path}.{ext}"
+    except mb.MusicBrainzError:
+        no_results()
+
+
+# get dominant color from image
+def dominant_color(wallpaper_path):
+    from colorthief import ColorThief  # type: ignore
+
+    color_thief = ColorThief(wallpaper_path)
+    return color_thief.get_color(quality=1)
 
 
 def fit(wallpaper_path):
-    from colorthief import ColorThief  # type: ignore
     from PIL import Image
 
     wp = Image.open(wallpaper_path)
-    color_thief = ColorThief(wallpaper_path)
-    dominant_color = color_thief.get_color(quality=1)
-    bg = Image.new("RGB", (size()), dominant_color)
+    scr_width, scr_height = size()
+
+    # if image is squarish (like album art)
+    if 95 < int(wp.width / wp.height) * 100 < 105:
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
+        percentage = 0
+        if screen_orientation() == "portrait" and wp.width > scr_width:
+            percentage = wp.width / scr_width
+        elif screen_orientation() == "landscape" and wp.height > scr_height:
+            percentage = wp.height / scr_height
+        if percentage != 0:
+            print("Fitting // squarish image")
+            resized_dimensions = (
+                int(wp.width / percentage),
+                int(wp.height / percentage),
+            )
+            resized = wp.resize(resized_dimensions)
+            x1 = int(scr_width / 2) - int(resized.width / 2)
+            y1 = int(scr_height / 2) - int(resized.height / 2)
+            bg.paste(resized, (x1, y1))
+            bg.save(wallpaper_path)
 
     # image smaller than screen
-    if wp.height < bg.height and wp.width < bg.width:
-        x1 = int(bg.width / 2) - int(wp.width / 2)
-        y1 = int(bg.height / 2) - int(wp.height / 2)
+    elif wp.height < scr_height and wp.width < scr_width:
+        print("Fitting // image smaller than screen")
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
+        x1 = int(scr_width / 2) - int(wp.width / 2)
+        y1 = int(scr_height / 2) - int(wp.height / 2)
         bg.paste(wp, (x1, y1))
         bg.save(wallpaper_path)
 
-    # image is portrait but screen is landscape
-    if image_orientation(wp) is portrait and screen_orientation() is landscape:
-        percentage = wp.height / bg.height
+    # image == portrait but screen == landscape
+    elif image_orientation(wp) == "portrait" and screen_orientation() == "landscape":
+        print("Fitting // image is portrait but screen is landscape")
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
+        percentage = wp.height / scr_height
         resized_dimensions = (
-            int(wp.width * (1 / percentage)),
-            int(wp.height * (1 / percentage)),
+            int(wp.width / percentage),
+            int(wp.height / percentage),
         )
         resized = wp.resize(resized_dimensions)
-        x1 = int(bg.width / 2) - int(resized.width / 2)
+        x1 = int(scr_width / 2) - int(resized.width / 2)
         y1 = 0
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
 
-    # image is landscape but screen is portrait
-    if image_orientation(wp) is landscape and screen_orientation() is portrait:
-        percentage = wp.width / bg.width
+    # image == landscape but screen == portrait
+    elif image_orientation(wp) == "landscape" and screen_orientation() == "portrait":
+        print("Fitting // image is landscape but screen is portrait")
+        bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
+        percentage = wp.width / scr_width
         resized_dimensions = (
-            int(wp.width * (1 / percentage)),
-            int(wp.height * (1 / percentage)),
+            int(wp.width / percentage),
+            int(wp.height / percentage),
         )
         resized = wp.resize(resized_dimensions)
         x1 = 0
-        y1 = int(bg.height / 2) - int(resized.height / 2)
+        y1 = int(scr_height / 2) - int(resized.height / 2)
         bg.paste(resized, (x1, y1))
         bg.save(wallpaper_path)
+
     return wallpaper_path
 
 
 def usage():
     cyan = "\033[36m"
     pink = "\033[35m"
-    print("Use double quotes if your keyword or path has spaces")
-    print("Supported sources:")
+    print("Use double quotes around your keyword or path if it has spaces")
+    print("Usage:")
     print(f"{cyan}4chan {pink}[keyword]|[keyword@board]")
     print(f"{cyan}500{cyan}px {pink}[keyword]")
     print(f"{cyan}arstation {pink}[keyword]")
@@ -584,7 +624,8 @@ def usage():
     print(f"{cyan}imgur {pink}[gallery id. example: qF259WO]")
     print(f"{cyan}earthview")
     print(f"{cyan}local {pink}[full path to folder]")
-    print(f"{cyan}musicbrainz {pink}[artist title]")
+    print(f"{cyan}musicbrainz {pink}[artist-album]")
+    print(f"{cyan}picsum")
     print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
     print(f"{cyan}unsplash {pink}[keyword]")
     print(f"{cyan}wallhaven {pink}[keyword(,keyword2,keyword3...&)]")
@@ -622,10 +663,9 @@ def parser():
     parser_.add_argument(
         "-d",
         metavar="download",
-        type=str,
-        default=None,
-        required=False,
-        help="Save current wallpaper to home directory or given path",
+        nargs="?",
+        const=str(Path.home()),
+        help="Copy last downloaded wallpaper to home directory or given path",
     )
     parser_.add_argument(
         "-u",
@@ -642,6 +682,12 @@ def parser():
         required=False,
         action="store_const",
         const=version,
+    )
+    parser_.add_argument(
+        "-f",
+        help="Fit wallpaper to screen if screen and wallpaper orientation mismatch",
+        required=False,
+        action="store_true",
     )
     if is_android():
         parser_.add_argument(
@@ -672,24 +718,25 @@ def run():
             import shutil
 
             shutil.copy(src_file, args.d)
-            print(f"Copied to {src_file}")
+            print(f"Copied wallpaper to {src_file}")
         exit(0)
+
     source = args.s
     term = args.t
     home = True
     lock = True
+    fitwp = False
     if "-l" in sys.argv and args.l:
-        lock = True
         home = False
     if "-h" in sys.argv and args.h:
         lock = False
-        home = True
-
+    if "-f" in sys.argv and source not in ('e', 'earthview'):
+        fitwp = True
     try:
         if source != "local" and not is_connected():
             print("Please check your internet connection and try again")
             exit(1)
-        set_wp(eval(source_map(source))(term), home, lock)
+        set_wp(eval(source_map(source))(term), home, lock, fitwp)
     except NameError:
         print(f"Unknown source: '{source}'. Available sources:")
         usage()
@@ -706,6 +753,7 @@ def shortcodes():
         "e": "earthview",
         "i": "imgur",
         "l": "local",
+        "m": "musicbrainz",
         "p": "picsum",
         "r": "reddit",
         "u": "unsplash",
