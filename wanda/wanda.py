@@ -14,7 +14,7 @@ import cloudscraper  # type: ignore
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f"{str(Path.home())}/wanda"
-version = "0.59.7"
+version = "0.59.8"
 
 
 def is_connected():
@@ -37,7 +37,7 @@ def command(string: str) -> str:
     return subprocess.check_output(string.split(" ")).decode().strip()
 
 
-def set_wp(url: str, home=True, lock=True):
+def set_wp(url: str, home=True, lock=True, fitwp=False):
     # print selected wallpaper url
     print(url)
 
@@ -52,7 +52,8 @@ def set_wp(url: str, home=True, lock=True):
         return 1
 
     # fit wallpaper to screen if orientation mismatch
-    path = fit(path)
+    if fitwp:
+        path = fit(path)
 
     # set wallpaper
     import platform
@@ -161,7 +162,7 @@ def size():
 
     if is_android():
         hxw = command("getprop persist.vendor.camera.display.umax")
-        if hxw is not None:
+        if blank(hxw):
             return int(hxw.split("x")[1]), int(hxw.split("x")[0])
         return 1440, 2960
     try:
@@ -266,7 +267,7 @@ def fourchan(search=None):
     api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
     posts = get(api).json()[thread]["posts"]
     ok() if posts else no_results()
-    post = random.choice(list(filter(lambda p: "media" in p, posts)))
+    post = random.choice(list(filter(lambda p: "media" in posts[p], posts)))
     return posts[post]["media"]["media_link"]
 
 
@@ -569,7 +570,7 @@ def fit(wallpaper_path):
             bg.save(wallpaper_path)
 
     # image smaller than screen
-    if wp.height < scr_height and wp.width < scr_width:
+    elif wp.height < scr_height and wp.width < scr_width:
         print("Fitting // image smaller than screen")
         bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         x1 = int(scr_width / 2) - int(wp.width / 2)
@@ -578,7 +579,7 @@ def fit(wallpaper_path):
         bg.save(wallpaper_path)
 
     # image == portrait but screen == landscape
-    if image_orientation(wp) == "portrait" and screen_orientation() == "landscape":
+    elif image_orientation(wp) == "portrait" and screen_orientation() == "landscape":
         print("Fitting // image is portrait but screen is landscape")
         bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         percentage = wp.height / scr_height
@@ -593,7 +594,7 @@ def fit(wallpaper_path):
         bg.save(wallpaper_path)
 
     # image == landscape but screen == portrait
-    if image_orientation(wp) == "landscape" and screen_orientation() == "portrait":
+    elif image_orientation(wp) == "landscape" and screen_orientation() == "portrait":
         print("Fitting // image is landscape but screen is portrait")
         bg = Image.new("RGB", (size()), dominant_color(wallpaper_path))
         percentage = wp.width / scr_width
@@ -613,8 +614,8 @@ def fit(wallpaper_path):
 def usage():
     cyan = "\033[36m"
     pink = "\033[35m"
-    print("Use double quotes if your keyword or path has spaces")
-    print("Supported sources:")
+    print("Use double quotes around your keyword or path if it has spaces")
+    print("Usage:")
     print(f"{cyan}4chan {pink}[keyword]|[keyword@board]")
     print(f"{cyan}500{cyan}px {pink}[keyword]")
     print(f"{cyan}arstation {pink}[keyword]")
@@ -624,6 +625,7 @@ def usage():
     print(f"{cyan}earthview")
     print(f"{cyan}local {pink}[full path to folder]")
     print(f"{cyan}musicbrainz {pink}[artist-album]")
+    print(f"{cyan}picsum")
     print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
     print(f"{cyan}unsplash {pink}[keyword]")
     print(f"{cyan}wallhaven {pink}[keyword(,keyword2,keyword3...&)]")
@@ -681,6 +683,12 @@ def parser():
         action="store_const",
         const=version,
     )
+    parser_.add_argument(
+        "-f",
+        help="Fit wallpaper to screen if screen and wallpaper orientation mismatch",
+        required=False,
+        action="store_true",
+    )
     if is_android():
         parser_.add_argument(
             "-o",
@@ -717,18 +725,18 @@ def run():
     term = args.t
     home = True
     lock = True
+    fitwp = False
     if "-l" in sys.argv and args.l:
-        lock = True
         home = False
     if "-h" in sys.argv and args.h:
         lock = False
-        home = True
-
+    if "-f" in sys.argv and source not in ('e', 'earthview'):
+        fitwp = True
     try:
         if source != "local" and not is_connected():
             print("Please check your internet connection and try again")
             exit(1)
-        set_wp(eval(source_map(source))(term), home, lock)
+        set_wp(eval(source_map(source))(term), home, lock, fitwp)
     except NameError:
         print(f"Unknown source: '{source}'. Available sources:")
         usage()
