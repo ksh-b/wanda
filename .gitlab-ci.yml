@@ -4,6 +4,7 @@ stages:
   - test
   - lint
   - types
+  - build
 
 before_script:
   - pip install poetry
@@ -12,6 +13,11 @@ before_script:
 
 Unit Tests:
   stage: test
+  rules:
+    - changes:
+      - wanda/__init__.py
+  when: always
+  allow_failure: true
   script:
     - pytest -n 15 --reruns 2 --reruns-delay 3 --cov=./ --cov-report=xml
     - apt install curl
@@ -28,3 +34,11 @@ Static Type check:
   stage: types
   script:
     - poetry run mypy .
+
+Build:
+  stage: build
+  script:
+    - poetry build
+  artifacts:
+    paths:
+      - dist/*.*

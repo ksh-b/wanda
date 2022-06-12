@@ -1,2 +1,5 @@
 dist
 .idea
+.coverage
+codecov
+coverage.xml
