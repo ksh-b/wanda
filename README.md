@@ -9,9 +9,18 @@ Script to set wallpaper using keyword or randomly
 ![Gitlab pipeline](https://img.shields.io/gitlab/pipeline-status/kshib/wanda?branch=main)
 
 ## Installation / Update
+For termux, install these first:
+```
+pip install --upgrade pip
+pkg in libxml2 libxslt libjpeg-turbo
+```
+
 ```
 pip install wanda -U
 ```
+
+For issues installing pillow refer this [document](https://pillow.readthedocs.io/en/stable/installation.html)
+
 
 ## Usage
 ```
