@@ -718,7 +718,7 @@ def run():
             import shutil
 
             shutil.copy(src_file, args.d)
-            print(f"Copied wallpaper to {src_file}")
+            print(f"Copied wallpaper to {args.d}")
         exit(0)
 
     source = args.s
