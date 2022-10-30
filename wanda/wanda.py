@@ -747,9 +747,9 @@ def shortcodes():
     return {
         "4": "fourchan",
         "5": "fivehundredpx",
+        "a": "artstation_any",
         "aa": "artstation_artist",
         "ap": "artstation_prints",
-        "a": "artstation",
         "e": "earthview",
         "i": "imgur",
         "l": "local",
