@@ -1,12 +1,12 @@
 # wanda
 Script to set wallpaper using keyword or randomly
 
-![Codacy branch grade](https://img.shields.io/codacy/grade/e5aacd529ce04f3fb8c0f9ce6a3bdd9e/main)
-![PyPI](https://img.shields.io/pypi/v/wanda)
-![PyPI - Downloads](https://img.shields.io/pypi/dw/wanda)
-![PyPI - License](https://img.shields.io/pypi/l/wanda)
-![Gitlab code coverage](https://img.shields.io/gitlab/coverage/kshib/wanda/main)
-![Gitlab pipeline](https://img.shields.io/gitlab/pipeline-status/kshib/wanda?branch=main)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/7c33b1c42b8d4a3fb80c74c9c8ececb9)](https://www.codacy.com/gl/kshib/wanda/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=kshib/wanda&amp;utm_campaign=Badge_Grade)
+[![PyPI](https://img.shields.io/pypi/v/wanda)](https://pypi.org/project/wanda/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/wanda)](https://pypistats.org/packages/wanda)
+[![PyPI - License](https://img.shields.io/pypi/l/wanda)](https://tldrlegal.com/license/mit-license)
+[![codecov](https://codecov.io/gl/kshib/wanda/branch/main/graph/badge.svg?token=L88CXOYRTW)](https://codecov.io/gl/kshib/wanda)
+[![Gitlab pipeline](https://img.shields.io/gitlab/pipeline-status/kshib/wanda?branch=main)](https://gitlab.com/kshib/wanda/-/pipelines)
 
 ## Installation / Update
 ```
