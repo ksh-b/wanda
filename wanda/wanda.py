@@ -14,7 +14,7 @@ import cloudscraper  # type: ignore
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = f"{str(Path.home())}/wanda"
-version = "0.60.0"
+version = "0.60.2"
 
 
 def is_connected():
@@ -42,7 +42,7 @@ def set_wp(url: str, home=True, lock=True, fitwp=False):
     print(url)
 
     # download wallpaper
-    if url.startswith("https://"):
+    if url.replace("http://", "https://").startswith("https://"):
         path = get_dl_path()
         path = download(path, url)
     elif os.path.exists(url):
