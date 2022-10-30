@@ -9,14 +9,14 @@ Script to set wallpaper using keyword or randomly
 ![Gitlab pipeline](https://img.shields.io/gitlab/pipeline-status/kshib/wanda?branch=main)
 
 ## Installation / Update
-For termux, install these first:
+```
+pip install wanda -U
+```
+
+For termux, you will need the following packages:
 ```
 pip install --upgrade pip
 pkg in libxml2 libxslt libjpeg-turbo
-```
-
-```
-pip install wanda -U
 ```
 
 For issues installing pillow refer this [document](https://pillow.readthedocs.io/en/stable/installation.html)
@@ -32,7 +32,7 @@ wanda -s wallhaven -t japan
 `wanda -h` for more details
 
 ## Notes
-- By default the source is [unsplash](https://unsplash.com).
+- By default, the source is [unsplash](https://unsplash.com).
 - Some sources may have inapt images. Use them at your own risk.
 
 ## Supported sources
@@ -48,13 +48,10 @@ wanda -s wallhaven -t japan
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
 
-## Demo
-- [Desktop, Manjaro Linux](https://z.zz.fo/om26p.webm)
-
-## Automate
+## Automate (For linux)
 * To set wallpaper at regular intervals automatically:
 
-0. Install (for android only):
+0. (For termux) Install:
 ```
 termux-wake-lock
 pkg in cronie termux-services nano
@@ -89,8 +86,9 @@ pip uninstall wanda
 Older versions can be found [here (android)](https://gitlab.com/kshib/wanda/-/tree/sh-android) and [here (desktop)](https://gitlab.com/kshib/wanda/-/tree/sh-desktop)
 
 ## Issues
-The script is only tested on Manjaro+KDE and Android+Termux. But should work on windows and other linux distros as well.
-Feel free to raise issues.
+The script is tested on Manjaro+KDE and Android+Termux and Windows 11.
+
+On Windows, you might need to set wallpaper mode to slideshow with folder as `C:\Users\%username%\wanda`
 
 ## License
 MIT
