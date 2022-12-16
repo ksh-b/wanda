@@ -68,7 +68,7 @@ def set_wp(url: str, folder: str, home=True, lock=True, fitwp=False):
         exit(1)
 
 
-def get_dl_path():
+def get_dl_path(folder):
     path = os.path.normpath(f"{folder}/wanda_{int(time.time())}")
     if not os.path.exists(folder):
         os.mkdir(folder)
@@ -740,7 +740,7 @@ def run():
         if source != "local" and not is_connected():
             print("Please check your internet connection and try again")
             exit(1)
-        set_wp(eval(source_map(source))(term), home, lock, fitwp)
+        set_wp(eval(source_map(source))(term), folder, home, lock, fitwp)
     except NameError:
         print(f"Unknown source: '{source}'. Available sources:")
         usage()
