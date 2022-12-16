@@ -13,7 +13,6 @@ import cloudscraper  # type: ignore
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
-folder = f"{str(Path.home())}/wanda"
 version = "0.60.2"
 
 
@@ -37,13 +36,13 @@ def command(string: str) -> str:
     return subprocess.check_output(string.split(" ")).decode().strip()
 
 
-def set_wp(url: str, home=True, lock=True, fitwp=False):
+def set_wp(url: str, folder: str, home=True, lock=True, fitwp=False):
     # print selected wallpaper url
     print(url)
 
     # download wallpaper
     if url.replace("http://", "https://").startswith("https://"):
-        path = get_dl_path()
+        path = get_dl_path(folder)
         path = download(path, url)
     elif os.path.exists(url):
         path = url
@@ -73,16 +72,7 @@ def get_dl_path():
     path = os.path.normpath(f"{folder}/wanda_{int(time.time())}")
     if not os.path.exists(folder):
         os.mkdir(folder)
-    empty_download_folder()
     return path
-
-
-def empty_download_folder():
-    import glob
-
-    files = glob.glob(f"{folder}/*")
-    for f in files:
-        os.remove(f)
 
 
 def download(path, url):
@@ -118,7 +108,9 @@ def set_wp_win(path):
 
 
 def set_wp_linux(path):
-    if os.environ.get("SWAYSOCK"):
+    if not os.environ.get("DESKTOP_SESSION"):
+        setter = "feh --bg-scale"
+    elif os.environ.get("SWAYSOCK"):
         setter = "eval ogurictl output '*' --image"
     elif os.environ.get("DESKTOP_SESSION").lower == "mate":
         setter = "gsettings set org.mate.background picture-filename"
@@ -668,6 +660,14 @@ def parser():
         help="Copy last downloaded wallpaper to home directory or given path",
     )
     parser_.add_argument(
+        "-w",
+        metavar="working",
+        nargs="?",
+        const=str(Path.home()),
+        help="Set location where downloaded wallpapers are saved",
+
+    )
+    parser_.add_argument(
         "-u",
         metavar="usage",
         help="Supported sources and their usage",
@@ -713,6 +713,10 @@ def run():
     if "-v" in sys.argv:
         print(args.v)
         exit(0)
+    if "-w" in sys.argv:
+        folder = args.w
+    else:
+        folder = f"{str(Path.home())}/wanda"
     if "-d" in sys.argv:
         for src_file in Path(folder).glob("wanda_*.*"):
             import shutil
