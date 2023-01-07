@@ -21,6 +21,7 @@ screeninfo = "^0.8"
 colorthief = "^0.2.1"
 filetype = "^1.0.13"
 musicbrainzngs = "^0.7.1"
+appdirs = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
