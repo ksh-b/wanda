@@ -8,13 +8,14 @@ import sys
 import time
 from pathlib import Path
 
+import appdirs
 import filetype  # type: ignore
 import cloudscraper  # type: ignore
 
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
-folder = f"{str(Path.home())}/wanda"
-version = "0.60.3"
+folder = appdirs.user_cache_dir("wanda")
+version = "0.60.4"
 
 
 def is_connected():
