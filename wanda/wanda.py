@@ -358,7 +358,7 @@ def picsum(search=None):
 
 def imgur(search=None):
     if search:
-        imgur_url = f"https://rimgo.pussthecat.org/gallery/{search}"
+        imgur_url = f"https://rimgo.pussthecat.org/a/{search}"
     else:
         search = ""
         if screen_orientation() == "portrait":
@@ -373,7 +373,7 @@ def get_imgur_image(imgur_url, alt="rimgo.pussthecat.org"):
     from lxml import html
 
     tree = html.fromstring(get(imgur_url.replace("imgur.com", f"{alt}")).content)
-    images = tree.xpath("//div[@class='center']//img/@src")
+    images = tree.xpath("//div[contains(@class,'post__media')]//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
 
 
