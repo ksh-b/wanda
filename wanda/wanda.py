@@ -496,13 +496,13 @@ def local(path):
 
 def waifuim(search=None):
     orientation = "PORTRAIT" if screen_orientation() == "portrait" else "LANDSCAPE"
-    accept = f"&selected_tags={search}" if search else ""
+    accept = f"&included_tags={search}" if search else ""
     reject = ""
     if search and "-" in search:
         accept = f"&selected_tags={search.split('-')[0]}"
         reject = f"&excluded_tags={search.split('-')[1]}"
     api = (
-        f"https://api.waifu.im/random/?gif=false&is_nsfw=false"
+        f"https://api.waifu.im/search/?gif=false&is_nsfw=false"
         f"&orientation={orientation}{accept}{reject}"
     )
     response = get(api).json()
