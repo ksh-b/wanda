@@ -119,7 +119,9 @@ def set_wp_win(path):
 
 
 def set_wp_linux(path):
-    if os.environ.get("SWAYSOCK"):
+    if not os.environ.get("DESKTOP_SESSION"):
+        setter = "feh --bg-scale"
+    elif os.environ.get("SWAYSOCK"):
         setter = "eval ogurictl output '*' --image"
     elif os.environ.get("DESKTOP_SESSION").lower == "mate":
         setter = "gsettings set org.mate.background picture-filename"
