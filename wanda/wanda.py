@@ -112,6 +112,12 @@ def get(url):
     return response
 
 
+def program_exists(program):
+    return subprocess.call(
+        ['which', program], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    ) == 0
+
+
 def set_wp_win(path):
     import ctypes
 
@@ -128,10 +134,13 @@ def set_wp_linux(path):
     elif contains(
             os.environ.get("DESKTOP_SESSION").lower(), False, ["xfce", "xubuntu"]
     ):
-        setter = (
-            "xfconf-query --channel xfce4-desktop --property /backdrop/screen0/monitor0/workspace0/last-image "
-            "--set "
-        )
+        if program_exists("xfce4-set-wallpaper"):
+            setter = "xfce4-set-wallpaper"
+        else:
+            setter = (
+                "xfconf-query --channel xfce4-desktop --property /backdrop/screen0/monitor0/workspace0/last-image "
+                "--set "
+            )
     elif os.environ.get("DESKTOP_SESSION").lower() == "lxde":
         setter = "pcmanfm --set-wallpaper"
     elif contains(
