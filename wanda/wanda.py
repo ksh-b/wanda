@@ -15,7 +15,7 @@ import cloudscraper  # type: ignore
 user_agent = {"User-Agent": "git.io/wanda"}
 content_json = "application/json"
 folder = appdirs.user_cache_dir("wanda")
-version = "0.60.4"
+version = "0.60.5"
 
 
 def is_connected():
