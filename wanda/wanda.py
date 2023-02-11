@@ -4,8 +4,6 @@ import sys
 from pathlib import Path
 
 import appdirs
-import cloudscraper  # type: ignore
-import filetype  # type: ignore
 
 import wanda.utils.common_utils as common
 import wanda.utils.image_utils as image

@@ -1,8 +1,5 @@
 import os
 
-import cloudscraper  # type: ignore
-import filetype  # type: ignore
-
 from wanda.utils.common_utils import get_dl_path, download
 from wanda.utils.os_utils import size, set_wp_android, set_wp_linux, set_wp_win, is_android
 
