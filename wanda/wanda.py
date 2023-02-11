@@ -8,9 +8,10 @@ import appdirs
 import wanda.utils.common_utils as common
 import wanda.utils.image_utils as image
 import wanda.utils.os_utils as osu
+import wanda.sources as sources
 
 folder = appdirs.user_cache_dir("wanda")
-version = "0.61.0"
+version = "0.61.1"
 
 
 def usage(level=0):
