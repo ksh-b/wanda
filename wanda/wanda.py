@@ -141,7 +141,7 @@ def set_wp_linux(path):
                 "--set "
             )
     elif os.environ.get("DESKTOP_SESSION").lower() == "lxde":
-        setter = "pcmanfm --set-wallpaper"
+        setter = "pcmanfm --wallpaper-mode=screen --set-wallpaper"
     elif contains(
             os.environ.get("DESKTOP_SESSION").lower(), False, ["plasma", "neon", "kde"]
     ):
