@@ -136,10 +136,14 @@ def set_wp_linux(path):
         if program_exists("xfce4-set-wallpaper"):
             setter = "xfce4-set-wallpaper"
         else:
-            setter = (
-                "xfconf-query --channel xfce4-desktop --property /backdrop/screen0/monitor0/last-image "
-                "--set "
-            )
+            screens = command("xfconf-query --channel xfce4-desktop -l").split("\n")
+            screens = list(filter(lambda it: "/workspace" in it, screens))
+            for screen in screens:
+                setter = (
+                    f"xfconf-query --channel xfce4-desktop --property {screen} --set "
+                )
+                command(f"{setter} {path}")
+            return
     elif os.environ.get("DESKTOP_SESSION").lower() == "lxde":
         setter = "pcmanfm --wallpaper-mode=screen --set-wallpaper"
     elif contains(
