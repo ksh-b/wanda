@@ -1,3 +1,8 @@
-steps:
-- uses: actions/checkout@master
-- uses: codecov/codecov-action@v3
+name: Workflow for Codecov
+on: [push]
+jobs:
+  run:
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@master
+    - uses: codecov/codecov-action@v3
