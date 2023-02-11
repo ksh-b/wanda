@@ -120,7 +120,6 @@ def program_exists(program):
 
 def set_wp_win(path):
     import ctypes
-
     ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
 
 
@@ -266,7 +265,7 @@ def fourchan(search=None):
         board = search.split("@")[1]
         search = search.split("@")[0].lower()
 
-    api = f"https://archive.alice.al/_/api/chan/search/?boards={board}&subject={search.lower()}"
+    api = f"https://archived.moe/_/api/chan/search/?boards={board}&subject={search.lower()}"
     response = get(api).json()
     no_results() if "error" in response else ok()
     posts = list(
@@ -276,7 +275,7 @@ def fourchan(search=None):
     post = random.choice(posts)
     thread = post["thread_num"]
     board = post["board"]["shortname"]
-    api = f"https://archive.alice.al/_/api/chan/thread/?board={board}&num={thread}"
+    api = f"https://archived.moe/_/api/chan/thread/?board={board}&num={thread}"
     posts = get(api).json()[thread]["posts"]
     ok() if posts else no_results()
     post = random.choice(list(filter(lambda p: "media" in posts[p], posts)))
