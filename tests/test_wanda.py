@@ -91,7 +91,7 @@ class SimpleTest(unittest.TestCase):
         self.assertRaises(SystemExit, source.imgur, self.bad_search)
 
     def test_fourchan(self):
-        url = "^(https?://s1.alice.al|https?://i.4cdn.org)"
+        url = "^(https?://archive-media.palanq.win/|https?://i.4cdn.org)"
 
         response = source.fourchan(None)
         self.assertNotNone(response, url)
