@@ -323,7 +323,7 @@ def wallhaven(search=None):
 
 
 def unsplash(search=None):
-    api = f"https://source.unsplash.com/random/{size()[0]}x{size()[1]}/?{search or ''}"
+    api = f"https://source.unsplash.com/random/{size()[0]}x{size()[1]}/?{search or 'wallpaper'}"
     response = get(api).url
     return response if "source-404" not in response else no_results()
 
