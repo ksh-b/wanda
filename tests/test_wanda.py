@@ -159,6 +159,12 @@ class SimpleTest(unittest.TestCase):
         response = source.earthview(None)
         self.assert_starts_with(response, url)
 
+    def test_musicbrainz(self):
+        from musicbrainzngs import MusicBrainzError
+        self.assertRaises(MusicBrainzError, source.musicbrainz, "NoArtistFoo-NoAlbumBar")
+
+        source.musicbrainz("Coldplay-Parachutes")
+
     def test_waifuim(self):
         url = "https://cdn.waifu.im/"
 
