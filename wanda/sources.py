@@ -298,11 +298,13 @@ def musicbrainz(search=None):
     if blank(search):
         print("Please enter [artist]-[album]")
         exit(1)
-    mb.set_useragent("wanda", "", user_agent["User-Agent"])
+    mb.set_useragent("wanda", "*", user_agent["User-Agent"])
     [artist, album] = search.split("-")
     try:
         albums = mb.search_releases(album, artist=artist)
         ok() if albums else no_results()
+        if not albums["release-list"]:
+            raise mb.MusicBrainzError
         album_id = albums["release-list"][0]["release-group"]["id"]
         cover = mb.get_release_group_image_front(album_id)
         path = get_dl_path()
