@@ -33,7 +33,7 @@ def fourchan(search=None):
         board = search.split("@")[1]
         search = search.split("@")[0].lower()
 
-    api = f"https://s1.alice.al/_/api/chan/search/?boards={board}&subject={search.lower()}"
+    api = f"https://archive.palanq.win/_/api/chan/search/?boards={board}&subject={search.lower()}"
     response = get(api).json()
     no_results() if "error" in response else ok()
     posts = list(
@@ -43,11 +43,13 @@ def fourchan(search=None):
     post = random.choice(posts)
     thread = post["thread_num"]
     board = post["board"]["shortname"]
-    api = f"https://s1.alice.al/_/api/chan/thread/?board={board}&num={thread}"
+    api = f"https://archive.palanq.win/_/api/chan/thread/?board={board}&num={thread}"
     posts = get(api).json()[thread]["posts"]
     ok() if posts else no_results()
     post = random.choice(list(filter(lambda p: "media" in posts[p], posts)))
-    return posts[post]["media"]["media_link"]
+    if posts[post]:
+        return posts[post]["media"]["media_link"]
+    return no_results()
 
 
 def suggested_subreddits():
