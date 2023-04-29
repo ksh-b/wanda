@@ -42,7 +42,7 @@ wanda -s wallhaven -t japan
 
 ## Supported sources
 
-- [4chan](https://boards.4chan.org) via [Rozen Arcana](https://archive.alice.al)
+- [4chan](https://boards.4chan.org) via [Rozen Arcana](https://archive-media.palanq.win)
 - [500px](https://500px.com)
 - [artstation](https://artstation.com)
 - [imgur](https://imgur.com) via [rimgo](https://rimgo.pussthecat.org)
@@ -54,7 +54,7 @@ wanda -s wallhaven -t japan
 - [wallhaven](https://wallhaven.cc)
 
 ## Build
-[python](https://www.python.org/downloads/) and [poetry](https://python-poetry.org/) are needed
+[python](https://www.python.org/downloads) and [poetry](https://python-poetry.org) are needed
 ```
 git clone https://github.com/ksh-b/wanda.git
 cd wanda
