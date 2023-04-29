@@ -137,15 +137,41 @@ def run():
         lock = False
     if "-f" in sys.argv and source not in ('e', 'earthview'):
         fitwp = True
-    try:
-        if source != "local" and not common.is_connected():
-            print("Please check your internet connection and try again")
-            exit(1)
-        image.set_wp(eval(f"sources.{source_map(source)}")(term), home, lock, fitwp)
-    except NameError:
-        print(f"Unknown source: '{source}'")
-        usage()
-
+    if source != "local" and not common.is_connected():
+        print("Please check your internet connection and try again")
+        exit(1)
+    if source == "fourchan":
+        wp = sources.fourchan(term)
+    elif source == "reddit":
+        wp = sources.reddit(term)
+    elif source == "picsum":
+        wp = sources.picsum(term)
+    elif source == "imgur":
+        wp = sources.imgur(term)
+    elif source == "fivehundredpx":
+        wp = sources.fivehundredpx(term)
+    elif source == "artstation_prints":
+        wp = sources.artstation_prints(term)
+    elif source == "artstation_artist":
+        wp = sources.artstation_artist(term)
+    elif source == "artstation_any":
+        wp = sources.artstation_any(term)
+    elif source == "local":
+        wp = sources.local(term)
+    elif source == "waifuim":
+        wp = sources.waifuim(term)
+    elif source == "musicbrainz":
+        wp = sources.musicbrainz(term)
+    elif source == "wallhaven":
+        wp = sources.wallhaven(term)
+    elif source == "unsplash":
+        wp = sources.unsplash(term)
+    elif source == "earthview":
+        wp = sources.earthview(term)
+    else:
+        print(f"Unknown Source: {source}. Using unsplash.")
+        wp = sources.unsplash(term)
+    image.set_wp(wp, home, lock, fitwp)
     return 0
 
 
