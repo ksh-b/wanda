@@ -5,12 +5,12 @@ description = "Set wallpapers with keywords or randomly"
 authors = ["kshib <ksyko@pm.me>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://gitlab.com/kshib/wanda"
-repository = "https://gitlab.com/kshib/wanda"
+homepage = "https://github.com/ksh-b/wanda"
+repository = "https://github.com/ksh-b/wanda"
 keywords=["wallpaper", "reddit", "wallhaven","unsplash","termux"]
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://gitlab.com/kshib/wanda/-/issues"
+"Bug Tracker" = "https://github.com/ksh-b/wanda/issues"
 
 [tool.poetry.dependencies]
 python = "^3.7"
