@@ -11,7 +11,7 @@ import wanda.utils.os_utils as osu
 import wanda.sources as sources
 
 folder = appdirs.user_cache_dir("wanda")
-version = "0.61.2"
+version = "0.61.3"
 
 
 def usage(level=0):
@@ -135,38 +135,38 @@ def run():
         home = False
     if "-h" in sys.argv and args.h:
         lock = False
-    if "-f" in sys.argv and source not in ('e', 'earthview'):
+    if "-f" in sys.argv and source_map(source) not in ('e', 'earthview'):
         fitwp = True
-    if source != "local" and not common.is_connected():
+    if source_map(source) != "local" and not common.is_connected():
         print("Please check your internet connection and try again")
         exit(1)
-    if source == "fourchan":
+    if source_map(source) == "fourchan":
         wp = sources.fourchan(term)
-    elif source == "reddit":
+    elif source_map(source) == "reddit":
         wp = sources.reddit(term)
-    elif source == "picsum":
+    elif source_map(source) == "picsum":
         wp = sources.picsum(term)
-    elif source == "imgur":
+    elif source_map(source) == "imgur":
         wp = sources.imgur(term)
-    elif source == "fivehundredpx":
+    elif source_map(source) == "fivehundredpx":
         wp = sources.fivehundredpx(term)
-    elif source == "artstation_prints":
+    elif source_map(source) == "artstation_prints":
         wp = sources.artstation_prints(term)
-    elif source == "artstation_artist":
+    elif source_map(source) == "artstation_artist":
         wp = sources.artstation_artist(term)
-    elif source == "artstation_any":
+    elif source_map(source) == "artstation_any":
         wp = sources.artstation_any(term)
-    elif source == "local":
+    elif source_map(source) == "local":
         wp = sources.local(term)
-    elif source == "waifuim":
+    elif source_map(source) == "waifuim":
         wp = sources.waifuim(term)
-    elif source == "musicbrainz":
+    elif source_map(source) == "musicbrainz":
         wp = sources.musicbrainz(term)
-    elif source == "wallhaven":
+    elif source_map(source) == "wallhaven":
         wp = sources.wallhaven(term)
-    elif source == "unsplash":
+    elif source_map(source) == "unsplash":
         wp = sources.unsplash(term)
-    elif source == "earthview":
+    elif source_map(source) == "earthview":
         wp = sources.earthview(term)
     else:
         print(f"Unknown Source: {source}. Using unsplash.")
