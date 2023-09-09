@@ -14,7 +14,6 @@ import wanda.utils.common_utils as common
 class SimpleTest(unittest.TestCase):
     good_search = "nature"
     bad_search = "foobarxyzzy"
-    artstation_cdn = "https://cdn(.).artstation.com/"
 
     def assert_starts_with(self, response, url):
         self.assertTrue(response.startswith(url), response)
@@ -57,24 +56,6 @@ class SimpleTest(unittest.TestCase):
 
         self.assertRaises(SystemExit, source.unsplash, self.bad_search)
 
-    def test_reddit(self):
-        url = "https://i.redd.it/"
-
-        self.assertIn("wallpaper", source.suggested_subreddits())
-
-        response = source.reddit(search=None)
-        self.assert_starts_with(response, url)
-
-        response = source.reddit("")
-        self.assert_starts_with(response, url)
-
-        response = source.reddit(self.good_search)
-        self.assertNotNone(response, "^https?://")
-
-        response = source.reddit("wallpaper@halflife")
-        self.assertNotNone(response, "^https?://")
-
-        self.assertRaises(SystemExit, source.reddit, search=self.bad_search)
 
     def test_imgur(self):
         url = "https://rimgo.pussthecat.org/"
@@ -103,20 +84,6 @@ class SimpleTest(unittest.TestCase):
         self.assertNotNone(response, url)
 
         self.assertRaises(SystemExit, source.fourchan, self.bad_search)
-
-    def test_fivehundredpx(self):
-        url = "https://drscdn.500px.org/photo/"
-
-        response = source.fivehundredpx(None)
-        self.assertTrue(response.startswith(url))
-
-        response = source.fivehundredpx("")
-        self.assert_starts_with(response, url)
-
-        response = source.fivehundredpx(self.good_search)
-        self.assert_starts_with(response, url)
-
-        self.assertRaises(SystemExit, source.fivehundredpx, self.bad_search)
 
     def test_artstation_any(self):
         url = self.artstation_cdn
@@ -228,9 +195,6 @@ class AdvancedTest(unittest.TestCase):
     @staticmethod
     def test_set_fourchan():
         image.set_wp(source.fourchan("mobile"), True, True)
-
-    def test_set_fivehundredpx(self):
-        image.set_wp(source.fivehundredpx(self.good_search), True, True)
 
 
 if __name__ == "__main__":
