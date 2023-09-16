@@ -52,6 +52,26 @@ def fourchan(search=None):
     return no_results()
 
 
+def suggested_subreddits():
+    if screen_orientation() == "portrait":
+        return "mobilewallpaper+amoledbackgrounds+verticalwallpapers"
+    return "wallpaper+wallpapers+minimalwallpaper"
+
+
+def reddit_gallery(url):
+    if "/gallery/" not in url:
+        return
+    else:
+        url = url.replace("/gallery/", "/comments/")
+    images = get(f"{url}.json").json()[0]["data"]["children"][0]["data"][
+        "media_metadata"
+    ]
+    ids = images.keys()
+    return list(
+        map(lambda i: f'https://i.redd.it/{i}.{images[i]["m"].split("/")[1]}', ids)
+    )
+
+
 def is_imgur_gallery(url):
     return contains(url, False, ["imgur.com/a", "imgur.com/gallery"])
 
@@ -66,6 +86,48 @@ def reddit_search(sub, search=None, extra=""):
     search_api = "/search.json?q="
     return f"{base}{sub}{search_api}{search}{common_param}"
 
+
+def reddit_compare_image_size(title):
+    sr = re.search(r"\d+x\d+", title)
+    if sr:
+        w = int(sr.group().split("x")[0]) >= int(size()[0])
+        h = int(sr.group().split("x")[1]) >= int(size()[1])
+        return w and h
+    return screen_orientation() == "portrait" or False
+
+
+def reddit(search=None, subreddits=suggested_subreddits()):
+    if search and "@" in search:
+        subreddits = search.split("@")[1]
+        search = search.split("@")[0]
+    api = reddit_search(subreddits, search)
+    posts = get(api).json()["data"]["children"]
+    image_urls = [
+        "reddit.com/gallery",
+        "imgur.com/a",
+        "imgur.com/gallery",
+        "i.redd.it",
+        "i.imgur",
+    ]
+    posts = list(
+        filter(
+            lambda p: contains(p["data"]["url"], False, image_urls) and reddit_compare_image_size(p["data"]["title"]),
+            posts,
+        )
+    )
+    if not posts:
+        no_results()
+    url = random.choice(posts)["data"]["url"]
+    if "reddit.com/gallery" in url:
+        return random.choice(reddit_gallery(url))
+    elif is_imgur_gallery(url):
+        return get_imgur_image(url)
+    elif contains(url, False, ["i.redd.it", "i.imgur", ".png", ".jpg"]):
+        return url
+    else:
+        no_results()
+
+
 def picsum(search=None):
     w, h = size()
     if blank(search):
@@ -79,8 +141,12 @@ def imgur(search=None):
     if search:
         imgur_url = f"https://rimgo.pussthecat.org/a/{search}"
     else:
-        no_results()
-        return
+        search = ""
+        if screen_orientation() == "portrait":
+            search = f"&q={search or ''} {random.choice(['phone', 'mobile'])}"
+        api = f"https://old.reddit.com/r/wallpaperdump/search.json?q=site:imgur.com&restrict_sr=on{search}"
+        response = get(api).json()["data"]["children"]
+        imgur_url = random.choice(response)["data"]["url"] if response else no_results()
     return get_imgur_image(imgur_url)
 
 
@@ -91,6 +157,38 @@ def get_imgur_image(imgur_url, alt="rimgo.pussthecat.org"):
     images = tree.xpath("//div[contains(@class,'post__media')]//img/@src")
     return f"https://{alt}{random.choice(images)}" if images else no_results()
 
+
+def fivehundredpx(search=None):
+    payload = {
+        "operationName": "PhotoSearchQueryRendererQuery",
+        "variables": {"sort": "RELEVANCE", "search": f"{search or ''}"},
+        "query": "query PhotoSearchQueryRendererQuery($sort: PhotoSort, $search: String!) {"
+                 "\n...PhotoSearchPaginationContainer_query_67nah\n}\n\nfragment "
+                 "PhotoSearchPaginationContainer_query_67nah on Query {\nphotoSearch(sort: $sort, first: 20, "
+                 "search: $search) { \nedges { \nnode {\n id\n legacyId\n canonicalPath\n name\n description\n "
+                 "category\n uploadedAt\n location\n width\n height\n isLikedByMe\n notSafeForWork\n tags\n "
+                 "photographer: uploader { \n id \n legacyId \n username \n displayName \n canonicalPath \n avatar { "
+                 "\n images { \n url \n id \n } \n id \n } \n followedByUsers { \n totalCount \n isFollowedByMe \n "
+                 "}\n }\n images(sizes: [33, 35]) { \n size \n url \n jpegUrl \n webpUrl \n id\n }\n __typename \n} "
+                 "\ncursor \n} \ntotalCount \npageInfo { \nendCursor \nhasNextPage \n}\n}\n}\n",
+    }
+    headers = {
+        "User-Agent": user_agent["User-Agent"],
+        "Content-Type": "application/json",
+        "Host": "api.500px.com",
+    }
+    scraper = cloudscraper.create_scraper()
+    response = scraper.post(
+        "https://api.500px.com/graphql", json=payload, headers=headers
+    ).json()["data"]["photoSearch"]["edges"]
+    random.shuffle(response)
+    for edge in response:
+        node = edge["node"]
+        w = node["width"]
+        h = node["height"]
+        if good_size(w, h):
+            return node["images"][1]["url"]
+    return no_results()
 
 
 def artstation_prints(search=None):

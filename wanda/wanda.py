@@ -11,7 +11,7 @@ import wanda.utils.os_utils as osu
 import wanda.sources as sources
 
 folder = appdirs.user_cache_dir("wanda")
-version = "0.62.0"
+version = "0.61.3"
 
 
 def usage(level=0):
@@ -19,6 +19,7 @@ def usage(level=0):
     pink = "\033[35m"
     print("Sources:")
     print(f"{cyan}4chan {pink}[keyword]|[keyword@board]")
+    print(f"{cyan}500{cyan}px {pink}[keyword]")
     print(f"{cyan}arstation {pink}[keyword]")
     print(f"{cyan}arstation_{cyan}artist {pink}[id of artist]")
     print(f"{cyan}arstation_{cyan}prints {pink}[keyword for prints]")
@@ -27,6 +28,7 @@ def usage(level=0):
     print(f"{cyan}local {pink}[full path to folder]")
     print(f"{cyan}musicbrainz {pink}[artist-album]")
     print(f"{cyan}picsum")
+    print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
     print(f"{cyan}unsplash {pink}[keyword]")
     print(f"{cyan}wallhaven {pink}[keyword(,keyword2,keyword3...&)]")
     print(f"{cyan}waifu.im {pink}[selected_tag-(excluded_tag)]")

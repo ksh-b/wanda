@@ -43,11 +43,13 @@ wanda -s wallhaven -t japan
 ## Supported sources
 
 - [4chan](https://boards.4chan.org) via [Rozen Arcana](https://archive-media.palanq.win)
+- [500px](https://500px.com)
 - [artstation](https://artstation.com)
 - [imgur](https://imgur.com) via [rimgo](https://rimgo.pussthecat.org)
 - [earthview](https://earthview.withgoogle.com)
 - local
 - [picsum](https://picsum.photos)
+- [reddit](https://reddit.com)
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
 
