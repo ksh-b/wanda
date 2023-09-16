@@ -121,7 +121,7 @@ def reddit(search=None, subreddits=suggested_subreddits()):
     if "reddit.com/gallery" in url:
         return random.choice(reddit_gallery(url))
     elif is_imgur_gallery(url):
-        return get_imgur_image(url)
+        return imgur(search=os.path.basename(url))
     elif contains(url, False, ["i.redd.it", "i.imgur", ".png", ".jpg"]):
         return url
     else:
@@ -137,57 +137,12 @@ def picsum(search=None):
     return get(api).url
 
 
-def imgur(search=None):
+def imgur(alt="rimgo.pussthecat.org", search=None):
     if search:
-        imgur_url = f"https://rimgo.pussthecat.org/a/{search}"
-    else:
-        search = ""
-        if screen_orientation() == "portrait":
-            search = f"&q={search or ''} {random.choice(['phone', 'mobile'])}"
-        api = f"https://old.reddit.com/r/wallpaperdump/search.json?q=site:imgur.com&restrict_sr=on{search}"
-        response = get(api).json()["data"]["children"]
-        imgur_url = random.choice(response)["data"]["url"] if response else no_results()
-    return get_imgur_image(imgur_url)
-
-
-def get_imgur_image(imgur_url, alt="rimgo.pussthecat.org"):
-    from lxml import html
-
-    tree = html.fromstring(get(imgur_url.replace("imgur.com", f"{alt}")).content)
-    images = tree.xpath("//div[contains(@class,'post__media')]//img/@src")
-    return f"https://{alt}{random.choice(images)}" if images else no_results()
-
-
-def fivehundredpx(search=None):
-    payload = {
-        "operationName": "PhotoSearchQueryRendererQuery",
-        "variables": {"sort": "RELEVANCE", "search": f"{search or ''}"},
-        "query": "query PhotoSearchQueryRendererQuery($sort: PhotoSort, $search: String!) {"
-                 "\n...PhotoSearchPaginationContainer_query_67nah\n}\n\nfragment "
-                 "PhotoSearchPaginationContainer_query_67nah on Query {\nphotoSearch(sort: $sort, first: 20, "
-                 "search: $search) { \nedges { \nnode {\n id\n legacyId\n canonicalPath\n name\n description\n "
-                 "category\n uploadedAt\n location\n width\n height\n isLikedByMe\n notSafeForWork\n tags\n "
-                 "photographer: uploader { \n id \n legacyId \n username \n displayName \n canonicalPath \n avatar { "
-                 "\n images { \n url \n id \n } \n id \n } \n followedByUsers { \n totalCount \n isFollowedByMe \n "
-                 "}\n }\n images(sizes: [33, 35]) { \n size \n url \n jpegUrl \n webpUrl \n id\n }\n __typename \n} "
-                 "\ncursor \n} \ntotalCount \npageInfo { \nendCursor \nhasNextPage \n}\n}\n}\n",
-    }
-    headers = {
-        "User-Agent": user_agent["User-Agent"],
-        "Content-Type": "application/json",
-        "Host": "api.500px.com",
-    }
-    scraper = cloudscraper.create_scraper()
-    response = scraper.post(
-        "https://api.500px.com/graphql", json=payload, headers=headers
-    ).json()["data"]["photoSearch"]["edges"]
-    random.shuffle(response)
-    for edge in response:
-        node = edge["node"]
-        w = node["width"]
-        h = node["height"]
-        if good_size(w, h):
-            return node["images"][1]["url"]
+        from lxml import html
+        tree = html.fromstring(get(f"https://{alt}/a/{search}").content)
+        images = tree.xpath("//main//img[@loading]")
+        return f"https://{alt}/{random.choice(images)}" if images else no_results()
     return no_results()
 
 

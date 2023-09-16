@@ -79,13 +79,11 @@ class SimpleTest(unittest.TestCase):
     def test_imgur(self):
         url = "https://rimgo.pussthecat.org/"
 
-        response = source.imgur(None)
-        self.assert_starts_with(response, url)
+        self.assertRaises(SystemExit, source.imgur, None)
 
-        response = source.imgur("")
-        self.assert_starts_with(response, url)
+        self.assertRaises(SystemExit, source.imgur, "")
 
-        response = source.imgur("jmVC8")
+        response = source.imgur(search="jmVC8")
         self.assert_starts_with(response, url)
 
         self.assertRaises(SystemExit, source.imgur, self.bad_search)
