@@ -11,7 +11,7 @@ import wanda.utils.os_utils as osu
 import wanda.sources as sources
 
 folder = appdirs.user_cache_dir("wanda")
-version = "0.61.3"
+version = "0.62.1"
 
 
 def usage(level=0):
@@ -19,7 +19,6 @@ def usage(level=0):
     pink = "\033[35m"
     print("Sources:")
     print(f"{cyan}4chan {pink}[keyword]|[keyword@board]")
-    print(f"{cyan}500{cyan}px {pink}[keyword]")
     print(f"{cyan}arstation {pink}[keyword]")
     print(f"{cyan}arstation_{cyan}artist {pink}[id of artist]")
     print(f"{cyan}arstation_{cyan}prints {pink}[keyword for prints]")
@@ -148,8 +147,6 @@ def run():
         wp = sources.picsum(term)
     elif source_map(source) == "imgur":
         wp = sources.imgur(term)
-    elif source_map(source) == "fivehundredpx":
-        wp = sources.fivehundredpx(term)
     elif source_map(source) == "artstation_prints":
         wp = sources.artstation_prints(term)
     elif source_map(source) == "artstation_artist":
@@ -178,7 +175,6 @@ def run():
 def shortcodes():
     return {
         "4": "fourchan",
-        "5": "fivehundredpx",
         "a": "artstation_any",
         "aa": "artstation_artist",
         "ap": "artstation_prints",

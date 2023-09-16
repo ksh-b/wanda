@@ -104,20 +104,6 @@ class SimpleTest(unittest.TestCase):
 
         self.assertRaises(SystemExit, source.fourchan, self.bad_search)
 
-    def test_fivehundredpx(self):
-        url = "https://drscdn.500px.org/photo/"
-
-        response = source.fivehundredpx(None)
-        self.assertTrue(response.startswith(url))
-
-        response = source.fivehundredpx("")
-        self.assert_starts_with(response, url)
-
-        response = source.fivehundredpx(self.good_search)
-        self.assert_starts_with(response, url)
-
-        self.assertRaises(SystemExit, source.fivehundredpx, self.bad_search)
-
     def test_artstation_any(self):
         url = self.artstation_cdn
         response = source.artstation_any(None)
