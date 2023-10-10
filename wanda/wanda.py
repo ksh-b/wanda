@@ -11,7 +11,7 @@ import wanda.utils.os_utils as osu
 import wanda.sources as sources
 
 folder = appdirs.user_cache_dir("wanda")
-version = "0.62.1"
+version = "0.62.2"
 
 
 def usage(level=0):
