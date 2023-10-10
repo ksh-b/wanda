@@ -42,6 +42,8 @@ def set_wp_linux(path):
             return
     elif os.environ.get("DESKTOP_SESSION").lower() == "lxde":
         setter = "pcmanfm --wallpaper-mode=screen --set-wallpaper"
+    elif os.environ.get("DESKTOP_SESSION").lower() == "lxqt":
+        setter = "pcmanfm-qt --set-wallpaper"
     elif contains(
             os.environ.get("DESKTOP_SESSION").lower(), False, ["plasma", "neon", "kde"]
     ):
@@ -64,7 +66,6 @@ def set_wp_linux(path):
         setter = "gsettings set org.gnome.desktop.background picture-uri"
     else:
         setter = "feh --bg-scale"
-
     command(f"{setter} {path}")
 
 
