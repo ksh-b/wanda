@@ -12,8 +12,10 @@ pip install wanda -U
 ```
 
 On android (with termux):
+Install [termux-api](https://github.com/termux/termux-api)
 ```
-pkg in libxml2 libxslt libjpeg-turbo
+pkg in clang pkg-config libxml2 libxslt libjpeg-turbo termux-api
+pip install cython lxml==5.0.0
 pip install wanda -U
 ```
 
