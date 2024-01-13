@@ -15,7 +15,7 @@ On android (with termux):
 Install [termux-api](https://github.com/termux/termux-api)
 ```
 pkg up
-pkg in clang pkg-config libxml2 libxslt libjpeg-turbo termux-api
+pkg in clang pkg-config libxml2 libxslt libjpeg-turbo termux-api python
 pip install cython lxml==5.0.0
 pip install wanda -U
 ```
