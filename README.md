@@ -1,10 +1,9 @@
 # wanda
 Script to set wallpaper using keyword or randomly
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e5aacd529ce04f3fb8c0f9ce6a3bdd9e)](https://www.codacy.com/gh/ksyko/wanda/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ksyko/wanda&amp;utm_campaign=Badge_Grade)[![PyPI](https://img.shields.io/pypi/v/wanda)](https://pypi.org/project/wanda/)
+[![PyPI](https://img.shields.io/pypi/v/wanda)](https://pypi.org/project/wanda/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/wanda)](https://pypistats.org/packages/wanda)
 [![PyPI - License](https://img.shields.io/pypi/l/wanda)](https://tldrlegal.com/license/mit-license)
-[![codecov](https://codecov.io/gl/kshib/wanda/branch/main/graph/badge.svg?token=L88CXOYRTW)](https://codecov.io/gl/kshib/wanda)
 
 ## Installation / Update
 ```
