@@ -9,13 +9,19 @@ def screen_orientation():
 
 
 def program_exists(program):
-    return subprocess.call(
-        ['which', program], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-    ) == 0
+    return (
+        subprocess.call(
+            ["which", program],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        == 0
+    )
 
 
 def set_wp_win(path):
     import ctypes
+
     ctypes.windll.user32.SystemParametersInfoW(20, 0, path, 0)
 
 
@@ -27,7 +33,7 @@ def set_wp_linux(path):
     elif os.environ.get("DESKTOP_SESSION").lower == "mate":
         setter = "gsettings set org.mate.background picture-filename"
     elif contains(
-            os.environ.get("DESKTOP_SESSION").lower(), False, ["xfce", "xubuntu"]
+        os.environ.get("DESKTOP_SESSION").lower(), False, ["xfce", "xubuntu"]
     ):
         if program_exists("xfce4-set-wallpaper"):
             setter = "xfce4-set-wallpaper"
@@ -45,7 +51,7 @@ def set_wp_linux(path):
     elif os.environ.get("DESKTOP_SESSION").lower() == "lxqt":
         setter = "pcmanfm-qt --set-wallpaper"
     elif contains(
-            os.environ.get("DESKTOP_SESSION").lower(), False, ["plasma", "neon", "kde"]
+        os.environ.get("DESKTOP_SESSION").lower(), False, ["plasma", "neon", "kde"]
     ):
         return os.system(
             'qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "\n'
@@ -59,9 +65,9 @@ def set_wp_linux(path):
             + '}"'
         )
     elif contains(
-            os.environ.get("DESKTOP_SESSION").lower(),
-            False,
-            ["gnome", "pantheon", "ubuntu", "deepin", "pop"],
+        os.environ.get("DESKTOP_SESSION").lower(),
+        False,
+        ["gnome", "pantheon", "ubuntu", "deepin", "pop"],
     ):
         setter = "gsettings set org.gnome.desktop.background picture-uri"
     else:

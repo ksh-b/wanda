@@ -1,7 +1,13 @@
 import os
 
 from wanda.utils.common_utils import get_dl_path, download
-from wanda.utils.os_utils import size, set_wp_android, set_wp_linux, set_wp_win, is_android
+from wanda.utils.os_utils import (
+    size,
+    set_wp_android,
+    set_wp_linux,
+    set_wp_win,
+    is_android,
+)
 
 
 def screen_orientation():
@@ -14,7 +20,7 @@ def image_orientation(image):
 
 def good_size(w, h):
     return (screen_orientation() == "portrait" and w < h) or (
-            screen_orientation() == "landscape" and w > h
+        screen_orientation() == "landscape" and w > h
     )
 
 

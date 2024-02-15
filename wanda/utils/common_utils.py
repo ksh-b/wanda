@@ -39,9 +39,15 @@ def download(path, url):
 
 def get(url):
     scraper = cloudscraper.create_scraper()
-    response = scraper.get(url, headers={"Accept": "image/avif,image/webp,*/*","User-Agent": "git.io/wanda"}, timeout=10, allow_redirects=True)
+    response = scraper.get(
+        url,
+        headers={"Accept": "image/avif,image/webp,*/*", "User-Agent": "git.io/wanda"},
+        timeout=10,
+        allow_redirects=True,
+    )
     if response.status_code != 200:
         from http.client import responses
+
         print(f"Got status code [{responses[response.status_code]}] from {url}")
         exit(1)
     return response

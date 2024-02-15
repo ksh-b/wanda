@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wanda"
-version = "0.62.3"
+version = "0.62.4"
 description = "Set wallpapers with keywords or randomly"
 authors = ["kshib <ksyko@pm.me>"]
 license = "MIT"
@@ -24,12 +24,12 @@ musicbrainzngs = "^0.7.1"
 appdirs = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.3.1"
-black = "^23.9.1"
+pytest = "^8.0.0"
+ruff = "^0.2.1"
 mypy = "^1.5.1"
 pytest-xdist = "^3.1.0"
 pytest-cov = "^4.0.0"
-pytest-rerunfailures = "^12"
+pytest-rerunfailures = "^13"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

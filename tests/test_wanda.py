@@ -145,7 +145,10 @@ class SimpleTest(unittest.TestCase):
 
     def test_musicbrainz(self):
         from musicbrainzngs import MusicBrainzError
-        self.assertRaises(MusicBrainzError, source.musicbrainz, "NoArtistFoo-NoAlbumBar")
+
+        self.assertRaises(
+            MusicBrainzError, source.musicbrainz, "NoArtistFoo-NoAlbumBar"
+        )
 
         source.musicbrainz("Coldplay-Parachutes")
 

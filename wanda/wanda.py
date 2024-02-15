@@ -121,6 +121,7 @@ def run():
     if "-d" in sys.argv:
         for src_file in Path(folder).glob("wanda_*.*"):
             import shutil
+
             shutil.copy(src_file, args.d)
             print(f"Copied wallpaper to {args.d}")
         exit(0)
@@ -134,7 +135,7 @@ def run():
         home = False
     if "-h" in sys.argv and args.h:
         lock = False
-    if "-f" in sys.argv and source_map(source) not in ('e', 'earthview'):
+    if "-f" in sys.argv and source_map(source) not in ("e", "earthview"):
         fitwp = True
     if source_map(source) != "local" and not common.is_connected():
         print("Please check your internet connection and try again")

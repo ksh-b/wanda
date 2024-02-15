@@ -111,7 +111,8 @@ def reddit(search=None, subreddits=suggested_subreddits()):
     ]
     posts = list(
         filter(
-            lambda p: contains(p["data"]["url"], False, image_urls) and reddit_compare_image_size(p["data"]["title"]),
+            lambda p: contains(p["data"]["url"], False, image_urls)
+            and reddit_compare_image_size(p["data"]["title"]),
             posts,
         )
     )
@@ -140,6 +141,7 @@ def picsum(search=None):
 def imgur(alt="rimgo.pussthecat.org", search=None):
     if search:
         from lxml import html
+
         tree = html.fromstring(get(f"https://{alt}/a/{search}").content)
         images = tree.xpath("//main//img[@loading]")
         return f"https://{alt}/{random.choice(images)}" if images else no_results()
@@ -221,7 +223,8 @@ def local(path):
         return path + random.choice(
             list(
                 filter(
-                    lambda f: os.path.isfile(path + f) and filetype.guess(path + f).MIME.startswith("image"),
+                    lambda f: os.path.isfile(path + f)
+                    and filetype.guess(path + f).MIME.startswith("image"),
                     os.listdir(path),
                 )
             )
@@ -287,6 +290,7 @@ def unsplash(search=None):
 
 def earthview(_):  # NOSONAR
     from lxml import html  # type: ignore
+
     folder = appdirs.user_cache_dir("wanda")
     tree = html.fromstring(get("https://earthview.withgoogle.com").content)
     url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
