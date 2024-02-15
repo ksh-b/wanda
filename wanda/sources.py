@@ -250,7 +250,6 @@ def waifuim(search=None):
 
 # experimental
 def musicbrainz(search=None):
-    print("[!] This source is experimental")
     import musicbrainzngs as mb  # type: ignore
 
     if blank(search):
