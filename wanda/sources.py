@@ -138,7 +138,7 @@ def picsum(search=None):
     return get(api).url
 
 
-def imgur(alt="rimgo.pussthecat.org", search=None):
+def imgur(alt="rimgo.projectsegfau.lt", search=None):
     if search:
         from lxml import html
 

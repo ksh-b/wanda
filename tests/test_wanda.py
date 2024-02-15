@@ -77,7 +77,7 @@ class SimpleTest(unittest.TestCase):
         self.assertRaises(SystemExit, source.reddit, search=self.bad_search)
 
     def test_imgur(self):
-        url = "https://rimgo.pussthecat.org/"
+        url = "https://rimgo.projectsegfau.lt/"
 
         self.assertRaises(SystemExit, source.imgur, None)
 

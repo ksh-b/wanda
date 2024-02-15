@@ -47,7 +47,7 @@ wanda -s wallhaven -t japan
 - [4chan](https://boards.4chan.org) via [Rozen Arcana](https://archive-media.palanq.win)
 - [500px](https://500px.com)
 - [artstation](https://artstation.com)
-- [imgur](https://imgur.com) via [rimgo](https://rimgo.pussthecat.org)
+- [imgur](https://imgur.com) via [rimgo](https://rimgo.projectsegfau.lt)
 - [earthview](https://earthview.withgoogle.com)
 - local
 - [picsum](https://picsum.photos)
