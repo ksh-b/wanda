@@ -1,4 +1,5 @@
 import os
+import random
 import subprocess
 import time
 
@@ -13,8 +14,8 @@ def command(string: str) -> str:
     return subprocess.check_output(string.split(" ")).decode().strip()
 
 
-def get_dl_path():
-    path = os.path.normpath(f"{folder}/wanda_{int(time.time())}")
+def get_dl_path(ext=""):
+    path = os.path.normpath(f"{folder}/wanda_{int(time.time())}.{ext}")
     if not os.path.exists(folder):
         os.mkdir(folder)
     empty_download_folder()

@@ -5,13 +5,10 @@ from pathlib import Path
 
 import appdirs
 
-import wanda.utils.common_utils as common
-import wanda.utils.image_utils as image
-import wanda.utils.os_utils as osu
-import wanda.sources as sources
+from wanda.sources.extractor import *
+from wanda.utils import os_utils, common_utils, image_utils
 
 folder = appdirs.user_cache_dir("wanda")
-version = "0.62.2"
 
 
 def usage(level=0):
@@ -81,20 +78,12 @@ def parser():
         const=None,
     )
     parser_.add_argument(
-        "-v",
-        metavar="version",
-        help="Current version",
-        required=False,
-        action="store_const",
-        const=version,
-    )
-    parser_.add_argument(
         "-f",
         help="Fit wallpaper to screen if screen and wallpaper orientation mismatch",
         required=False,
         action="store_true",
     )
-    if osu.is_android():
+    if os_utils.is_android():
         parser_.add_argument(
             "-o",
             help="Set wallpaper on homescreen.",
@@ -137,7 +126,7 @@ def run():
         lock = False
     if "-f" in sys.argv and source_map(source) not in ("e", "earthview"):
         fitwp = True
-    if source_map(source) != "local" and not common.is_connected():
+    if source_map(source) != "local" and not common_utils.is_connected():
         print("Please check your internet connection and try again")
         exit(1)
     if source_map(source) == "fourchan":
@@ -145,33 +134,33 @@ def run():
     elif source_map(source) == "generate":
         wp = generate(term)
     elif source_map(source) == "reddit":
-        wp = sources.reddit(term)
+        wp = reddit(term)
     elif source_map(source) == "picsum":
-        wp = sources.picsum(term)
+        wp = picsum(term)
     elif source_map(source) == "imgur":
-        wp = sources.imgur(term)
+        wp = imgur(term)
     elif source_map(source) == "artstation_prints":
-        wp = sources.artstation_prints(term)
+        wp = artstation_prints(term)
     elif source_map(source) == "artstation_artist":
-        wp = sources.artstation_artist(term)
+        wp = artstation_artist(term)
     elif source_map(source) == "artstation_any":
-        wp = sources.artstation_any(term)
+        wp = artstation_any(term)
     elif source_map(source) == "local":
-        wp = sources.local(term)
+        wp = local(term)
     elif source_map(source) == "waifuim":
-        wp = sources.waifuim(term)
+        wp = waifuim(term)
     elif source_map(source) == "musicbrainz":
-        wp = sources.musicbrainz(term)
+        wp = musicbrainz(term)
     elif source_map(source) == "wallhaven":
-        wp = sources.wallhaven(term)
+        wp = wallhaven(term)
     elif source_map(source) == "unsplash":
-        wp = sources.unsplash(term)
+        wp = unsplash(term)
     elif source_map(source) == "earthview":
-        wp = sources.earthview(term)
+        wp = earthview(term)
     else:
         print(f"Unknown Source: {source}. Using unsplash.")
-        wp = sources.unsplash(term)
-    image.set_wp(wp, home, lock, fitwp)
+        wp = unsplash(term)
+    image_utils.set_wp(wp, home, lock, fitwp)
     return 0
 
 
