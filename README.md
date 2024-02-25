@@ -35,6 +35,10 @@ wanda -s wallhaven
 
 # Set from a source 
 wanda -s wallhaven -t japan
+
+# Set album covers
+wanda -sm -t "Meltt-Love Again" -f
+
 ```
 `wanda -h` for more details
 
@@ -51,10 +55,12 @@ wanda -s wallhaven -t japan
 - [earthview](https://chromewebstore.google.com/detail/earth-view-from-google-ea/bhloflhklmhfpedakmangadcdofhnnoh)
 - generated
 - local
+- [musicbrainz](https://musicbrainz.org/) (Album covers)
 - [picsum](https://picsum.photos)
 - [reddit](https://reddit.com)
 - [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
+- [waifu](https://www.waifu.im/)
 
 ## Build
 [python](https://www.python.org/downloads) and [poetry](https://python-poetry.org) are needed
