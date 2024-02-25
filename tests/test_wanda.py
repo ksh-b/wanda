@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 import wanda.sources as source
-import wanda.utils.image_utils as image
 import wanda.utils.common_utils as common
+import wanda.utils.image_utils as image
 
 
 # These tests should be compatible with ci runners
@@ -144,10 +144,7 @@ class SimpleTest(unittest.TestCase):
         self.assert_starts_with(response, url)
 
     def test_musicbrainz(self):
-
-        self.assertNotIsInstance(
-            source.musicbrainz, str, "NoArtistFoo-NoAlbumBar"
-        )
+        self.assertNotIsInstance(source.musicbrainz, str, "NoArtistFoo-NoAlbumBar")
 
         source.musicbrainz("Coldplay-Parachutes")
 
