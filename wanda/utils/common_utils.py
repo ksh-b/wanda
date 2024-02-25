@@ -75,6 +75,10 @@ def is_connected():
         return False
 
 
+def coin_toss():
+    return bool(random.getrandbits(1))
+
+
 # do nothing
 def ok():
     pass

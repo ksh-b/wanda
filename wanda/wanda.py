@@ -141,7 +141,9 @@ def run():
         print("Please check your internet connection and try again")
         exit(1)
     if source_map(source) == "fourchan":
-        wp = sources.fourchan(term)
+        wp = fourchan(term)
+    elif source_map(source) == "generate":
+        wp = generate(term)
     elif source_map(source) == "reddit":
         wp = sources.reddit(term)
     elif source_map(source) == "picsum":
@@ -180,6 +182,7 @@ def shortcodes():
         "aa": "artstation_artist",
         "ap": "artstation_prints",
         "e": "earthview",
+        "g": "generate",
         "i": "imgur",
         "l": "local",
         "m": "musicbrainz",

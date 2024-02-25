@@ -1,14 +1,18 @@
-import json
+import base64
 import os
 import random
 import re
-import time
 
-import appdirs
 import cloudscraper  # type: ignore
 import filetype  # type: ignore
+from PIL import Image  # type: ignore
 
-from wanda.utils.common_utils import blank, get, ok, contains, get_dl_path, download
+from wanda.sources.earthview_ids import earthview_ids
+from wanda.sources.generator.gradient1 import linear_gradient
+from wanda.sources.generator.gradient2 import bilinear_gradient
+from wanda.sources.generator.honeycomb import honeycomb
+from wanda.sources.generator.tiles import tiles
+from wanda.utils.common_utils import blank, get, ok, contains, get_dl_path
 from wanda.utils.image_utils import screen_orientation, good_size
 from wanda.utils.os_utils import size
 
@@ -300,7 +304,20 @@ def earthview(_):  # NOSONAR
     path = download(path, url)
     from PIL import Image  # type: ignore
 
-    image = Image.open(path)
-    image.rotate(90)
+def generate(term):
+    path = get_dl_path("png")
+    w, h = size()
+    if term == "linear" or term == "gl":
+        image = linear_gradient(w, h)
+    elif term == "bilinear" or term == "gb":
+        image = bilinear_gradient(w, h)
+    elif term == "honeycomb" or term == "h":
+        image = honeycomb(w, h)
+    elif term == "tiles" or term == "t":
+        image = tiles(w, h)
+    else:
+        term = random.choice(["gl", "gb", "h", "t"])
+        return generate(term)
+
     image.save(path)
     return path
