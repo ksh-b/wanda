@@ -48,7 +48,8 @@ wanda -s wallhaven -t japan
 - [500px](https://500px.com)
 - [artstation](https://artstation.com)
 - [imgur](https://imgur.com) via [rimgo](https://rimgo.projectsegfau.lt)
-- [earthview](https://earthview.withgoogle.com)
+- [earthview](https://chromewebstore.google.com/detail/earth-view-from-google-ea/bhloflhklmhfpedakmangadcdofhnnoh)
+- generated
 - local
 - [picsum](https://picsum.photos)
 - [reddit](https://reddit.com)

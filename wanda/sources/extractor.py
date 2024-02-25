@@ -252,7 +252,6 @@ def waifuim(search=None):
     return response["images"][0]["url"]
 
 
-# experimental
 def musicbrainz(search=None):
     import musicbrainzngs as mb  # type: ignore
 
@@ -291,18 +290,23 @@ def unsplash(search=None):
     return response if "source-404" not in response else no_results()
 
 
-def earthview(_):  # NOSONAR
-    from lxml import html  # type: ignore
+def earthview(_):
+    # https://chromewebstore.google.com/detail/earth-view-from-google-ea/bhloflhklmhfpedakmangadcdofhnnoh
+    # 3.1.0
+    url = f"https://www.gstatic.com/prettyearth/assets/data/v3/{random.choice(earthview_ids)}.json"
+    response = get(url)
+    data = response.json()
+    image_data = data.get("dataUri", "")
 
-    folder = appdirs.user_cache_dir("wanda")
-    tree = html.fromstring(get("https://earthview.withgoogle.com").content)
-    url = json.loads(tree.xpath("//body/@data-photo")[0])["photoUrl"]
-    ext = url.split(".")[-1]
-    if screen_orientation() == "landscape":
-        return url
-    path = os.path.normpath(f"{folder}/wanda_{int(time.time())}.{ext}")
-    path = download(path, url)
-    from PIL import Image  # type: ignore
+    if image_data:
+        image_data = image_data.split(",")[-1]
+        image_bytes = base64.b64decode(image_data)
+        filename = get_dl_path("jpg")
+        with open(filename, "wb") as f:
+            f.write(image_bytes)
+        return filename
+    return no_results()
+
 
 def generate(term):
     path = get_dl_path("png")
