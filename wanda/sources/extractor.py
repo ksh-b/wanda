@@ -304,6 +304,12 @@ def earthview(_):
         filename = get_dl_path("jpg")
         with open(filename, "wb") as f:
             f.write(image_bytes)
+
+        if screen_orientation() == "portrait":
+            image = Image.open(filename)
+            rotated_image = image.rotate(90, expand=True)
+            rotated_image.save(filename)
+
         return filename
     return no_results()
 
