@@ -43,7 +43,8 @@ wanda -sm -t "Meltt-Love Again" -f
 `wanda -h` for more details
 
 ## Notes
-- By default, the source is [unsplash](https://unsplash.com).
+
+- By default, the source is [picsum](https://picsum.photos).
 - Some sources may have inapt images. Use them at your own risk.
 
 ## Supported sources
@@ -58,7 +59,6 @@ wanda -sm -t "Meltt-Love Again" -f
 - [musicbrainz](https://musicbrainz.org/) (Album covers)
 - [picsum](https://picsum.photos)
 - [reddit](https://reddit.com)
-- [unsplash](https://unsplash.com)
 - [wallhaven](https://wallhaven.cc)
 - [waifu](https://www.waifu.im/)
 

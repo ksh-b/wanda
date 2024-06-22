@@ -25,7 +25,6 @@ def usage(level=0):
     print(f"{cyan}musicbrainz {pink}[artist-album]")
     print(f"{cyan}picsum")
     print(f"{cyan}reddit {pink}[keyword]|[keyword@subreddit]")
-    print(f"{cyan}unsplash {pink}[keyword]")
     print(f"{cyan}wallhaven {pink}[keyword(,keyword2,keyword3...&)]")
     print(f"{cyan}waifu.im {pink}[selected_tag-(excluded_tag)]")
     print()
@@ -50,7 +49,7 @@ def parser():
         "-s",
         metavar="source",
         type=str,
-        default="unsplash",
+        default="picsum",
         help="Source for wallpaper. -u for all supported sources",
         required=False,
     )
@@ -153,13 +152,11 @@ def run():
         wp = musicbrainz(term)
     elif source_map(source) == "wallhaven":
         wp = wallhaven(term)
-    elif source_map(source) == "unsplash":
-        wp = unsplash(term)
     elif source_map(source) == "earthview":
         wp = earthview(term)
     else:
-        print(f"Unknown Source: {source}. Using unsplash.")
-        wp = unsplash(term)
+        print(f"Unknown Source: {source}. Using picsum.")
+        wp = picsum(term)
     image_utils.set_wp(wp, home, lock, fitwp)
     return 0
 
@@ -177,7 +174,6 @@ def shortcodes():
         "m": "musicbrainz",
         "p": "picsum",
         "r": "reddit",
-        "u": "unsplash",
         "wi": "waifuim",
         "w": "wallhaven",
     }

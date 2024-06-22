@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/ksh-b/wanda"
 repository = "https://github.com/ksh-b/wanda"
-keywords=["wallpaper", "reddit", "wallhaven","unsplash","termux"]
+keywords = ["wallpaper", "reddit", "wallhaven", "earthview", "termux"]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/ksh-b/wanda/issues"

@@ -284,12 +284,6 @@ def wallhaven(search=None):
     return response[0]["path"] if response else no_results()
 
 
-def unsplash(search=None):
-    api = f"https://source.unsplash.com/random/{size()[0]}x{size()[1]}/?{search or 'wallpaper'}"
-    response = get(api).url
-    return response if "source-404" not in response else no_results()
-
-
 def earthview(_):
     # https://chromewebstore.google.com/detail/earth-view-from-google-ea/bhloflhklmhfpedakmangadcdofhnnoh
     # 3.1.0

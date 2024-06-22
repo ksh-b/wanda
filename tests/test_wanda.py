@@ -43,20 +43,6 @@ class SimpleTest(unittest.TestCase):
 
         self.assertRaises(SystemExit, source.wallhaven, self.bad_search)
 
-    def test_unsplash(self):
-        url = "https://images.unsplash.com/photo-"
-
-        response = source.unsplash(None)
-        self.assert_starts_with(response, url)
-
-        response = source.unsplash("")
-        self.assert_starts_with(response, url)
-
-        response = source.unsplash(self.good_search)
-        self.assert_starts_with(response, url)
-
-        self.assertRaises(SystemExit, source.unsplash, self.bad_search)
-
     def test_reddit(self):
         url = "https://i.redd.it/"
 
@@ -192,9 +178,6 @@ class AdvancedTest(unittest.TestCase):
         image.set_wp(source.reddit(self.good_search), True, True)
 
         image.set_wp(source.reddit("wallpaper@halflife"), True, True)
-
-    def test_set_unsplash(self):
-        image.set_wp(source.unsplash(self.good_search), True, True)
 
     @staticmethod
     def test_set_imgur():
