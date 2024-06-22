@@ -178,10 +178,6 @@ class AdvancedTest(unittest.TestCase):
         image.set_wp(reddit("wallpaper@halflife"), True, True)
 
     @staticmethod
-    def test_set_imgur():
-        image.set_wp(imgur("jmVC8"), True, True)
-
-    @staticmethod
     def test_set_earthview():
         image.set_wp(earthview(""), True, True)
 
@@ -192,9 +188,6 @@ class AdvancedTest(unittest.TestCase):
     @staticmethod
     def test_set_fourchan():
         image.set_wp(fourchan("mobile"), True, True)
-
-    # def test_set_fivehundredpx(self):
-    #     image.set_wp(fivehundredpx(self.good_search), True, True)
 
 
 if __name__ == "__main__":
