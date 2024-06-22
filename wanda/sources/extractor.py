@@ -142,13 +142,12 @@ def picsum(search=None):
     return get(api).url
 
 
-def imgur(alt="rimgo.projectsegfau.lt", search=None):
+def imgur(alt="rimgo.eu.projectsegfau.lt", search=None):
     if search:
         from lxml import html
-
         tree = html.fromstring(get(f"https://{alt}/a/{search}").content)
         images = tree.xpath("//main//img[@loading]")
-        return f"https://{alt}/{random.choice(images)}" if images else no_results()
+        return f"https://{alt}{random.choice(images).attrib['src']}" if images else no_results()
     return no_results()
 
 
