@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wanda"
-version = "0.63.1"
+version = "1.0.0"
 description = "Set wallpapers with keywords or randomly"
 authors = ["kshib <ksyko@pm.me>"]
 license = "MIT"
@@ -14,25 +14,25 @@ keywords = ["wallpaper", "reddit", "wallhaven", "earthview", "termux"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-lxml = "^5.0.0"
-cloudscraper = "^1.2.60"
-Pillow = "^9.1.0"
-screeninfo = "^0.8"
+lxml = "^5.2.2"
+cloudscraper = "^1.2.71"
+Pillow = "^10.3.0"
+screeninfo = "^0.8.1"
 colorthief = "^0.2.1"
-filetype = "^1.0.13"
+filetype = "^1.2.0"
 musicbrainzngs = "^0.7.1"
 appdirs = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.0.0"
-ruff = "^0.2.1"
-mypy = "^1.5.1"
-pytest-xdist = "^3.1.0"
-pytest-cov = "^4.0.0"
-pytest-rerunfailures = "^13"
+ruff = "^0.4.10"
+mypy = "^1.10.0"
+pytest-xdist = "^3.6.1"
+pytest-cov = "^5.0.0"
+pytest-rerunfailures = "^14.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.9.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
