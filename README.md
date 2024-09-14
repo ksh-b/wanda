@@ -24,20 +24,29 @@ For issues installing pillow refer this [document](https://pillow.readthedocs.io
 
 ## Usage
 ```
-# Set randomly
+# Set randomly (uses picsum)
 wanda
 
-# Set from a keyword 
+# Set from a keyword (uses picsum)
 wanda -t mountain
 
 # Set from a source
 wanda -s wallhaven
 
-# Set from a source 
+# Set from a source with keyword
 wanda -s wallhaven -t japan
 
-# Set album covers
-wanda -sm -t "Meltt-Love Again" -f
+# Use shortcode for source (w=wallhaven)
+# For other shortcodes for other sources, check 'wandu -u'
+wanda -s w -t japan
+
+# Set album covers (m=musicbrainz)
+# album cover would be square, so use -f to fit it to screen
+# format for query with musicbrainz is 'artist-album'
+wanda -s m -t "Meltt-Love Again" -f
+
+# Set from folder (l=local)
+wanda -s l -t "/path/to/wallpapers" 
 
 ```
 `wanda -h` for more details
@@ -50,7 +59,6 @@ wanda -sm -t "Meltt-Love Again" -f
 ## Supported sources
 
 - [4chan](https://boards.4chan.org) via [Rozen Arcana](https://archive-media.palanq.win)
-- [500px](https://500px.com)
 - [artstation](https://artstation.com)
 - [imgur](https://imgur.com) via [rimgo](https://rimgo.projectsegfau.lt)
 - [earthview](https://chromewebstore.google.com/detail/earth-view-from-google-ea/bhloflhklmhfpedakmangadcdofhnnoh)
