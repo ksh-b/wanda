@@ -37,7 +37,7 @@ wanda -s wallhaven
 wanda -s wallhaven -t japan
 
 # Use shortcode for source (w=wallhaven)
-# For other shortcodes for other sources, check 'wandu -u'
+# For other shortcodes for other sources, check 'wanda -u'
 wanda -s w -t japan
 
 # Set album covers (m=musicbrainz)
