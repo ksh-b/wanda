@@ -1,21 +1,24 @@
 # wanda
-Script to set wallpaper using keyword or randomly
+Set random wallpapers with or without a keyword
 
 [![PyPI](https://img.shields.io/pypi/v/wanda)](https://pypi.org/project/wanda/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/wanda)](https://pypistats.org/packages/wanda)
 [![PyPI - License](https://img.shields.io/pypi/l/wanda)](https://tldrlegal.com/license/mit-license)
 
 ## Installation / Update
+### On Windows/Linux:
 ```
 pip install wanda -U
 ```
+You may also use [pipx](https://pipx.pypa.io/latest/)
 
-On android (with termux):
-Install [termux-api](https://github.com/termux/termux-api)
+### On android:<br>
+Install [termux](https://github.com/termux/termux-app) and [termux-api](https://github.com/termux/termux-api)
+In termux:<br>
 ```
 pkg up
 pkg in clang pkg-config libxml2 libxslt libjpeg-turbo termux-api python
-pip install cython lxml==5.0.0
+pip install cython lxml==5.2.2
 pip install wanda -U
 ```
 
@@ -46,7 +49,16 @@ wanda -s w -t japan
 wanda -s m -t "Meltt-Love Again" -f
 
 # Set from folder (l=local)
-wanda -s l -t "/path/to/wallpapers" 
+wanda -s l -t "/path/to/wallpapers"
+
+# download current wallpaper
+wanda -d
+
+# android specific - set wallpaper to lockscreen only
+wanda -l
+
+# android specific - set wallpaper to lockscreen only
+wanda -o
 
 ```
 `wanda -h` for more details
@@ -84,6 +96,14 @@ poetry run wanda
 ```
 pip uninstall wanda
 ```
+
+## Why the name 'wanda'
+This project was originally called [Wallpapers-ANDroid](https://github.com/ksyko/wallpaper-android)
+<details>
+  <summary></summary>
+  Why the a at the end? 'wand' was already taken I think. a for awesome, i guess.
+</details>
+
 
 ## License
 MIT
