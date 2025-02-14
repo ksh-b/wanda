@@ -4,10 +4,6 @@ import subprocess
 from wanda.utils.common_utils import command, blank, contains
 
 
-def screen_orientation():
-    return "landscape" if size()[0] > size()[1] else "portrait"
-
-
 def program_exists(program):
     return (
         subprocess.call(

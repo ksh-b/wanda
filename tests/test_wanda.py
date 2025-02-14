@@ -4,9 +4,9 @@ from pathlib import Path
 
 import pytest
 
-import wanda.utils.common_utils as common
-import wanda.utils.image_utils as image
-from sources.extractor import *
+import utils.common_utils as common
+import utils.image_utils as image
+from wanda.sources.extractor import *
 
 
 # These tests should be compatible with ci runners

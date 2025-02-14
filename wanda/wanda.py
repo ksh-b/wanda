@@ -5,7 +5,7 @@ from pathlib import Path
 
 import appdirs
 
-from wanda.sources.extractor import *
+from wanda.sources import extractor
 from wanda.utils import os_utils, common_utils, image_utils
 
 folder = appdirs.user_cache_dir("wanda")
@@ -129,34 +129,34 @@ def run():
         print("Please check your internet connection and try again")
         exit(1)
     if source_map(source) == "fourchan":
-        wp = fourchan(term)
+        wp = extractor.fourchan(term)
     elif source_map(source) == "generate":
-        wp = generate(term)
+        wp = extractor.generate(term)
     elif source_map(source) == "reddit":
-        wp = reddit(term)
+        wp = extractor.reddit(term)
     elif source_map(source) == "picsum":
-        wp = picsum(term)
+        wp = extractor.picsum(term)
     elif source_map(source) == "imgur":
-        wp = imgur(term)
+        wp = extractor.imgur(term)
     elif source_map(source) == "artstation_prints":
-        wp = artstation_prints(term)
+        wp = extractor.artstation_prints(term)
     elif source_map(source) == "artstation_artist":
-        wp = artstation_artist(term)
+        wp = extractor.artstation_artist(term)
     elif source_map(source) == "artstation_any":
-        wp = artstation_any(term)
+        wp = extractor.artstation_any(term)
     elif source_map(source) == "local":
-        wp = local(term)
+        wp = extractor.local(term)
     elif source_map(source) == "waifuim":
-        wp = waifuim(term)
+        wp = extractor.waifuim(term)
     elif source_map(source) == "musicbrainz":
-        wp = musicbrainz(term)
+        wp = extractor.musicbrainz(term)
     elif source_map(source) == "wallhaven":
-        wp = wallhaven(term)
+        wp = extractor.wallhaven(term)
     elif source_map(source) == "earthview":
-        wp = earthview(term)
+        wp = extractor.earthview(term)
     else:
         print(f"Unknown Source: {source}. Using picsum.")
-        wp = picsum(term)
+        wp = extractor.picsum(term)
     image_utils.set_wp(wp, home, lock, fitwp)
     return 0
 
