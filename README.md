@@ -57,7 +57,7 @@ wanda -d
 # android specific - set wallpaper to lockscreen only
 wanda -l
 
-# android specific - set wallpaper to lockscreen only
+# android specific - set wallpaper to homescreen only
 wanda -o
 
 ```
