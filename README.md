@@ -46,7 +46,7 @@ wanda -s w -t japan
 # Set album covers (m=musicbrainz)
 # album cover would be square, so use -f to fit it to screen
 # format for query with musicbrainz is 'artist-album'
-wanda -s m -t "Meltt-Love Again" -f
+wanda -s m -t "Coldplay-Parachutes" -f
 
 # Set from folder (l=local)
 wanda -s l -t "/path/to/wallpapers"
@@ -78,7 +78,6 @@ wanda -o
 - local
 - [musicbrainz](https://musicbrainz.org/) (Album covers)
 - [picsum](https://picsum.photos)
-- [reddit](https://reddit.com)
 - [wallhaven](https://wallhaven.cc)
 - [waifu](https://www.waifu.im/)
 
@@ -101,7 +100,7 @@ pip uninstall wanda
 This project was originally called [Wallpapers-ANDroid](https://github.com/ksyko/wallpaper-android)
 <details>
   <summary></summary>
-  Why the a at the end? 'wand' was already taken I think. a for awesome, i guess.
+  Why the 'a' at the end? 'wand' was already taken I think. a for awesome, i guess.
 </details>
 
 
