@@ -1,5 +1,4 @@
 import os
-import random
 import subprocess
 import time
 
@@ -7,8 +6,9 @@ import appdirs
 import cloudscraper  # type: ignore
 import filetype  # type: ignore
 
-folder = appdirs.user_cache_dir("wanda")
+from wanda.utils.const import user_agent
 
+folder = appdirs.user_cache_dir("wanda")
 
 def command(string: str) -> str:
     return subprocess.check_output(string.split(" ")).decode().strip()
@@ -42,7 +42,7 @@ def get(url):
     scraper = cloudscraper.create_scraper()
     response = scraper.get(
         url,
-        headers={"Accept": "image/avif,image/webp,*/*", "User-Agent": "git.io/wanda"},
+        headers={"Accept": "image/avif,image/webp,*/*", "User-Agent": user_agent["User-Agent"]},
         timeout=10,
         allow_redirects=True,
     )
@@ -74,11 +74,6 @@ def is_connected():
         return result.text.strip() == "success"
     except Exception:
         return False
-
-
-def coin_toss():
-    return bool(random.getrandbits(1))
-
 
 # do nothing
 def ok():
