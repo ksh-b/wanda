@@ -1,9 +1,6 @@
 import random
 
-import requests
-
-from wanda.utils.common_utils import coin_toss
-
+import cloudscraper
 
 def generate_random_color(as_rgb=False):
     while True:
@@ -22,9 +19,9 @@ def generate_random_color(as_rgb=False):
             return "#{:02x}{:02x}{:02x}".format(r, g, b)
 
 
-def rearrange_colors(colors_list):
+def rearrange_colors(colors_list: list):
     sorted_colors = sorted(colors_list, key=lambda color: sum(color))
-    if coin_toss:
+    if bool(random.getrandbits(1)):
         sorted_colors.reverse()
     return sorted_colors
 
@@ -37,7 +34,7 @@ def get_color_scheme(count=5):
     url = "https://www.thecolorapi.com/scheme"
     params = {"hex": random_hex, "mode": random_mode, "count": count}
     try:
-        response = requests.get(url, params=params)
+        response = cloudscraper.create_scraper().get(url, params=params)
         if response.status_code == 200:
             response_data = response.json()
             colors_list = [

@@ -1,8 +1,8 @@
+import random
+
 from PIL import Image, ImageDraw
 
 from wanda.sources.generator.scheme import generate_random_color
-from wanda.utils.common_utils import coin_toss
-
 
 def linear_gradient(width, height):
     image = Image.new("RGB", (width, height), "white")
@@ -11,7 +11,7 @@ def linear_gradient(width, height):
     start_color = generate_random_color(True)
     end_color = generate_random_color(True)
 
-    if coin_toss():
+    if bool(random.getrandbits(1)):
         for x in range(width):
             r = int(start_color[0] * (1 - x / width) + end_color[0] * (x / width))
             g = int(start_color[1] * (1 - x / width) + end_color[1] * (x / width))
