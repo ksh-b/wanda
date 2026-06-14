@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/ksh-b/wanda"
 repository = "https://github.com/ksh-b/wanda"
-keywords = ["wallpaper", "reddit", "wallhaven", "earthview", "termux"]
+keywords = ["wallpaper", "wallhaven", "earthview", "termux"]
 requires-python = ">=3.11,<4.0.0"
 dependencies = [
     "lxml (>=6.1.1,<7.0.0)",
