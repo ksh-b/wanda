@@ -240,12 +240,10 @@ def generate(term):
         image = linear_gradient(w, h)
     elif term == "bilinear" or term == "gb":
         image = bilinear_gradient(w, h)
-    elif term == "honeycomb" or term == "h":
-        image = honeycomb(w, h)
     elif term == "tiles" or term == "t":
         image = tiles(w, h)
     else:
-        term = random.choice(["gl", "gb", "h", "t"])
+        term = random.choice(["gl", "gb", "t"])
         return generate(term)
 
     image.save(path)
