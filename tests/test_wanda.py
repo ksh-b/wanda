@@ -42,24 +42,7 @@ class SimpleTest(unittest.TestCase):
 
         self.assertRaises(SystemExit, wallhaven, self.bad_search)
 
-    def test_reddit(self):
-        url = "https://i.redd.it/"
 
-        self.assertIn("wallpaper", suggested_subreddits())
-
-        response = reddit(search=None)
-        self.assert_starts_with(response, url)
-
-        response = reddit("")
-        self.assert_starts_with(response, url)
-
-        response = reddit(self.good_search)
-        self.assertNotNone(response, "^https?://")
-
-        response = reddit("wallpaper@halflife")
-        self.assertNotNone(response, "^https?://")
-
-        self.assertRaises(SystemExit, reddit, search=self.bad_search)
 
     def test_imgur(self):
         url = "https://rimgo.eu.projectsegfau.lt"
@@ -171,11 +154,6 @@ class AdvancedTest(unittest.TestCase):
         image.set_wp(artstation_prints(self.good_search), True, True)
 
         image.set_wp(artstation_any(self.good_search), True, True)
-
-    def test_set_reddit(self):
-        image.set_wp(reddit(self.good_search), True, True)
-
-        image.set_wp(reddit("wallpaper@halflife"), True, True)
 
     @staticmethod
     def test_set_earthview():

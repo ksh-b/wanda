@@ -132,8 +132,6 @@ def run():
         wp = extractor.fourchan(term)
     elif source_map(source) == "generate":
         wp = extractor.generate(term)
-    elif source_map(source) == "reddit":
-        wp = extractor.reddit(term)
     elif source_map(source) == "picsum":
         wp = extractor.picsum(term)
     elif source_map(source) == "imgur":
