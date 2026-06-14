@@ -1,7 +1,7 @@
 import base64
 import os
 import random
-import re
+from pathlib import Path
 
 import cloudscraper  # type: ignore
 import filetype  # type: ignore
@@ -10,14 +10,11 @@ from PIL import Image  # type: ignore
 from wanda.sources.earthview_ids import earthview_ids
 from wanda.sources.generator.gradient1 import linear_gradient
 from wanda.sources.generator.gradient2 import bilinear_gradient
-from wanda.sources.generator.honeycomb import honeycomb
 from wanda.sources.generator.tiles import tiles
 from wanda.utils.common_utils import blank, get, ok, contains, get_dl_path
+from wanda.utils.const import user_agent
 from wanda.utils.image_utils import screen_orientation, good_size
 from wanda.utils.os_utils import size
-
-user_agent = {"User-Agent": "git.io/wanda"}
-
 
 def no_results():
     print("No results found.")
@@ -27,6 +24,7 @@ def no_results():
 
 
 def fourchan(search=None):
+    scraper = cloudscraper.create_scraper()
     if blank(search):
         search = ""
         board = "wg"
@@ -38,7 +36,7 @@ def fourchan(search=None):
         search = search.split("@")[0].lower()
 
     api = f"https://archive.palanq.win/_/api/chan/search/?boards={board}&subject={search.lower()}"
-    response = get(api).json()
+    response = scraper.get(api, headers=user_agent).json()
     no_results() if "error" in response else ok()
     posts = list(
         filter(lambda p: "media" in p and "nimages" in p, response["0"]["posts"])
@@ -48,11 +46,11 @@ def fourchan(search=None):
     thread = post["thread_num"]
     board = post["board"]["shortname"]
     api = f"https://archive.palanq.win/_/api/chan/thread/?board={board}&num={thread}"
-    posts = get(api).json()[thread]["posts"]
+    posts = scraper.get(api, headers=user_agent).json()[thread]["posts"]
     ok() if posts else no_results()
     post = random.choice(list(filter(lambda p: "media" in posts[p], posts)))
     if posts[post]:
-        return posts[post]["media"]["media_link"]
+        return posts[post]['media']['remote_media_link']
     return no_results()
 
 def is_imgur_gallery(url):
@@ -68,7 +66,7 @@ def picsum(search=None):
     return get(api).url
 
 
-def imgur(alt="rimgo.eu.projectsegfau.lt", search=None):
+def imgur(alt="rmgur.com", search=None):
     if search:
         from lxml import html
         tree = html.fromstring(get(f"https://{alt}/a/{search}").content)
@@ -95,14 +93,17 @@ def artstation_prints(search=None):
 
 
 def artstation_artist(search=None):
+    scraper = cloudscraper.create_scraper()
     if blank(search):
         print("Please provide an artist id")
         exit(1)
-    response = get(f"https://www.artstation.com/users/{search}/hovercard.json")
+    response = scraper.get(f"https://www.artstation.com/users/{search}/hovercard.json", headers=user_agent)
     no_results() if response.status_code != 200 else ok()
-    projects = get(f"https://www.artstation.com/users/{search}/projects.json").json()
+    projects = scraper.get(f"https://www.artstation.com/users/{search}/projects.json", headers=user_agent).json()
     artwork = random.choice(projects["data"])["permalink"].split("/")[-1]
-    return get(f"https://www.artstation.com/projects/{artwork}.json").json()["assets"][
+    return scraper.get(
+        f"https://www.artstation.com/projects/{artwork}.json", headers=user_agent
+    ).json()["assets"][
         0
     ]["image_url"]
 
@@ -121,9 +122,10 @@ def artstation_any(search=None):
     }
     api = "https://www.artstation.com/api/v2/search/projects.json"
     headers = {
-        "User-Agent": user_agent["User-Agent"],
-        "Host": "www.artstation.com",
-        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
     }
     assets = scraper.get(api, json=body, headers=headers).json()["data"]
 
@@ -132,7 +134,7 @@ def artstation_any(search=None):
     hash_id = random.choice(assets)["hash_id"] if assets else no_results()
 
     api = f"https://www.artstation.com/projects/{hash_id}.json"
-    assets = scraper.get(api, json=body, headers=headers).json()["assets"]
+    assets = scraper.get(api, headers=headers).json()["assets"]
     random.shuffle(assets) if assets else no_results()
     for asset in assets:
         h = asset["height"]
@@ -142,39 +144,44 @@ def artstation_any(search=None):
     return random.choice(assets)["image_url"]
 
 
-def local(path):
+def local(path: str):
     if blank(path):
         print("Please specify path to images")
         exit(1)
     if path and not path.endswith("/"):
         path = f"{path}/"
-    if os.path.exists(path):
-        return path + random.choice(
-            list(
-                filter(
-                    lambda f: os.path.isfile(path + f)
-                    and filetype.guess(path + f).MIME.startswith("image"),
-                    os.listdir(path),
-                )
-            )
-        )
-    return no_results()
+    p = Path(path)
+    if not p.exists() or not p.is_dir():
+        return None
+
+    images = []
+    for entry in p.iterdir():
+        if not entry.is_file():
+            continue
+        kind = filetype.guess(entry)
+        if kind is None:
+            continue
+        if getattr(kind, "MIME", "").startswith("image"):
+            images.append(str(entry))
+
+    if not images:
+        return no_results()
+
+    return random.choice(images)
 
 
 def waifuim(search=None):
-    orientation = "PORTRAIT" if screen_orientation() == "portrait" else "LANDSCAPE"
-    accept = f"&included_tags={search}" if search else ""
-    reject = ""
-    if search and "-" in search:
-        accept = f"&selected_tags={search.split('-')[0]}"
-        reject = f"&excluded_tags={search.split('-')[1]}"
+    orientation = "portrait" if screen_orientation() == "portrait" else "landscape"
+    accept = f"&IncludedTags={search}" if search else ""
     api = (
-        f"https://api.waifu.im/search/?gif=false&is_nsfw=false"
-        f"&orientation={orientation}{accept}{reject}"
+        f"https://api.waifu.im/images?"
+        f"OrderBy=Random"
+        f"&Orientation={orientation}"
+        f"{accept}"
     )
     response = get(api).json()
-    no_results() if "detail" in response else ok()
-    return response["images"][0]["url"]
+    no_results() if not response['items'] else ok()
+    return response["items"][0]["url"]
 
 
 def musicbrainz(search=None):
