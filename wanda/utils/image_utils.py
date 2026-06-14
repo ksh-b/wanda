@@ -26,10 +26,9 @@ def good_size(w, h):
 
 # get dominant color from image
 def dominant_color(wallpaper_path):
-    from colorthief import ColorThief  # type: ignore
+    from colorthief_v3 import get_color  # type: ignore
 
-    color_thief = ColorThief(wallpaper_path)
-    return color_thief.get_color(quality=1)
+    return get_color(wallpaper_path, quality=1).hex()
 
 
 def fit(wallpaper_path):
