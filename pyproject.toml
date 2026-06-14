@@ -1,6 +1,6 @@
 [project]
 name = "wanda"
-version = "1.0.1"
+version = "2.0.0"
 description = "Set wallpapers with keywords or randomly"
 authors = [{ name = "kshib", email = "ksyko@pm.me" }]
 license = "MIT"
@@ -8,32 +8,34 @@ readme = "README.md"
 homepage = "https://github.com/ksh-b/wanda"
 repository = "https://github.com/ksh-b/wanda"
 keywords = ["wallpaper", "reddit", "wallhaven", "earthview", "termux"]
-requires-python = ">=3.8,<4.0.0"
+requires-python = ">=3.11,<4.0.0"
 dependencies = [
-    "lxml (>=5.2.2,<6.0.0)",
+    "lxml (>=6.1.1,<7.0.0)",
     "cloudscraper (>=1.2.71,<2.0.0)",
-    "Pillow (>=10.3.0,<11.0.0)",
+    "Pillow (>=12.2.0,<13.0.0)",
     "screeninfo (>=0.8.1,<1.0.0)",
     "colorthief (>=0.2.1,<1.0.0)",
     "filetype (>=1.2.0,<2.0.0)",
     "musicbrainzngs (>=0.7.1,<1.0.0)",
-    "appdirs (>=1.4.4,<2.0.0)"
+    "appdirs (>=1.4.4,<2.0.0)",
 ]
 
 [project.urls]
 "Bug Tracker" = "https://github.com/ksh-b/wanda/issues"
 
-[poetry.group.dev.dependencies]
-pytest = "^8.0.0"
-ruff = "^0.9.6"
-mypy = "^1.14.1"
-pytest-xdist = "^3.6.1"
-pytest-cov = "^5.0.0"
-pytest-rerunfailures = "^14.0"
-
 [build-system]
-requires = ["poetry-core>=1.9.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
 wanda = "wanda.wanda:run"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.3,<10.0.0)",
+    "ruff (>=0.15.17,<0.16.0)",
+    "mypy (>=2.1.0,<3.0.0)",
+    "pytest-xdist (>=3.8.0,<4.0.0)",
+    "pytest-cov (>=7.1.0,<8.0.0)",
+    "pytest-rerunfailures (>=16.3,<17.0)"
+]
