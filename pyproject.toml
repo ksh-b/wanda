@@ -1,6 +1,6 @@
 [project]
 name = "wanda"
-version = "2.0.0"
+version = "2.0.1"
 description = "Set wallpapers with keywords or randomly"
 authors = [{ name = "kshib", email = "ksyko@pm.me" }]
 license = "MIT"
