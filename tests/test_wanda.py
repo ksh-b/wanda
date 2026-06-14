@@ -1,12 +1,12 @@
 import os.path
 import unittest
-from pathlib import Path
 
 import pytest
 
-import utils.common_utils as common
-import utils.image_utils as image
+import wanda.utils.common_utils as common
+import wanda.utils.image_utils as image
 from wanda.sources.extractor import *
+import re
 
 
 # These tests should be compatible with ci runners
@@ -45,7 +45,7 @@ class SimpleTest(unittest.TestCase):
 
 
     def test_imgur(self):
-        url = "https://rimgo.eu.projectsegfau.lt"
+        url = "https://rmgur.com"
 
         self.assertRaises(SystemExit, imgur, None)
 
