@@ -11,10 +11,10 @@ keywords = ["wallpaper", "wallhaven", "earthview", "termux"]
 requires-python = ">=3.11,<4.0.0"
 dependencies = [
     "lxml (>=6.1.1,<7.0.0)",
-    "cloudscraper (>=1.2.71,<2.0.0)",
+    "cloudscraper-enhanced (>=3.0.0,<4.0.0)",
     "Pillow (>=12.2.0,<13.0.0)",
     "screeninfo (>=0.8.1,<1.0.0)",
-    "colorthief (>=0.2.1,<1.0.0)",
+    "colorthief-v3 (>=3.3.1,<4.0.0)",
     "filetype (>=1.2.0,<2.0.0)",
     "musicbrainzngs (>=0.7.1,<1.0.0)",
     "appdirs (>=1.4.4,<2.0.0)",
@@ -24,7 +24,7 @@ dependencies = [
 "Bug Tracker" = "https://github.com/ksh-b/wanda/issues"
 
 [build-system]
-requires = ["poetry-core>=2.0"]
+requires = ["poetry-core>=2.4.1"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
@@ -32,7 +32,7 @@ wanda = "wanda.wanda:run"
 
 [dependency-groups]
 dev = [
-    "pytest (>=9.0.3,<10.0.0)",
+    "pytest (>=9.1.0,<10.0.0)",
     "ruff (>=0.15.17,<0.16.0)",
     "mypy (>=2.1.0,<3.0.0)",
     "pytest-xdist (>=3.8.0,<4.0.0)",
